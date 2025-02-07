@@ -16,6 +16,8 @@ use App\Models\Sender;
 use App\Models\Receiver;
 use App\Models\Box;
 use App\Models\Shipment;
+use App\Models\Item;
+
 use App\Exports\ExcelExport;
 
 class CustomerController extends Controller
@@ -26,10 +28,6 @@ class CustomerController extends Controller
         $senders = Sender::select('id', 'senderName', 'senderPhone', 'senderEmail', 'senderAddress',)->get();
         return view('backend.customer.customer_all', compact('senders'));
     } // End Method
-
-
-
-
 
     public function CustomerShow($id)
     {
@@ -61,22 +59,10 @@ class CustomerController extends Controller
         return view('backend.customer.customer_preview', compact('sender', 'receivers', 'shipments', 'totalQuantity', 'grandTotal',));
     }
 
-
-
-
-
-
-
-
-
     public function CustomerAdd()
     {
         return view('backend.customer.customer_add');
     }    // End Method
-
-
-
-
 
     public function CustomerEdit($id)
     {
@@ -235,15 +221,6 @@ class CustomerController extends Controller
         $allData = Payment::where('customer_id', $request->customer_id)->where('paid_status', '!=', 'full_due')->get();
         return view('backend.customer.customer_wise_paid_pdf', compact('allData'));
     }
-
-
-
-
-
-
-
-
-
     
     public function CustomerStore(Request $request)
     {
@@ -254,9 +231,6 @@ class CustomerController extends Controller
 
 
         try {
-
-
-
 
             // Step 1: Split the form data for sender, receiver, and shipment
             $senderData = [
@@ -327,9 +301,6 @@ class CustomerController extends Controller
         }
     }
 
-
-
-
     public function exportToExcel($id)
     {
         // Fetch data (same as CustomerShow)
@@ -349,9 +320,6 @@ class CustomerController extends Controller
         return Excel::download(new ExcelExport($sender, $shipments, $receivers, ), 'invoice.xlsx');
     }
 
-
-
-
     public function printInvoice($id)
     {
         $sender = Sender::with(['boxes.items'])->findOrFail($id);
@@ -361,27 +329,5 @@ class CustomerController extends Controller
         // Pass the data to the print view
         return view('backend.customer.print', compact( 'sender', 'shipments', 'receivers'));
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-   
-
-
-
-
     
 }

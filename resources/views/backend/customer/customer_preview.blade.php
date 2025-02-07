@@ -1,6 +1,9 @@
 @extends('admin.admin_master')
 @section('admin')
 <div class="page-content">
+<a href="javascript:history.back()" class="btn btn-light btn-rounded" style="font-size: 20px; display: inline-flex; align-items: center; text-decoration: none;">
+    <i class="fas fa-arrow-left" style="margin-right: 8px;"></i> Back
+</a>
     <div class="container-fluid">
         <script src="https://cdn.tailwindcss.com"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>

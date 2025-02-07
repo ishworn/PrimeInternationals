@@ -1,30 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\AdminController;
-
 use App\Http\Controllers\Pos\CustomerController;
-
 use App\Http\Controllers\Pos\DefaultController;
 use App\Http\Controllers\Pos\InvoiceController;
-
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
-
-Route::get('/', [AuthenticatedSessionController::class, 'create'])
-                ->name('login');
-
-
-
-
-
-
 
 
 Route::middleware('auth')->group(function (){
-
-
-
 
  // Admin All Route
 Route::controller(AdminController::class)->group(function () {
@@ -33,15 +17,10 @@ Route::controller(AdminController::class)->group(function () {
     Route::get('/admin/profile', 'Profile')->name('admin.profile');
     Route::get('/edit/profile', 'EditProfile')->name('edit.profile');
     Route::post('/store/profile', 'StoreProfile')->name('store.profile');
-
     Route::get('/change/password', 'ChangePassword')->name('change.password');
     Route::post('/update/password', 'UpdatePassword')->name('update.password');
 
 });
-
-
-
-
 
 // Customer All Route
 Route::controller(CustomerController::class)->group(function () {
@@ -57,43 +36,16 @@ Route::get('/customer/print/{id}', 'printInvoice')->name('invoice.print');
     Route::post('/customer/update', 'CustomerUpdate')->name('customer.update');
     Route::get('/customer/delete/{id}', 'CustomerDelete')->name('customer.delete');
 
-   
-   
-
-
-
 // Route::post('/add_customer', [CustomerController::class, 'store'])->name('add_customer.store');
 
 });
 
 
-
-
-
-
-
-
-
-
-
-    
-
-
 });
 
 
-
-
-
-
-/*
-Route::get('/dashboard', function () {
-    return view('admin.index');
-})->middleware(['auth'])->name('dashboard');
-*/
 require __DIR__.'/auth.php';
 
-
-// Route::get('/contact', function () {
-//     return view('contact');
-// });
+Route::get('/', function () {
+    return redirect()->route('login');
+});

@@ -410,24 +410,6 @@
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     document.addEventListener("DOMContentLoaded", function() {
         const senderLink = document.getElementById("senderLink");
         const receiverLink = document.getElementById("receiverLink");

@@ -157,6 +157,9 @@
     }
 </style>
 <div class="page-content">
+<a href="javascript:history.back()" class="btn btn-light btn-rounded" style="font-size: 20px; display: inline-flex; align-items: center; text-decoration: none;">
+    <i class="fas fa-arrow-left" style="margin-right: 8px;"></i> Back
+</a>
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
