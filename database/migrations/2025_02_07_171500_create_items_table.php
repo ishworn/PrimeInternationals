@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::create('items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('box_id')->constrained()->onDelete('cascade');
-            $table->foreignId('sender_id')->constrained()->onDelete('cascade');
             $table->string('item');
             $table->string('hs_code')->nullable();
             $table->integer('quantity');

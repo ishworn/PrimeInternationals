@@ -1,9 +1,15 @@
 @extends('admin.admin_master')
 @section('admin')
 <div class="page-content">
-<a href="javascript:history.back()" class="btn btn-light btn-rounded" style="font-size: 20px; display: inline-flex; align-items: center; text-decoration: none;">
-    <i class="fas fa-arrow-left" style="margin-right: 8px;"></i> Back
+<a href="javascript:history.back()" class="btn btn-warning btn-rounded no-print" 
+style="font-size: 15px; display: inline-flex; align-items: center; text-decoration: none; 
+          background-color: #FFD700; color: black; padding: 10px 10px; border-radius: 5px; 
+          margin-bottom: 15px; margin-top: 10px; margin-left: 20px;">
+    <i class="fas fa-arrow-left" style="margin-right: 5px;"></i> Back
 </a>
+
+ <style>@media print { .no-print { display: none !important; } }</style>
+
     <div class="container-fluid">
         <script src="https://cdn.tailwindcss.com"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>

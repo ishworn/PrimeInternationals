@@ -33,27 +33,21 @@
                     </ul>
                 </li>
                 
-                <li class="mb-2">
-                    <a href="javascript:void(0);" class="has-arrow flex items-center px-4 py-3 rounded-lg bg-gray-800 hover:bg-orange-500 hover:text-black transition">
-                        <i class="ri-group-fill text-xl"></i>
-                        <span class="ml-3 sidebar-text">Manage Staff</span>
+                
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                     <i class="ri-map-pin-line text-xl"></i>
+                     <span>Tracking</span>
                     </a>
-                    <ul class="sub-menu ml-6 mt-1">
-                        <li>
-                            <a href="#">All Staff</a>
-                        </li>
+                    <ul class="sub-menu" aria-expanded="false">
+                     <li><a href="{{ route('trackings.index') }}">Manage Tracking</a></li>
                     </ul>
+                   <ul class="sub-menu" aria-expanded="false">
+                     <li><a href="https://primegorkha.aftership.com">Track </a></li>
+                   </ul>
                 </li>
 
-
-
-
-
-
-
-
-
-
+               
 
             </ul>
         </div>

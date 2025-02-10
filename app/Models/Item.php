@@ -8,7 +8,6 @@ class Item extends Model
     public $timestamps = false;
     protected $fillable = [
         'box_id',
-        'sender_id',
         'item',
         'hs_code',
         'quantity',
