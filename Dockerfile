@@ -30,7 +30,7 @@ RUN chown -R www-data:www-data /var/www \
     && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
 # Expose PHP-FPM port
-EXPOSE 8080  
+EXPOSE 80
 
 # Use www-data user for security
 USER www-data
