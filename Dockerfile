@@ -9,6 +9,8 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     unzip \
     git \
+    nginx \
+    supervisor \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd pdo pdo_mysql zip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -29,12 +31,15 @@ RUN composer install --no-dev --prefer-dist --no-scripts --optimize-autoloader
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
-# Expose PHP-FPM port
+# Copy Nginx config file
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Copy Supervisor config file
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Expose HTTP and PHP-FPM ports
+EXPOSE 80
 EXPOSE 9000
 
-# Use www-data user for security
-USER www-data
-
-# Start PHP-FPM server
-CMD ["php-fpm"]
-
+# Start both Nginx and PHP-FPM using Supervisor
+CMD ["/usr/bin/supervisord"]
