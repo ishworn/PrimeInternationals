@@ -7,15 +7,13 @@ services:
       dockerfile: Dockerfile
     container_name: laravel_app
     ports:
-      - "8000:8000"  # Mapping port 8000 to host
+      - "8000:80"  # Exposing port 80 from the container (Nginx will listen here)
     volumes:
       - .:/var/www
     networks:
       - laravel_network
-    
 
 networks:
   laravel_network:
     driver: bridge
-
 
