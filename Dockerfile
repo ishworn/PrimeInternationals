@@ -1,10 +1,10 @@
-# Use a base image
-FROM ubuntu:20.04
+# Use a more recent stable version of Ubuntu
+FROM ubuntu:22.04
 
-# Set non-interactive mode for apt to avoid any prompts during installation
+# Set non-interactive mode to avoid prompts during package installations
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install dependencies
+# Install dependencies and PHP repository (if needed)
 RUN apt-get update && apt-get install -y \
     lsb-release \
     ca-certificates \
@@ -14,6 +14,11 @@ RUN apt-get update && apt-get install -y \
     nginx \
     supervisor \
     zip unzip \
+    && curl -sSL https://packages.sury.org/php/README.txt | bash - \
+    && apt-get update
+
+# Install PHP and its extensions
+RUN apt-get install -y \
     php8.2-fpm \
     php8.2-cli \
     php8.2-mysql \
