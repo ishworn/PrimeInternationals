@@ -48,5 +48,5 @@ COPY ./nginx.conf /etc/nginx/nginx.conf
 EXPOSE 80
 
 # Start supervisor to manage processes
-CMD ["/usr/bin/supervisord"]
+CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]
 
