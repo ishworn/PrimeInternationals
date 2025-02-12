@@ -8,8 +8,10 @@ services:
     container_name: laravel_app
     volumes:
       - .:/var/www
+      - ./.env:/var/www/.env
     networks:
       - laravel_network
+    working_dir: /var/www
 
   nginx:
     image: nginx:latest
@@ -24,7 +26,27 @@ services:
     networks:
       - laravel_network
 
+  redis:
+    image: redis:latest
+    container_name: laravel_redis
+    networks:
+      - laravel_network
+
+  memcached:
+    image: memcached:latest
+    container_name: laravel_memcached
+    networks:
+      - laravel_network
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - laravel_network
+
 networks:
   laravel_network:
     driver: bridge
-
