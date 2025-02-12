@@ -36,7 +36,7 @@ COPY ./nginx.conf /etc/nginx/nginx.conf
 COPY ./index.php /var/www/html/index.php
 
 # Copy Laravel public folder to the right location
-COPY ./public /var/www/html/public
+COPY ./public/index.php /var/www/html/index.php
 
 # Set the correct ownership and permissions for Laravel storage directories
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
