@@ -1,40 +1,36 @@
-# Use a base image
-FROM ubuntu:20.04
+# Start from an official PHP image
+FROM php:8.2-fpm
 
-# Install dependencies and add repositories
+# Install necessary system dependencies
 RUN apt-get update && apt-get install -y \
-    lsb-release \
-    ca-certificates \
-    apt-transport-https \
-    software-properties-common \
-    curl \
-    && curl -sSL https://packages.sury.org/php/README.txt | bash - \
-    && apt-get update
-
-# Install PHP and necessary packages
-RUN apt-get install -y \
-    php8.2-fpm \
-    php8.2-cli \
-    php8.2-mysql \
-    php8.2-curl \
-    php8.2-xml \
-    php8.2-mbstring \
     nginx \
     supervisor \
     zip unzip \
+    curl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions (ensure this is after PHP is installed)
+# Install PHP extensions (modify as needed)
 RUN docker-php-ext-install pdo pdo_mysql
 
-# Configure supervisor to manage processes (nginx, php-fpm)
-COPY ./supervisord.conf /etc/supervisor/supervisord.conf
+# Set working directory
+WORKDIR /var/www
+
+# Copy Laravel application files
+COPY . .
+
+# Copy Nginx and Supervisor config files (if you have custom ones)
 COPY ./nginx.conf /etc/nginx/nginx.conf
-COPY ./index.php /var/www/html/index.php
+COPY ./supervisord.conf /etc/supervisor/supervisord.conf
 
-# Expose necessary ports
-EXPOSE 80
+# Copy the public directory to the container (this includes index.php)
+COPY ./public /var/www/html/public
 
-# Start supervisor to manage processes
+# Set file permissions (adjust as needed for your project)
+RUN chown -R www-data:www-data /var/www
+
+# Expose ports
+EXPOSE 80 443
+
+# Start Supervisor to manage Nginx and PHP-FPM
 CMD ["/usr/bin/supervisord"]
