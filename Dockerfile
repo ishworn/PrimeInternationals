@@ -3,7 +3,7 @@ FROM php:8.2-fpm
 
 # Install necessary system dependencies
 RUN apt-get update && apt-get install -y software-properties-common && \
-    add-apt-repository ppa:ondrej/php && \
+    DEBIAN_FRONTEND=noninteractive add-apt-repository -y ppa:ondrej/php && \
     apt-get update && apt-get install -y \
     php8.2-fpm \
     nginx \
@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y software-properties-common && \
     curl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+    
 # Install PHP extensions (Modify as needed)
 RUN docker-php-ext-install pdo pdo_mysql
 
