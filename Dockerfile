@@ -1,7 +1,7 @@
-# Use official PHP 8.2 image with FPM
-FROM php:8.2-fpm
+# Use PHP 8.2 with Apache
+FROM php:8.2-apache
 
-# Install necessary dependencies
+# Install dependencies
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
@@ -19,18 +19,21 @@ COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 # Set working directory
 WORKDIR /var/www
 
-# Copy Laravel application files
+# Copy Laravel files
 COPY . /var/www
 
-# Install PHP dependencies using Composer
+# Install dependencies
 RUN composer install --no-dev --prefer-dist --no-scripts --optimize-autoloader
 
-# Set permissions for Laravel app directories
+# Set permissions
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
-# Expose PHP-FPM port (9000 by default)
-EXPOSE 9000
+# Enable Apache mod_rewrite
+RUN a2enmod rewrite
 
-# Start PHP-FPM server
-CMD ["php-fpm"]
+# Expose port 80 for Apache
+EXPOSE 80
+
+# Start Apache
+CMD ["apache2-foreground"]
