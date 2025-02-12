@@ -2,17 +2,22 @@
 FROM php:8.2-fpm
 
 # Install necessary system dependencies
-RUN apt-get update && apt-get install -y software-properties-common && \
-    DEBIAN_FRONTEND=noninteractive add-apt-repository -y ppa:ondrej/php && \
+# Use a base image that supports PHP
+FROM ubuntu:22.04  
+
+# Set non-interactive frontend for apt-get
+ENV DEBIAN_FRONTEND=noninteractive  
+
+# Install required dependencies
+RUN apt-get update && apt-get install -y \
+    lsb-release ca-certificates apt-transport-https software-properties-common curl && \
+    curl -sSL https://packages.sury.org/php/README.txt | bash - && \
     apt-get update && apt-get install -y \
     php8.2-fpm \
     nginx \
     supervisor \
     zip unzip \
     curl \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-    
 # Install PHP extensions (Modify as needed)
 RUN docker-php-ext-install pdo pdo_mysql
 
