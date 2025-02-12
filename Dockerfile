@@ -32,14 +32,11 @@ RUN docker-php-ext-install pdo pdo_mysql
 COPY ./supervisord.conf /etc/supervisor/supervisord.conf
 COPY ./nginx.conf /etc/nginx/nginx.conf
 
-# Copy index.php from public folder
-COPY ./public/index.php /var/www/html/index.php
+# Copy Laravel public folder to the right location
+COPY ./public /var/www/html/public
 
 # Expose necessary ports
 EXPOSE 80
-
-# Copy Laravel public folder to the right location
-COPY ./public /var/www/html/public
 
 # Start supervisor to manage processes
 CMD ["/usr/bin/supervisord"]
