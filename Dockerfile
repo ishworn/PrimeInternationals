@@ -4,16 +4,25 @@ FROM ubuntu:22.04
 # Set non-interactive mode to avoid prompts during package installations
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install dependencies and PHP repository (if needed)
+# Update base repositories and install essential dependencies
 RUN apt-get update && apt-get install -y \
     curl \
     nginx \
     supervisor \
     zip unzip \
-    && curl -sSL https://packages.sury.org/php/README.txt | bash - \
-    && apt-get update
+    ca-certificates \
+    apt-transport-https \
+    software-properties-common \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install PHP and its extensions
+# Add the Sury PHP repository
+RUN curl -sSL https://packages.sury.org/php/README.txt | bash -
+
+# Update package lists after adding PHP repository
+RUN apt-get update
+
+# Install PHP and PHP extensions
 RUN apt-get install -y \
     php8.2-fpm \
     php8.2-cli \
@@ -24,14 +33,14 @@ RUN apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions (ensure this is after PHP is installed)
+# Install necessary PHP extensions after PHP is installed
 RUN docker-php-ext-install pdo pdo_mysql
 
 # Configure supervisor to manage processes (nginx, php-fpm)
 COPY ./supervisord.conf /etc/supervisor/supervisord.conf
 COPY ./nginx.conf /etc/nginx/nginx.conf
 
-# Copy Laravel public folder to the right location
+# Copy the Laravel public folder to the correct location
 COPY ./public /var/www/html/public
 
 # Expose necessary ports
