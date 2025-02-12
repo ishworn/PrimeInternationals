@@ -31,8 +31,7 @@ RUN chown -R www-data:www-data /var/log/nginx /var/log/php-fpm
 WORKDIR /var/www/html
 
 # Copy the Laravel application files
-COPY . .
-
+COPY ./public /var/www/html/public
 # Install Composer dependencies
 RUN composer install --optimize-autoloader --no-dev
 
@@ -49,3 +48,5 @@ EXPOSE 80
 
 # Start supervisor to manage processes
 CMD ["/usr/bin/supervisord"]
+
+
