@@ -3,19 +3,22 @@ FROM php:8.2-fpm
 
 # Install necessary dependencies
 RUN apt-get update && apt-get install -y \
+    nginx \
+    supervisor \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
     libzip-dev \
     unzip \
     git \
-    supervisor \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd pdo pdo_mysql zip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+# Set environment variables for configuration files
+ENV SUPERVISORD_CONF /etc/supervisor/conf.d/supervisord.conf
+ENV NGINX_CONF /etc/nginx/nginx.conf
+ENV PHP_FPM_CONF /etc/php/8.2/fpm/php-fpm.conf
 
 # Set working directory
 WORKDIR /var/www
@@ -24,17 +27,20 @@ WORKDIR /var/www
 COPY . /var/www
 
 # Install PHP dependencies using Composer
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 RUN composer install --no-dev --prefer-dist --no-scripts --optimize-autoloader
 
 # Set permissions for Laravel app directories
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
-# Expose PHP-FPM port (9000 by default)
+# Copy configuration files for Supervisor and Nginx
+COPY supervisord.conf $SUPERVISORD_CONF
+COPY nginx.conf $NGINX_CONF
+
+# Expose required ports
+EXPOSE 80
 EXPOSE 9000
 
-# Copy supervisord.conf into the container
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-# Start supervisor as the entrypoint
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+# Start Supervisor, which will manage PHP-FPM and Nginx
+CMD ["/usr/bin/supervisord", "-c", "$SUPERVISORD_CONF"]
