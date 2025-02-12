@@ -1,4 +1,4 @@
-# Use Ubuntu 22.04 as the base image
+# Use a more recent stable version of Ubuntu
 FROM ubuntu:22.04
 
 # Set non-interactive mode to avoid prompts during package installations
@@ -13,19 +13,6 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     apt-transport-https \
     software-properties-common \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-# Add the Sury PHP repository for Ubuntu 22.04 (jammy)
-RUN mkdir -p /etc/apt/keyrings \
-    && curl -fsSL https://packages.sury.org/php/apt.gpg | gpg --dearmor -o /etc/apt/keyrings/sury-php.gpg \
-    && echo "deb [signed-by=/etc/apt/keyrings/sury-php.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/sury-php.list
-
-# Update package lists after adding PHP repository
-RUN apt-get update
-
-# Install PHP and PHP extensions
-RUN apt-get install -y \
     php8.2-fpm \
     php8.2-cli \
     php8.2-mysql \
@@ -34,6 +21,9 @@ RUN apt-get install -y \
     php8.2-mbstring \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+# Install necessary PHP extensions
+RUN docker-php-ext-install pdo pdo_mysql
 
 # Configure supervisor to manage processes (nginx, php-fpm)
 COPY ./supervisord.conf /etc/supervisor/supervisord.conf
