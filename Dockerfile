@@ -36,8 +36,6 @@ EXPOSE 9000
 # Expose Nginx port
 EXPOSE 80
 
-# Copy Nginx configuration (Make sure you have nginx.conf in your repo)
-COPY ./nginx.conf /etc/nginx/nginx.conf
 
 # Copy Supervisor configuration file to manage processes
 COPY ./supervisord.conf /etc/supervisor/supervisord.conf
@@ -45,5 +43,4 @@ COPY ./supervisord.conf /etc/supervisor/supervisord.conf
 # Start supervisord to run both Nginx and PHP-FPM
 CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]
 
-# Use www-data user for security
-USER www-data
+
