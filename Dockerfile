@@ -1,6 +1,9 @@
 # Use a base image
 FROM ubuntu:20.04
 
+# Set non-interactive mode for apt to avoid any prompts during installation
+ENV DEBIAN_FRONTEND=noninteractive
+
 # Install dependencies and add repositories
 RUN apt-get update && apt-get install -y \
     lsb-release \
