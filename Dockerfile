@@ -1,35 +1,40 @@
-# Use the official PHP 8.2 image with FPM
-FROM php:8.2-fpm
+# Use a base image
+FROM ubuntu:20.04
 
-# Install necessary system dependencies
-# Use a base image that supports PHP
-FROM ubuntu:22.04  
-
-# Set non-interactive frontend for apt-get
-ENV DEBIAN_FRONTEND=noninteractive  
-
-# Install required dependencies
+# Install dependencies and add repositories
 RUN apt-get update && apt-get install -y \
-    lsb-release ca-certificates apt-transport-https software-properties-common curl && \
-    curl -sSL https://packages.sury.org/php/README.txt | bash - && \
-    apt-get update && apt-get install -y \
+    lsb-release \
+    ca-certificates \
+    apt-transport-https \
+    software-properties-common \
+    curl \
+    && curl -sSL https://packages.sury.org/php/README.txt | bash - \
+    && apt-get update
+
+# Install PHP and necessary packages
+RUN apt-get install -y \
     php8.2-fpm \
+    php8.2-cli \
+    php8.2-mysql \
+    php8.2-curl \
+    php8.2-xml \
+    php8.2-mbstring \
     nginx \
     supervisor \
     zip unzip \
-    curl \
-# Install PHP extensions (Modify as needed)
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install PHP extensions (ensure this is after PHP is installed)
 RUN docker-php-ext-install pdo pdo_mysql
 
-# Copy custom configuration files
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+# Configure supervisor to manage processes (nginx, php-fpm)
+COPY ./supervisord.conf /etc/supervisor/supervisord.conf
+COPY ./nginx.conf /etc/nginx/nginx.conf
+COPY ./index.php /var/www/html/index.php
 
-# Set working directory
-WORKDIR /var/www/html
-
-# Expose ports
+# Expose necessary ports
 EXPOSE 80
 
-# Start Supervisor
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+# Start supervisor to manage processes
+CMD ["/usr/bin/supervisord"]
