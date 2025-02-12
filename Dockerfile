@@ -35,5 +35,5 @@ RUN a2enmod rewrite
 # Expose port 80 for Apache
 EXPOSE 80
 
-# Start Apache
+# Correct CMD for Apache (removes supervisord error)
 CMD ["apache2-foreground"]
