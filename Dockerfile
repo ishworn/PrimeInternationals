@@ -1,10 +1,10 @@
-# Use a more recent stable version of Ubuntu
+# Use a stable version of Ubuntu
 FROM ubuntu:22.04
 
 # Set non-interactive mode to avoid prompts during package installations
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Update base repositories and install essential dependencies
+# Update package list and install essential dependencies
 RUN apt-get update && apt-get install -y \
     curl \
     nginx \
@@ -13,12 +13,12 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     apt-transport-https \
     software-properties-common \
-    php8.2-fpm \
-    php8.2-cli \
-    php8.2-mysql \
-    php8.2-curl \
-    php8.2-xml \
-    php8.2-mbstring \
+    php-fpm \
+    php-cli \
+    php-mysql \
+    php-curl \
+    php-xml \
+    php-mbstring \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -29,7 +29,7 @@ RUN docker-php-ext-install pdo pdo_mysql
 COPY ./supervisord.conf /etc/supervisor/supervisord.conf
 COPY ./nginx.conf /etc/nginx/nginx.conf
 
-# Copy the Laravel public folder to the correct location
+# Copy your application code into the container
 COPY ./public /var/www/html/public
 
 # Expose necessary ports
