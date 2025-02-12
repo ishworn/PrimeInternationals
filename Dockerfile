@@ -3,14 +3,14 @@ FROM php:8.2-fpm
 
 # Install system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
-    nginx \
-    supervisor \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
     libzip-dev \
     unzip \
     git \
+    supervisor \
+    nginx \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd pdo pdo_mysql zip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -27,20 +27,21 @@ COPY . /var/www
 # Install PHP dependencies
 RUN composer install --no-dev --prefer-dist --no-scripts --optimize-autoloader
 
-# Set permissions
+# Set permissions for Laravel storage and cache directories
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
-# Expose PHP-FPM port
-EXPOSE 9000
-# Expose Nginx port
-EXPOSE 80
+# Create necessary log directories
+RUN mkdir -p /var/log/php-fpm && touch /var/log/php-fpm/access.log /var/log/php-fpm/error.log
 
+# Expose the necessary ports
+EXPOSE 80 9000
 
-# Copy Supervisor configuration file to manage processes
-COPY ./supervisord.conf /etc/supervisor/supervisord.conf
+# Use www-data user for security
+USER www-data
 
-# Start supervisord to run both Nginx and PHP-FPM
-CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+# Copy Supervisor configuration file
+COPY supervisord.conf /etc/supervisor/supervisord.conf
 
-
+# Start Supervisor which will manage both Nginx and PHP-FPM
+CMD ["/usr/bin/supervisord"]
