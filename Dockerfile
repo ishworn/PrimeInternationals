@@ -29,8 +29,8 @@ RUN composer install --no-dev --prefer-dist --no-scripts --optimize-autoloader
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
-# Expose PHP-FPM port
-EXPOSE 80
+# Expose PHP-FPM port (should be 9000)
+EXPOSE 9000
 
 # Use www-data user for security
 USER www-data
