@@ -4,6 +4,7 @@ FROM php:8.2-fpm
 # Install system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
     nginx \
+    supervisor \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
@@ -38,8 +39,11 @@ EXPOSE 80
 # Copy Nginx configuration (Make sure you have nginx.conf in your repo)
 COPY ./nginx.conf /etc/nginx/nginx.conf
 
-# Start Nginx and PHP-FPM in the same container
-CMD ["sh", "-c", "service nginx start && php-fpm"]
+# Copy Supervisor configuration file to manage processes
+COPY ./supervisord.conf /etc/supervisor/supervisord.conf
+
+# Start supervisord to run both Nginx and PHP-FPM
+CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]
 
 # Use www-data user for security
 USER www-data
