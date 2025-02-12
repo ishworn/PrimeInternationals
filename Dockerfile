@@ -6,10 +6,6 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Install dependencies and PHP repository (if needed)
 RUN apt-get update && apt-get install -y \
-    lsb-release \
-    ca-certificates \
-    apt-transport-https \
-    software-properties-common \
     curl \
     nginx \
     supervisor \
