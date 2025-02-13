@@ -32,7 +32,7 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 
 # Copy deploy script from root folder to container
 COPY deploy.sh /usr/local/bin/deploy.sh
-RUN chmod +x /usr/local/bin/deploy.sh
+RUN chmod +x /var/www/html/deploy.sh && /var/www/html/deploy.sh
 
 # Expose port 80 for NGINX
 EXPOSE 80

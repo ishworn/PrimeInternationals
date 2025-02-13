@@ -1,7 +1,7 @@
-#deploy
+#!/usr/bin/env bash
 
-echo "Running Composer..."
-composer install --no-dev --working-dir=/var/www/html
+echo "Running composer install..."
+composer install --no-dev --working-dir=/var/www/html --ignore-platform-reqs
 
 echo "Caching config..."
 php artisan config:cache
