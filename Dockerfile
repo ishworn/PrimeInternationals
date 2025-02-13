@@ -33,4 +33,4 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 EXPOSE 80
 
 # Start Apache in foreground
-CMD ["apache2-foreground"]
+CMD ["/bin/bash", "-c", "/usr/local/bin/deploy.sh && apache2-foreground"]
