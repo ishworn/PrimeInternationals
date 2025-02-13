@@ -1,35 +1,33 @@
-# Use PHP-FPM as the base image
-FROM php:8.2-fpm
+# Stage 1: Use the first image with SHA256 hash
+FROM sha256:088eea90c3d0a540ee5686e7d7471acbd4063b6e97eaf49b5e651665eb7f4dc7 AS stage1
+# Perform any specific operations related to this image, if needed
+# COPY your files or configure things based on this image
 
-# Install dependencies and PHP extensions
-RUN apt-get update && apt-get install -y \
-    libxml2-dev \
-    libonig-dev \
-    libzip-dev \
-    libpng-dev \
-    nginx \
-    zip \
-    unzip \
-    && docker-php-ext-install pdo_mysql mbstring xml zip gd
+# Stage 2: Use the second image with SHA256 hash
+FROM sha256:951d41308dedcee1ec253333e917cec73b4eefbc780add5ea16b30caa905250a AS stage2
+# Perform any specific operations related to this image, if needed
+# COPY your files or configure things based on this image
 
-# Set the working directory for the application
-WORKDIR /var/www/html
+# Stage 3: Use the third image with SHA256 hash
+FROM sha256:ecbdfabe0fc1ee8a254606062dbfede2b827a0b8724c9131e704a0c088338590 AS stage3
+# Perform any specific operations related to this image, if needed
+# COPY your files or configure things based on this image
 
-# Copy Laravel application files to the container
-COPY . .
+# Final Stage: Combine everything together from previous stages
+FROM ubuntu:20.04  # You can choose a base image for the final result
 
-# Install Composer and Laravel dependencies
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN composer install --optimize-autoloader --no-dev
+# Copy the necessary files from all the previous stages
+COPY --from=stage1 /path_from_stage1 /path_to_copy_to
+COPY --from=stage2 /path_from_stage2 /path_to_copy_to
+COPY --from=stage3 /path_from_stage3 /path_to_copy_to
 
-# Set permissions for Laravel storage and bootstrap/cache
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# Set up your environment if needed
+# Example: setting environment variables
+# ENV KEY=value
 
-# Copy your custom nginx.conf from the docker folder into the container's Nginx config directory
-COPY docker/nginx.conf /etc/nginx/nginx.conf
-
-# Expose ports
+# Expose any necessary ports
 EXPOSE 80
 
-# Start Nginx and PHP-FPM
-CMD service nginx start && php-fpm
+# Set the default command to run
+CMD ["php-fpm"]
+
