@@ -30,12 +30,12 @@ COPY docker/nginx.conf /etc/nginx/nginx.conf
 # Set permissions for Laravel storage and bootstrap/cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Copy deploy script from root folder to container
+# Copy deploy script to correct location
 COPY deploy.sh /usr/local/bin/deploy.sh
-RUN chmod +x /var/www/html/deploy.sh && /var/www/html/deploy.sh
+RUN chmod +x /usr/local/bin/deploy.sh
 
 # Expose port 80 for NGINX
 EXPOSE 80
 
-# Start NGINX, PHP-FPM, and run deploy script
-CMD ["sh", "-c", "/usr/local/bin/deploy.sh && service nginx start && php-fpm"]
+# Start NGINX, PHP-FPM, and execute deploy script
+CMD ["/bin/sh", "-c", "/usr/local/bin/deploy.sh && nginx -g 'daemon off;' & php-fpm -F"]
