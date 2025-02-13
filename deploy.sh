@@ -1,6 +1,6 @@
-#!/usr/bin/env bash
+#deploy
 
-echo "Running composer"
+echo "Running Composer..."
 composer install --no-dev --working-dir=/var/www/html
 
 echo "Caching config..."
