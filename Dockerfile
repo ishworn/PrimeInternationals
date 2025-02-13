@@ -24,7 +24,7 @@ COPY . .
 RUN composer install --optimize-autoloader --no-dev
 
 # Copy NGINX configuration
-COPY docker/nginx.conf /etc/nginx/nginx.conf
+COPY ./docker/nginx.conf /etc/nginx/nginx.conf
 
 # Set permissions for Laravel storage and bootstrap/cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
