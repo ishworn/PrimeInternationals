@@ -30,7 +30,7 @@ COPY docker/nginx.conf /etc/nginx/nginx.conf
 # Set permissions for Laravel storage and bootstrap/cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Copy deploy script
+# Copy deploy script from root folder to container
 COPY deploy.sh /usr/local/bin/deploy.sh
 RUN chmod +x /usr/local/bin/deploy.sh
 
