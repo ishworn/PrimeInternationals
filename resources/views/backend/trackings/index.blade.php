@@ -14,15 +14,7 @@
         </div>
         <!-- End page title -->
 
-        <div class="row">
-            <div class="col-12 mb-3">
-                <a href="{{ route('trackings.create') }}" class="btn btn-warning btn-rounded waves-effect waves-orange" 
-                   style="float:right; padding: 12px 20px; background-color: #FFA500; color: #fff; border: 2px solid #FFA500; 
-                          transition: all 0.3s ease-in-out; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-                    <i class="fas fa-plus-circle"></i> Add Tracking
-                </a>
-            </div>
-        </div>
+       
 
         <!-- Trackings Table -->
         <div class="row">
@@ -35,27 +27,31 @@
                             <thead class="bg-primary text-white">
                                 <tr>
                                     <th>Sl</th>
+                                    <th>Sender Name</th>
                                     <th>Tracking Number</th>
                                     <th>Receiver Name</th>
-                                    <th>Location</th>
+                                    <th> Receiver Location</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($trackings as $key => $tracking)
+                                @foreach($senders as $key => $sender)
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
-                                    <td>{{ $tracking->tracking_number }}</td>
-                                    <td>{{ $tracking->receiver_name }}</td>
-                                    <td>{{ $tracking->location }}</td>
+                                    <td>{{ $sender ->senderName }}</td>
+                                    <td>{{ $sender->trackingId ?? 'N/A' }}</td>
+                            
+                                    <td>{{ $sender->receiver->receiverName }}</td>
+                                    <td>{{ $sender->receiver->receiverCountry }}</td>
                                     <td class="d-flex justify-content-center">
-                                        <a href="{{ route('trackings.edit', $tracking->id) }}" 
+                                        <a href="{{ route('trackings.edit', $sender->id) }}" 
                                            class="btn btn-info btn-sm mx-1" title="Edit Data">
                                            <i class="fas fa-edit"></i>
                                         </a>
 
                                     </td>
                                 </tr>
+                         
                                 @endforeach
                             </tbody>
                         </table>

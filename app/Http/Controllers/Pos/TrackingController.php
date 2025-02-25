@@ -2,67 +2,55 @@
 namespace App\Http\Controllers\Pos;
 
 use App\Http\Controllers\Controller;
-use App\Models\Tracking;
+
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+
+use App\Models\Sender;
+use App\Mail\TrackingUpdated;
+use Illuminate\Support\Facades\Mail;
+
 
 class TrackingController extends Controller
 {
     // Display all trackings
+
+
     public function index()
     {
-        $trackings = Tracking::all(); // Fetch all tracking records
-        return view('backend.trackings.index', compact('trackings')); // Return the index view with tracking data
+    
+        $senders = Sender::with('receiver')
+                     ->whereNull('trackingId')  // Only select rows where trackingId is null
+                     ->get();
+  
+
+         // Fetch all tracking records
+        return view('backend.trackings.index', compact( 'senders' ,  )); // Return the index view with tracking data
     }
 
-    // Show form to create a new tracking record
-    public function create()
-    {
-        return view('backend.trackings.create'); // Create a form for adding a new tracking
-    }
-
-    // Store a new tracking record
-    public function store(Request $request)
-    {
-        // Validate the input data
-        $validated = $request->validate([
-            'tracking_number' => 'required|unique:trackings',
-            'receiver_name' => 'required',
-            'location' => 'required',
-        ]);
-
-        // Store the validated data in the database
-        Tracking::create($validated);
-
-        // Redirect to the index page after successful submission
-           return redirect()->route('trackings.index')->with('success', 'Tracking created successfully!');
-    }
+   
 
     // Show form to edit an existing tracking record
     public function edit($id)
     {
-        $tracking = Tracking::findOrFail($id); // Find the tracking record by ID
-        return view('backend.trackings.edit', compact('tracking')); // Return the edit view with the tracking data
+        $sender = Sender::with('receiver')->findOrFail($id); // Find the tracking record by ID
+    // dd($sender);
+        return view('backend.trackings.edit', compact('sender' )); // Return the edit view with the tracking data
     }
 
     // Update an existing tracking record
     public function update(Request $request, $id)
-    {
-        // Find the tracking record by ID
-        $tracking = Tracking::findOrFail($id);
-
+    {// Find the tracking record by ID
+        $sender = Sender::findOrFail($id);
+       
         // Validate the updated input data
-        $validated = $request->validate([
-            'tracking_number' => 'required|unique:trackings,tracking_number,' . $tracking->id,
-            'receiver_name' => 'required',
-            'location' => 'required',
-        ]);
-
+        $sender->trackingId = $request->input('tracking_number'); 
         // Update the tracking record in the database
-        $tracking->update($validated);
-
+        $sender->save();
+        Mail::to($sender->senderEmail)->send(new TrackingUpdated($sender, $sender->receiver));
+        Mail::to($sender->receiver->receiverEmail)->send(new TrackingUpdated($sender, $sender->receiver));
         // Redirect back to the index route after successful update
         return redirect()->route('trackings.index')->with('success', 'Tracking record updated!');
         
     }
+   
 }

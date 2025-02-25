@@ -58,24 +58,24 @@ style="font-size: 15px; display: inline-flex; align-items: center; text-decorati
                         <div id="invoice-content">
                             <thead>
                                 <tr>
-                                    <th colspan="8" class="border border-gray-300 p-2 text-center bg-gray-50 font-bold text-lg">
+                                    <th colspan="8" class="border border-black-800 p-2 text-center bg-gray-50 font-bold text-lg">
                                         INVOICE & PACKING LIST
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="3" class="border border-gray-300 p-2">
+                                    <td colspan="3" class="border border-black-800 p-2">
                                         <div>COUNTRY OF ORIGIN: NEPAL</div>
                                         <div>INVOICE DATE: {{$sender->created_at }}</div>
-                                        <div>INVOICE NO: {{ $invoice->number ?? 'INV-001' }}</div>
-                                        <div>TOTAL Box: {{ $invoice->total_boxes ?? '2' }}</div>
+                                        <div>INVOICE NO: {{ $sender->invoiceId ?? 'INV-001' }}</div>
+                                        <div>TOTAL BOXES: {{ $totalBoxes ?? '0' }}</div>
                                     </td>
-                                    <td colspan="4" class="border border-gray-300 p-2">
+                                    <td colspan="4" class="border border-black-800 p-2">
                                         @foreach($shipments as $shipment)
                                         <div>SHIPMENT VIA: {{ $shipment->shipment_via  }}</div>
                                         <div>ACTUAL WEIGHT: {{ $shipment->actual_weight }}</div>
-                                        <div>Dimension: {{ $shipment->dimension }}</div>
+                                        <div>DIMENSION: {{ $shipment->dimension }}</div>
                                         @endforeach
                                     </td>
                                 </tr>
@@ -83,7 +83,7 @@ style="font-size: 15px; display: inline-flex; align-items: center; text-decorati
                                 <tr>
                                     <td colspan="3" class="border border-gray-300 p-2">
                                         <div class="font-bold">SHIPPER</div>
-                                        <div>OM X. GLOBAL PVT. LTD. (TRADE NAME- PRIME GORKHA SER</div>
+                                        <div>OM X. GLOBAL PVT. LTD. (TRADE NAME- PRIME GORKHA LOGISTICS)</div>
                                         <div>Sender Name : {{ $sender->senderName }}
                                         </div>
                                         <div>PAN NO: 615794828</div>
@@ -91,7 +91,7 @@ style="font-size: 15px; display: inline-flex; align-items: center; text-decorati
                                         <div>Email: werep@primegorkha.com</div>
                                         <div>Phone: +977 9708072372</div>
                                     </td>
-                                    <td colspan="4" class="border border-gray-300 p-2">
+                                    <td colspan="4" class="border border-gray-300   p-2">
                                         <div class="font-bold">CONSIGNEE</div>
                                         @foreach($receivers as $receiver)
                                         <div>Name: {{ $receiver->receiverName }}</div> <!-- Adjust column name if needed -->

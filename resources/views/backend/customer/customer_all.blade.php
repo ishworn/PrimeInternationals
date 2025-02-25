@@ -2,6 +2,12 @@
 @section('admin')
 
 <div class="page-content">
+<a href="javascript:history.back()" class="btn btn-warning btn-rounded no-print" 
+style="font-size: 15px; display: inline-flex; align-items: center; text-decoration: none; 
+          background-color: #FFD700; color: black; padding: 10px 10px; border-radius: 5px; 
+          margin-bottom: 15px; margin-top: 5px; margin-left: 20px;">
+    <i class="fas fa-arrow-left" style="margin-right: 5px;"></i> Back
+</a>
     <div class="container-fluid">
         <!-- Start page title -->
         <div class="row">
@@ -14,7 +20,7 @@
         <div class="row">
             <div class="col-12 mb-3">
                 <a href="{{ route('customer.add') }}" class="btn btn-warning btn-rounded waves-effect waves-orange" 
-                   style="float:right; padding: 12px 20px; background-color: #FFA500; color: #ggg; border: 2px solid #FFA500; 
+                   style="float:right; padding: 12px 20px; background-color: #FFA500; color: #555; border: 2px solid #FFA500; 
                           transition: all 0.3s ease-in-out; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
                     <i class="fas fa-plus-circle"></i> Add Customer
                 </a>
@@ -35,7 +41,7 @@
                                     <th>Sender Name</th>
                                     <th>Invoice Id</th>
                                     <th>Sender Phone</th>
-                                    <th>Sender Email</th>
+                                    <th>Tracking Id</th>
                                     <th>Sender Address</th>
                                     <th>Actions</th>
                                 </tr>
@@ -47,7 +53,7 @@
                                     <td>{{ $item->senderName }}</td>
                                     <td>{{ $item->invoiceId }}</td>
                                     <td>{{ $item->senderPhone }}</td>
-                                    <td>{{ $item->senderEmail }}</td>
+                                    <td>{{ $item->trackingId ?? 'N/A' }}</td>
                                     <td>{{ $item->senderAddress }}</td>
                                     <td class="d-flex justify-content-center">
                                         <a href="{{ route('customer.edit', $item->id) }}" 
@@ -61,6 +67,10 @@
                                         <a href="{{ route('customer.preview', $item->id) }}" 
                                            class="btn btn-dark btn-sm mx-1" title="Preview">
                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ route('customer.addweight', $item->id) }}" 
+                                           class="btn btn-dark btn-sm mx-1" title="Preview">
+                                           <i class="fas fa-eye"> Add Weight</i>
                                         </a>
                                     </td>
                                 </tr>

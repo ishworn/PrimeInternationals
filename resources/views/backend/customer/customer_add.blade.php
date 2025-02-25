@@ -93,15 +93,24 @@
         cursor: pointer;
         border-radius: 4px;
     }
+
     .add-row-button:hover,
     .add-box-button:hover {
         background-color: #007B9E;
     }
+
+    .total-weight {
+        padding: 2px;
+        margin-top: 10px;
+        color: #333;
+    }
+
     .sender-receiver-container {
         display: flex;
         gap: 20px;
         margin-bottom: 20px;
     }
+
     .sender-receiver-container>div {
         flex: 1;
         border: 1px solid #ddd;
@@ -109,23 +118,28 @@
         border-radius: 5px;
         background-color: #fff;
     }
+
     .top-section {
         display: flex;
         gap: 20px;
         margin-bottom: 20px;
     }
+
     .top-section>div {
         flex: 1;
     }
+
     .box-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 10px;
     }
+
     .box-header button {
         margin-left: 10px;
     }
+
     .minimize-button,
     .delete-box-button,
     .delete-row-button {
@@ -136,20 +150,25 @@
         cursor: pointer;
         border-radius: 4px;
     }
+
     .minimize-button:hover,
     .delete-box-button:hover,
     .delete-row-button:hover {
         background-color: #cc0000;
     }
+
     @media (max-width: 768px) {
+
         th,
         td {
             padding: 8px;
             font-size: 14px;
         }
+
         .box-content {
             padding: 10px;
         }
+
         .add-row-button {
             font-size: 14px;
             padding: 8px 16px;
@@ -157,12 +176,12 @@
     }
 </style>
 <div class="page-content">
-<a href="javascript:history.back()" class="btn btn-warning"    
-   style="font-size: 15px; display: inline-flex; align-items: center; text-decoration: none; 
+    <a href="javascript:history.back()" class="btn btn-warning"
+        style="font-size: 15px; display: inline-flex; align-items: center; text-decoration: none; 
           background-color: #FFD700; color: black; padding: 10px 10px; border-radius: 5px; 
           margin-bottom: 10px; margin-top: 10px; margin-left: 10px;">
-    <i class="fas fa-arrow-left" style="margin-right: 5px;"></i> Back
-</a>
+        <i class="fas fa-arrow-left" style="margin-right: 5px;"></i> Back
+    </a>
 
     <div class="container-fluid">
         <div class="row">
@@ -197,24 +216,37 @@
                                 <!-- Sender Section -->
                                 <div id="senderForm" class="form-section">
                                     <h3>Sender Details</h3>
-                                    <div class="form-group">
-                                        <label>Sender Name:</label>
-                                        <input type="text" id='senderName' name="senderName" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Sender Phone:</label>
-                                        <input type="text" id='senderPhone' name="senderPhone" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Sender Email:</label>
-                                        <input type="email" id='senderEmail' name="senderEmail">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Sender Address:</label>
-                                        <input type="text" id='senderAddress' name="senderAddress" required>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Sender Name:</label>
+                                                <input type="text" id="senderName" name="senderName" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Sender Phone:</label>
+                                                <input type="text" id="senderPhone" name="senderPhone" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+
+                                            <div class="form-group">
+                                                <label>Sender Email:</label>
+                                                <input type="email" id="senderEmail" name="senderEmail">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Sender Address:</label>
+                                                <input type="text" id="senderAddress" name="senderAddress" required>
+                                            </div>
+                                        </div>
+
+
+
+
+
                                     </div>
                                 </div>
-                               
+
+
                                 <!-- Receiver Section -->
                                 <div id="receiverForm" class="form-section" style="display:none;">
                                     <h3>Receiver Details</h3>
@@ -233,11 +265,11 @@
                                                 <label>Receiver Email:</label>
                                                 <input type="email" name="receiverEmail" class="form-control">
                                             </div>
-                                            
+
                                         </div>
                                         <!-- Column 2 -->
                                         <div class="col-md-6">
-                                        <div class="form-group">
+                                            <div class="form-group">
                                                 <label>Postal Code:</label>
                                                 <input type="text" name="receiverPostalcode" class="form-control">
                                             </div>
@@ -262,10 +294,7 @@
                                                 <input type="text" name="shipment_via" class="form-control" required>
                                             </div>
                                             <!-- Actual Weight -->
-                                            <div class="col-12 col-md-6 mb-3">
-                                                <label for="actual_weight">Actual Weight (kg):</label>
-                                                <input type="number" step="0.01" name="actual_weight" class="form-control" required>
-                                            </div>
+                                            
                                             <!-- Invoice Date -->
                                             <div class="col-12 col-md-6 mb-3">
                                                 <label for="invoice_date">Invoice Date:</label>
@@ -366,19 +395,23 @@
                 </thead>
                 <tbody></tbody>
             </table>
-            </div>
-            <button type="button" class="add-row-button" onclick="addRow('${boxId}')">Add Item</button>
-        </div>
+         <div style="display: flex; align-items: center;">
+    <button type="button" class="add-row-button" onclick="addRow('${boxId}')">Add Item</button>
+
+</div>
+
     `;
         document.getElementById('boxContainer').appendChild(boxDiv);
         addRow(boxId); // Add the first row to the new box
         updateBoxNumbers();
     }
+
     function deleteBox(boxId) {
         boxes = boxes.filter(id => id !== boxId);
         document.querySelector(`[data-box-id="${boxId}"]`).remove();
         updateBoxNumbers();
     }
+
     function updateBoxNumbers() {
         document.querySelectorAll('.box-section').forEach((box, index) => {
             const boxNumberSpan = box.querySelector('.box-number');
@@ -395,6 +428,7 @@
             });
         });
     }
+
     function addRow(boxId) {
         const box = document.querySelector(`[data-box-id="${boxId}"]`);
         const tbody = box.querySelector('tbody');
@@ -426,12 +460,14 @@
         tbody.appendChild(row);
         updateRowNumbers(box);
     }
+
     function deleteRow(button) {
         const row = button.closest('tr');
         const tbody = row.parentElement;
         row.remove();
         updateRowNumbers(tbody.closest('.box-section'));
     }
+
     function updateRowNumbers(box) {
         const tbody = box.querySelector('tbody');
         tbody.querySelectorAll('tr').forEach((row, index) => {
@@ -446,6 +482,7 @@
             });
         });
     }
+
     function toggleMinimize(button) {
         const content = button.closest('.box-header').nextElementSibling;
         content.style.display = content.style.display === 'none' ? 'block' : 'none';

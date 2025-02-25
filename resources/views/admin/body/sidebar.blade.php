@@ -43,7 +43,10 @@
                      <li><a href="{{ route('trackings.index') }}">Manage Tracking</a></li>
                     </ul>
                    <ul class="sub-menu" aria-expanded="false">
-                     <li><a href="https://primegorkha.aftership.com">Track </a></li>
+                 
+                   <li><a href="https://primegorkha.aftership.com" onclick="window.open(this.href, '_blank'); return false;">Track</a></li>
+
+
                    </ul>
                 </li>
 

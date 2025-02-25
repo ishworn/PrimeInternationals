@@ -5,22 +5,27 @@ namespace App\Http\Controllers\Pos;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
-use App\Models\{Customer, Sender, Receiver, Box, Shipment, Item, Payment, PaymentDetail};
-use Auth;
-use Carbon\Carbon;
+use App\Models\{Sender, Receiver, Box, Shipment, Item,};
+
 use App\Exports\ExcelExport;
+
 
 class CustomerController extends Controller
 {
+
     public function CustomerAll()
     {
-        $senders = Sender::select('id', 'senderName', 'senderPhone', 'senderEmail', 'senderAddress')->get();
+        $senders = Sender::select('id', 'invoiceId', 'trackingId', 'senderName', 'senderPhone', 'senderEmail', 'senderAddress')->get();
         return view('backend.customer.customer_all', compact('senders'));
     }
 
     public function CustomerShow($id)
     {
         $sender = Sender::with(['boxes.items'])->findOrFail($id);
+
+        $totalBoxes = $sender->boxes()->count();
+
+
         $receivers = Receiver::where('sender_id', $id)->get();
         $shipments = Shipment::where('sender_id', $id)->get();
 
@@ -32,7 +37,7 @@ class CustomerController extends Controller
             return $box->items->sum('amount');
         });
 
-        return view('backend.customer.customer_preview', compact('sender', 'receivers', 'shipments', 'totalQuantity', 'grandTotal'));
+        return view('backend.customer.customer_preview', compact('sender', 'receivers', 'shipments', 'totalQuantity', 'grandTotal', 'totalBoxes'));
     }
 
     public function CustomerAdd()
@@ -75,6 +80,7 @@ class CustomerController extends Controller
     private function updateReceiver(Request $request)
     {
         $receiver = Receiver::find($request->id);
+
         if ($receiver) {
             $receiver->update([
                 'receiverName' => $request->receiverName,
@@ -106,11 +112,12 @@ class CustomerController extends Controller
             $box->items()->delete();
             $box->delete();
         });
-
+        $nextBoxNumber = 1;
         foreach ($request->boxes as $box_id => $box_data) {
             $box = Box::create([
                 'sender_id' => $sender->id,
-                'box_number' => 'Box' . ($box_id + 1),
+                'box_number' => 'Box' . $nextBoxNumber,
+                $nextBoxNumber++
             ]);
 
             foreach ($box_data['items'] as $item_data) {
@@ -141,10 +148,11 @@ class CustomerController extends Controller
 
     public function CustomerStore(Request $request)
     {
+        // dd($request);
         $validated = $request->validate([
             'boxes' => 'required|array',
         ]);
-
+        // dd($request);
         try {
             $sender = Sender::create([
                 'senderName' => $request->senderName,
@@ -152,6 +160,10 @@ class CustomerController extends Controller
                 'senderEmail' => $request->senderEmail,
                 'senderAddress' => $request->senderAddress,
             ]);
+            $sender->save();
+            $lastInvoice = Sender::max('invoiceId');
+            $sender->invoiceId = $lastInvoice ? $lastInvoice + 1 : 100;
+            $sender->save();
 
             Receiver::create([
                 'sender_id' => $sender->id,
@@ -166,7 +178,7 @@ class CustomerController extends Controller
             Shipment::create([
                 'sender_id' => $sender->id,
                 'shipment_via' => $request->shipment_via,
-                'actual_weight' => $request->actual_weight,
+                // 'actual_weight' => $request->actual_weight,
                 'invoice_date' => $request->invoice_date,
                 'dimension' => $request->dimension,
             ]);
@@ -182,15 +194,24 @@ class CustomerController extends Controller
     private function createBoxesAndItems($sender, $boxes)
     {
         foreach ($boxes as $index => $boxData) {
-            $box = Box::create([
-                'sender_id' => $sender->id,
-                'box_number' => 'Box' . ($index + 1),
-            ]);
+
+            // dd($boxData);
+            try {
+                $box = Box::create([
+                    'sender_id' => $sender->id,
+                    'box_number' => 'Box' . ($index + 1),
+                    // 'box_weight' => $boxData['totalWeight'],
+                ]);
+            } catch (\Exception $e) {
+                // Return the exact error message from the exception
+                return redirect()->route('customer.all')->with('error', $e->getMessage());
+            }
+
 
             foreach ($boxData['items'] as $itemData) {
                 Item::create([
                     'box_id' => $box->id,
-                    'sender_id' => $box->sender_id,
+
                     'item' => $itemData['item'],
                     'hs_code' => $itemData['hs_code'],
                     'quantity' => $itemData['quantity'],
@@ -204,10 +225,12 @@ class CustomerController extends Controller
     public function exportToExcel($id)
     {
         $sender = Sender::with(['boxes.items'])->findOrFail($id);
+        $totalBoxes = $sender->boxes()->count();
+
         $receivers = Receiver::where('sender_id', $id)->get();
         $shipments = Shipment::where('sender_id', $id)->get();
 
-        return Excel::download(new ExcelExport($sender, $shipments, $receivers), 'invoice.xlsx');
+        return Excel::download(new ExcelExport($sender, $shipments, $receivers, $totalBoxes), 'invoice.xlsx');
     }
 
     public function printInvoice($id)
@@ -219,4 +242,36 @@ class CustomerController extends Controller
         return view('backend.customer.print', compact('sender', 'shipments', 'receivers'));
     }
 
+    public function addweight($id)
+    {
+        $sender = Sender::with(['boxes.items'])->findOrFail($id);
+        $receivers = Receiver::where('sender_id', $id)->get();
+        $shipments = Shipment::where('sender_id', $id)->get();
+        return view('backend.customer.customer_addweight', compact('sender', 'shipments', 'receivers'));
+    }
+
+    public function CustomerUpdateWeight(Request $request  )
+    {
+        $totalWeight = 0;
+        foreach ($request->boxes as $boxId => $boxData) {
+            // Find the box by its ID
+            $box = Box::findOrFail($boxId);
+            // Update the box weight
+            $box->box_weight = $boxData['weight'];
+            $totalWeight += $boxData['weight'];
+            // Save the updated box data to the database
+            $box->save();
+        }
+        $sender_id = $request->id;
+        $shipments = Shipment::where('sender_id', $sender_id)->get();
+
+        foreach ($shipments as $shipment) {
+          
+            $shipment->update([
+                'actual_weight' => $totalWeight,
+            ]);
+        }
+        // Redirect with success message
+        return redirect()->route('customer.all')->with('success', 'Box weights updated successfully.');
+    }
 }

@@ -17,6 +17,8 @@ class Sender extends Model
         'senderPhone',
         'senderEmail',
         'senderAddress',
+   
+        'trackingId',
 
     ];
 
@@ -28,5 +30,13 @@ class Sender extends Model
     }
     public function shipment() {
         return $this->hasOne(Shipment::class);
+    }
+
+    protected static function booted()
+    {
+        static::creating(function ($model) {
+            $lastInvoice = static::max('invoiceId');
+            $model->invoiceId = $lastInvoice ? $lastInvoice + 1 : 100;
+        });
     }
 }

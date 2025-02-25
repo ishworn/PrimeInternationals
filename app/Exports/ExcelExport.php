@@ -16,13 +16,16 @@ class ExcelExport implements FromCollection, WithHeadings, WithEvents
     private $receivers;
     private $totalQuantity = 0;
     private $grandTotal = 0;
+    private $totalBoxes;
+    
     // private $totalQuantity;
     // private $grandTotal;
-    public function __construct($sender, $shipments, $receivers )
+    public function __construct($sender, $shipments, $receivers , $totalBoxes)
     {
         $this->sender = $sender;
         $this->shipments = $shipments;
         $this->receivers = $receivers;
+        $this->totalBoxes = $totalBoxes;
         // $this->totalQuantity = $totalQuantity;
         // $this->$grandTotal = $grandTotal;
     }
@@ -175,7 +178,7 @@ class ExcelExport implements FromCollection, WithHeadings, WithEvents
                 // Add static details for sender and consignee
                 $sheet->setCellValue('A2', 'COUNTRY OF ORIGIN: NEPAL');
                 $sheet->setCellValue('A3', 'INVOICE DATE: ' .  ($shipment ? $shipment->invoice_date : 'N/A'));
-                $sheet->setCellValue('A4', 'INVOICE NO: INV12345');
+                $sheet->setCellValue('A4', 'INVOICE NO: ' .  $this->sender->invoice_no ) ;
                 $sheet->setCellValue('A5', 'SHIPMENT VIA: ' . ($shipment ? $shipment->shipment_via : 'N/A'));
                 $sheet->setCellValue('A6', 'SHIPPER');
                 $sheet->setCellValue('A7', 'OM X. GLOBAL PVT. LTD. (TRADE NAME- PRIME GORKHA SERVICES)');
@@ -186,7 +189,7 @@ class ExcelExport implements FromCollection, WithHeadings, WithEvents
                 $sheet->setCellValue('A12', 'Email: ' . $this->sender->senderEmail);
                 $sheet->setCellValue('A13', 'Phone: ' . $this->sender->senderPhone);
                 $sheet->setCellValue('D2', 'ACTUAL  WEIGHT : ' .  ($shipment ? $shipment->actual_weight : 'N/A'));
-                // $sheet->setCellValue('D3', 'TOTAL Box :' . $this->receivers->receiverName);
+                $sheet->setCellValue('D3', 'TOTAL Box :' . $this->totalBoxes);
                 $sheet->setCellValue('D4', 'Dimension: ' . ($shipment ? $shipment->dimension : 'N/A'));
                 $sheet->setCellValue('D6', 'CONSIGNEE');
                 $sheet->setCellValue('D7', 'Name: ' . ($receiver ? $receiver->receiverName : 'N/A'));

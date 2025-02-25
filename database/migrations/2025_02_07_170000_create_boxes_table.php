@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('box_number', 11);  // Remove global unique constraint
             $table->foreignId('sender_id')->constrained()->onDelete('cascade');
+            $table->decimal('box_weight', 8, 2)->nullable(); // Add box_weight column with decimal type
             $table->timestamps(0);
         
             // Ensure (sender_id, box_number) combination is unique
