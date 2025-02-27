@@ -18,7 +18,7 @@ return new class extends Migration
             $table->id();  // Auto-incrementing 'id' field (Primary Key)
             $table->string('senderName');
             $table->string('senderPhone');
-            $table->string('senderEmail')->unique();  // Unique constraint for senderEmail
+            $table->string('senderEmail');  // Unique constraint for senderEmail
             $table->text('senderAddress');
             $table->text('trackingId')->nullable();  // Keeping trackingId as a nullable field for now
             $table->unsignedBigInteger('invoiceId')->nullable();  // Keeping invoiceId as a nullable field for now

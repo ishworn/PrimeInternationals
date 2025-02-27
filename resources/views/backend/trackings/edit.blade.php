@@ -31,13 +31,13 @@
                                 <!-- Sender Name -->
                                 <div class="form-group col-md-6">
                                     <label for="receiver_name" style="font-size: 16px;">Sender Name:</label>
-                                    <input type="text" name="receiver_name" value="{{ $sender->senderName }}" class="form-control" required placeholder="Enter Sender Name" style="font-size: 16px; padding: 10px;">
+                                    <input type="text" name="receiver_name" value="{{ $sender->senderName }}" class="form-control" required placeholder=" Sender Name"  readonly style="font-size: 16px; padding: 10px;">
                                 </div>
 
                                 <!-- Receiver Name -->
                                 <div class="form-group col-md-6">
                                     <label for="receiver_name" style="font-size: 16px;">Receiver Name:</label>
-                                    <input type="text" name="receiver_name" value="{{ $sender->receiver->receiverName }}" class="form-control" required placeholder="Enter Receiver Name" style="font-size: 16px; padding: 10px;">
+                                    <input type="text" name="receiver_name" value="{{ $sender->receiver->receiverName }}" class="form-control" required placeholder=" Receiver Name" readonly style="font-size: 16px; padding: 10px;">
                                 </div>
                             </div>
 
@@ -45,7 +45,7 @@
                                 <!-- Receiver Location -->
                                 <div class="form-group col-md-6">
                                     <label for="location" style="font-size: 16px;">Receiver Location:</label>
-                                    <input type="text" name="location" value="{{ $sender->receiver->receiverCountry }}" class="form-control" required placeholder="Enter Location" style="font-size: 16px; padding: 10px;">
+                                    <input type="text" name="location" value="{{ $sender->receiver->receiverCountry }}" class="form-control" required placeholder=" Location" readonly style="font-size: 16px; padding: 10px;">
                                 </div>
 
                                 <!-- Tracking Number -->
