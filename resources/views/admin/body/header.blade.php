@@ -5,20 +5,20 @@
               <div class="navbar-brand-box">
                   <a href="index.html" class="logo logo-dark">
                       <span class="logo-sm">
-                      <img src="{{ asset('backend/assets/images/primegurkha.jpg') }}" alt="logo-dark" height="22">
+                      <img src="{{ asset('backend/assets/images/hello.png') }}" alt="logo-dark" height="60">
                       </span>
                       <span class="logo-lg">
-                      <img src="{{ asset('backend/assets/images/primegurkha.jpg') }}" alt="logo-dark" height="22">
+                      <img src="{{ asset('backend/assets/images/hello.png') }}" alt="logo-dark" height="60">
                       </span>
                   </a>
 
                   <a href="index.html" class="logo logo-light">
                       <span class="logo-sm">
-                      <img src="{{ asset('backend/assets/images/primegurkha.jpg') }}" alt="logo-dark" height="22">
+                      <img src="{{ asset('backend/assets/images/hello.png') }}" alt="logo-dark" height="60">
                       </span>
                       <span class="logo-lg">
 
-                      <img src="{{ asset('backend/assets/images/primegurkha.jpg') }}" alt="logo-dark" height="22">
+                      <img src="{{ asset('backend/assets/images/hello.png') }}" alt="logo-dark" height="60">
                       </span>
                   </a>
               </div>
