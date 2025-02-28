@@ -57,81 +57,140 @@ class CustomerController extends Controller
 
     public function CustomerUpdate(Request $request)
     {
-        $sender = Sender::findOrFail($request->id);
+        try {
 
-        $sender->update([
-            'senderName' => $request->senderName,
-            'senderPhone' => $request->senderPhone,
-            'senderEmail' => $request->senderEmail,
-            'senderAddress' => $request->senderAddress,
-        ]);
 
-        $this->updateReceiver($request);
-        $this->updateShipment($request);
+            $sender = Sender::findOrFail($request->id);
+
+            $sender->update([
+                'senderName' => $request->senderName,
+                'senderPhone' => $request->senderPhone,
+                'senderEmail' => $request->senderEmail,
+                'senderAddress' => $request->senderAddress,
+            ]);
+
+            $this->updateReceiver($request);
+            $this->updateShipment($request);
+        } catch (\Exception $e) {
+            return redirect()->route('customer.all')->with('error', 'An error occurred: ' . $e->getMessage());
+        }
 
         try {
             $this->updateBoxesAndItems($sender, $request);
             return redirect()->route('customer.all')->with('success', 'Data updated successfully.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'An error occurred while updating the data.');
+            return redirect()->route('customer.all')->with('error', 'An error occurred: ' . $e->getMessage());
         }
     }
 
     private function updateReceiver(Request $request)
     {
-        $receiver = Receiver::find($request->id);
+        try {
+            $receiver = Receiver::find($request->id);
 
-        if ($receiver) {
-            $receiver->update([
-                'receiverName' => $request->receiverName,
-                'receiverPhone' => $request->receiverPhone,
-                'receiverEmail' => $request->receiverEmail,
-                'receiverPostalcode' => $request->receiverPostalcode,
-                'receiverCountry' => $request->receiverCountry,
-                'receiverAddress' => $request->receiverAddress,
-            ]);
+            if ($receiver) {
+                $receiver->update([
+                    'receiverName' => $request->receiverName,
+                    'receiverPhone' => $request->receiverPhone,
+                    'receiverEmail' => $request->receiverEmail,
+                    'receiverPostalcode' => $request->receiverPostalcode,
+                    'receiverCountry' => $request->receiverCountry,
+                    'receiverAddress' => $request->receiverAddress,
+                ]);
+            }
+        } catch (\Exception $e) {
+            return redirect()->route('customer.all')->with('error', 'An error occurred: ' . $e->getMessage());
         }
     }
 
     private function updateShipment(Request $request)
     {
-        $shipment = Shipment::find($request->id);
-        if ($shipment) {
-            $shipment->update([
-                'shipment_via' => $request->shipment_via,
-                'actual_weight' => $request->actual_weight,
-                'invoice_date' => $request->invoice_date,
-                'dimension' => $request->dimension,
-            ]);
+        try {
+            $shipment = Shipment::find($request->id);
+            if ($shipment) {
+                $shipment->update([
+                    'shipment_via' => $request->shipment_via,
+                    'actual_weight' => $request->actual_weight,
+                    'invoice_date' => $request->invoice_date,
+                    'dimension' => $request->dimension,
+                ]);
+            }
+        } catch (\Exception $e) {
+            return redirect()->route('customer.all')->with('error', 'An error occurred: ' . $e->getMessage());
         }
     }
 
     private function updateBoxesAndItems($sender, Request $request)
     {
-        $sender->boxes()->each(function ($box) {
-            $box->items()->delete();
-            $box->delete();
-        });
-        $nextBoxNumber = 1;
-        foreach ($request->boxes as $box_id => $box_data) {
-            $box = Box::create([
-                'sender_id' => $sender->id,
-                'box_number' => 'Box' . $nextBoxNumber,
-                $nextBoxNumber++
-            ]);
+        try {
+            // Initialize an array to store the data of the deleted boxes
+            $deletedBoxes = [];
 
-            foreach ($box_data['items'] as $item_data) {
-                Item::create([
-                    'box_id' => $box->id,
-                    'item' => $item_data['item'],
-                    'hs_code' => $item_data['hs_code'],
-                    'quantity' => $item_data['quantity'],
-                    'unit_rate' => $item_data['unit_rate'],
-                    'amount' => $item_data['amount'],
-                ]);
+            $sender->boxes()->each(function ($box) use (&$deletedBoxes) {
+                // Store the box data (weight and dimension) before deletion
+                $deletedBoxes[$box->id] = [
+                    'box_weight' => $box->box_weight,   // Store the weight of the box
+                    'dimension' => $box->box_dimension, // Store the dimension of the box (example format: 12*12*12)
+                ];
+            
+                // Delete the items related to the box
+                $box->items()->delete();
+            
+                // Delete the box itself
+                $box->delete();
+            });
+            // dd($deletedBoxes);
+            $nextBoxNumber = 1;  // Initialize box number counter
+
+            // Loop through the new box data from the request
+            foreach ($request->boxes as $box_id => $box_data) {
+                // If there is a previously deleted box data available for this box_id, use it
+                if (isset($deletedBoxes[$box_id])) {
+                    $deletedBoxData = $deletedBoxes[$box_id ];
+                      // Assuming box_id starts from 1 and array is 0-indexed
+                    //   dd($deletedBoxData);
+
+                    // Create a new box with the required details
+                    try{
+                    $box = Box::create([
+                        'sender_id' => $sender->id,
+                        'box_number' => 'Box' . $nextBoxNumber,  // Set the box number (Box1, Box2, etc.)
+                        'box_weight' => $deletedBoxData['box_weight'],  // Use the stored weight from deleted box
+                        'box_dimension' => $deletedBoxData['dimension'],  // Use the stored dimension from deleted box
+                    ]);
+                    
+                    }catch (\Exception $e) {
+                        return redirect()->route('customer.all')->with('error', 'An error occurred: ' . $e->getMessage());
+                    }
+                } else {
+                    // If this is a new box (no previous data to retrieve)
+                    $box = Box::create([
+                        'sender_id' => $sender->id,
+                        'box_number' => 'Box' . $nextBoxNumber,  // Set the box number (Box1, Box2, etc.)
+                
+                    ]);
+                }
+                // Increment the box number for the next iteration
+                $nextBoxNumber++;
+
+                foreach ($box_data['items'] as $item_data) {
+                    Item::create([
+                        'box_id' => $box->id,
+                        'item' => $item_data['item'],
+                        'hs_code' => $item_data['hs_code'],
+                        'quantity' => $item_data['quantity'],
+                        'unit_rate' => $item_data['unit_rate'],
+                        'amount' => $item_data['amount'],
+                    ]);
+                }
             }
+        } catch (\Exception $e) {
+            return redirect()->route('customer.all')->with('error', 'An error occurred: ' . $e->getMessage());
         }
     }
+
+
+
 
     public function CustomerDelete($id)
     {
@@ -151,13 +210,14 @@ class CustomerController extends Controller
         // dd($request);
         $validated = $request->validate([
             'boxes' => 'required|array',
+            'senderEmail' => 'nullable|email',
         ]);
         // dd($request);
         try {
             $sender = Sender::create([
                 'senderName' => $request->senderName,
                 'senderPhone' => $request->senderPhone,
-                'senderEmail' => $request->senderEmail,
+                'senderEmail' => $request->senderEmail ?? null,
                 'senderAddress' => $request->senderAddress,
             ]);
             $sender->save();
@@ -169,7 +229,7 @@ class CustomerController extends Controller
                 'sender_id' => $sender->id,
                 'receiverName' => $request->receiverName,
                 'receiverPhone' => $request->receiverPhone,
-                'receiverEmail' => $request->receiverEmail,
+                'receiverEmail' => $request->receiverEmail ?? null,
                 'receiverAddress' => $request->receiverAddress,
                 'receiverPostalcode' => $request->receiverPostalcode,
                 'receiverCountry' => $request->receiverCountry,
@@ -180,14 +240,14 @@ class CustomerController extends Controller
                 'shipment_via' => $request->shipment_via,
                 // 'actual_weight' => $request->actual_weight,
                 'invoice_date' => $request->invoice_date,
-                'dimension' => $request->dimension,
+                'dimension' => $request->dimension ?? null,
             ]);
 
             $this->createBoxesAndItems($sender, $validated['boxes']);
 
             return redirect()->route('customer.all')->with('success', 'Data saved successfully.');
         } catch (\Exception $e) {
-            return redirect()->route('customer.all')->with('error', 'An error occurred while saving the data.');
+            return redirect()->route('customer.all')->with('error', 'An error occurred: ' . $e->getMessage());
         }
     }
 
@@ -213,9 +273,9 @@ class CustomerController extends Controller
                     'box_id' => $box->id,
 
                     'item' => $itemData['item'],
-                    'hs_code' => $itemData['hs_code'],
+                    'hs_code' => $itemData['hs_code'] ?? null,
                     'quantity' => $itemData['quantity'],
-                    'unit_rate' => $itemData['unit_rate'],
+                    'unit_rate' => $itemData['unit_rate'] ?? null,
                     'amount' => $itemData['amount'],
                 ]);
             }
@@ -250,27 +310,46 @@ class CustomerController extends Controller
         return view('backend.customer.customer_addweight', compact('sender', 'shipments', 'receivers'));
     }
 
-    public function CustomerUpdateWeight(Request $request  )
+    public function CustomerUpdateWeight(Request $request)
     {
         $totalWeight = 0;
+        $totaldime = 0;
+        $weightDetails = ''; // String to store each box's weight in the desired format
+        $dime = '';
+
         foreach ($request->boxes as $boxId => $boxData) {
             // Find the box by its ID
             $box = Box::findOrFail($boxId);
             // Update the box weight
             $box->box_weight = $boxData['weight'];
+            $box->box_dimension = $boxData['dimension'];
             $totalWeight += $boxData['weight'];
+
+            // Add this box's weight to the string
+            $weightDetails .= "{$box['box_number']}: {$boxData['weight']} Kg, ";
+            $dime .= "{$box['box_number']}: {$boxData['dimension']}, ";
+
             // Save the updated box data to the database
             $box->save();
         }
+        // Append the total weight to the string
+
+        $weightDetails .= "= Total Weight: {$totalWeight} Kg";
+
+        // Update the actual_weight field in the shipments table
+
+
+
         $sender_id = $request->id;
         $shipments = Shipment::where('sender_id', $sender_id)->get();
-
         foreach ($shipments as $shipment) {
-          
             $shipment->update([
-                'actual_weight' => $totalWeight,
+                'actual_weight' => $weightDetails,  // Store the formatted string
+                'dimension' => $dime,
             ]);
         }
+
+
         // Redirect with success message
         return redirect()->route('customer.all')->with('success', 'Box weights updated successfully.');
     }

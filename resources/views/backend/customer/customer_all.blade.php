@@ -1,7 +1,16 @@
 @extends('admin.admin_master')
 @section('admin')
 
+
+
 <div class="page-content">
+
+
+@if (session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
 <a href="javascript:history.back()" class="btn btn-warning btn-rounded no-print" 
 style="font-size: 15px; display: inline-flex; align-items: center; text-decoration: none; 
           background-color: #FFD700; color: black; padding: 10px 10px; border-radius: 5px; 
@@ -69,8 +78,8 @@ style="font-size: 15px; display: inline-flex; align-items: center; text-decorati
                                            <i class="fas fa-eye"></i>
                                         </a>
                                         <a href="{{ route('customer.addweight', $item->id) }}" 
-                                           class="btn btn-dark btn-sm mx-1" title="Preview">
-                                           <i class="fas fa-eye"> Add Weight</i>
+                                           class="btn btn-warning btn-sm mx-1" title="Preview">
+                                           <i class="fas fa-weight"></i>
                                         </a>
                                     </td>
                                 </tr>

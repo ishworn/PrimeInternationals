@@ -17,6 +17,7 @@ class Box extends Model
 'sender_id',
 'box_number',
 'box_weight',
+'box_dimension',
 
 
     ];

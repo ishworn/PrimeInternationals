@@ -275,7 +275,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label>Country:</label>
-                                                <input type="text" name="receiverCountry" required class="form-control">
+                                                <input type="text" name="receiverCountry" class="form-control">
                                             </div>
                                             <div class="form-group">
                                                 <label>Address:</label>
@@ -303,7 +303,7 @@
                                             <!-- Dimension -->
                                             <div class="col-12 col-md-6 mb-3">
                                                 <label for="dimension">Dimension (LxWxH):</label>
-                                                <input type="text" name="dimension" class="form-control" required>
+                                                <input type="text" name="dimension" class="form-control" >
                                             </div>
                                         </div>
                                         <!-- Box Container Section -->
@@ -441,7 +441,7 @@
         <td><input type="text" name="boxes[${boxId}][items][${rowIndex}][item]" required class="form-control"></td>
         <td><input type="text" name="boxes[${boxId}][items][${rowIndex}][hs_code]" class="form-control"></td>
         <td><input type="number" name="boxes[${boxId}][items][${rowIndex}][quantity]" required class="form-control"></td>
-        <td><input type="number" name="boxes[${boxId}][items][${rowIndex}][unit_rate]" required class="form-control"></td>
+        <td><input type="number" name="boxes[${boxId}][items][${rowIndex}][unit_rate]"  class="form-control"></td>
         <td><input type="number" name="boxes[${boxId}][items][${rowIndex}][amount]" readonly class="form-control"></td>
         <td><button type="button" class="delete-row-button btn btn-danger" onclick="deleteRow(this)">×</button></td>
            

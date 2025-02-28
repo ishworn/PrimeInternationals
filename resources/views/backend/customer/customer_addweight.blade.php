@@ -35,6 +35,7 @@ style="font-size: 15px; display: inline-flex; align-items: center; text-decorati
                 <tr>
                     <th class="px-4 py-2 text-left bg-gray-100">Box Number</th>
                     <th class="px-4 py-2 text-left bg-gray-100">Box Weight</th>
+                    <th class="px-4 py-2 text-left bg-gray-100">Box Dimensions</th>
                 </tr>
             </thead>
             <tbody>
@@ -42,8 +43,12 @@ style="font-size: 15px; display: inline-flex; align-items: center; text-decorati
                     <tr>
                         <td class="px-4 py-2 border-b">{{ $box->box_number }}</td>
                         <td class="px-4 py-2 border-b">
-                            <input type="number" name="boxes[{{ $box->id }}][weight]" step="0.01" class="form-input px-3 py-2 border border-gray-300 rounded-md" placeholder="Enter weight" required>
+                            <input type="number" name="boxes[{{ $box->id }}][weight]" step="0.01" value="{{ $box->box_weight }}" class="form-input px-3 py-2 border border-gray-300 rounded-md" placeholder="Enter weight" required>
                         </td>
+                        <td class="px-4 py-2 border-b">
+                            <input type="string" name="boxes[{{ $box->id }}][dimension]" value="{{ $box->box_dimension }}"  class="form-input px-3 py-2 border border-gray-300 rounded-md" placeholder="Enter dimensions" required>
+                        </td>
+
                     </tr>
                 @endforeach
             </tbody>

@@ -210,7 +210,7 @@
 
                                     <div class="form-group">
                                         <label>Sender Id:</label>
-                                        <input type="text" id='id' value="{{ $sender->id }}" name="id" required>
+                                        <input type="text" id='id' value="{{ $sender->id }}" name="id" readonly required>
                                     </div>
 
                                     <div class="form-group">
@@ -285,7 +285,7 @@
                                             <!-- Actual Weight -->
                                             <div class="col-12 col-md-6 mb-3">
                                                 <label for="actual_weight">Actual Weight (kg):</label>
-                                                <input type="number" step="0.01" name="actual_weight" value="{{ $shipment  ->actual_weight }}" class="form-control" required>
+                                                <input type="string" name="actual_weight" value="{{ $shipment->actual_weight }}" class="form-control" >
                                             </div>
                                             <!-- Invoice Date -->
                                             <div class="col-12 col-md-6 mb-3">
@@ -295,7 +295,7 @@
                                             <!-- Dimension -->
                                             <div class="col-12 col-md-6 mb-3">
                                                 <label for="dimension">Dimension (LxWxH):</label>
-                                                <input type="text" name="dimension" value="{{ $shipment  ->dimension }}" class="form-control" required>
+                                                <input type="text" name="dimension" value="{{ $shipment  ->dimension }}" class="form-control" >
                                             </div>
                                         </div>
                                         <div id="boxContainer">
@@ -327,7 +327,7 @@
                                                                     <td><input type="text" name="boxes[{{ $box->id }}][items][{{ $loop->index }}][item]" value="{{ $item->item }}" required class="form-control"></td>
                                                                     <td><input type="text" name="boxes[{{ $box->id }}][items][{{ $loop->index }}][hs_code]" value="{{ $item->hs_code }}" class="form-control"></td>
                                                                     <td><input type="number" name="boxes[{{ $box->id }}][items][{{ $loop->index }}][quantity]" value="{{ $item->quantity }}" required class="form-control"></td>
-                                                                    <td><input type="number" name="boxes[{{ $box->id }}][items][{{ $loop->index }}][unit_rate]" value="{{ $item->unit_rate }}" required class="form-control"></td>
+                                                                    <td><input type="number" name="boxes[{{ $box->id }}][items][{{ $loop->index }}][unit_rate]" value="{{ $item->unit_rate }}"  class="form-control"></td>
                                                                     <td><input type="number" name="boxes[{{ $box->id }}][items][{{ $loop->index }}][amount]" value="{{ $item->amount }}" readonly class="form-control"></td>
                                                                     <td><button type="button" class="delete-row-button btn btn-danger" onclick="deleteRow(this)">×</button></td>
                                                                 </tr>
@@ -475,7 +475,7 @@
         <td><input type="text" name="boxes[${boxId}][items][${rowIndex}][item]" required class="form-control"></td>
         <td><input type="text" name="boxes[${boxId}][items][${rowIndex}][hs_code]" class="form-control"></td>
         <td><input type="number" name="boxes[${boxId}][items][${rowIndex}][quantity]" required class="form-control"></td>
-        <td><input type="number" name="boxes[${boxId}][items][${rowIndex}][unit_rate]" required class="form-control"></td>
+        <td><input type="number" name="boxes[${boxId}][items][${rowIndex}][unit_rate]"  class="form-control"></td>
         <td><input type="number" name="boxes[${boxId}][items][${rowIndex}][amount]" readonly class="form-control"></td>
         <td><button type="button" class="delete-row-button btn btn-danger" onclick="deleteRow(this)">×</button></td> `;
         // Add calculation logic
