@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('item');
             $table->string('hs_code')->nullable();
             $table->integer('quantity');
-            $table->decimal('unit_rate', 10, 2);
-            $table->decimal('amount', 10, 2);
+            $table->decimal('unit_rate', 10, 2)->nullable();
+            $table->decimal('amount', 10, 2)->nullable();
             $table->timestamps(0);
         });
         

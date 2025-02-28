@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreign('sender_id')->references('id')->on('senders')->onDelete('cascade');
             $table->string('receiverName');
             $table->string('receiverPhone');
-            $table->string('receiverEmail');
+            $table->string('receiverEmail')->nullable();
             $table->string('receiverPostalcode');
             $table->string('receiverCountry');
             $table->text('receiverAddress');
