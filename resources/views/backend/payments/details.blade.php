@@ -3,7 +3,7 @@
 @section('admin')
 
 <div class="page-content">
-@if (session('error'))
+    @if (session('error'))
     <div class="alert alert-danger">
         {{ session('error') }}
     </div>
@@ -19,59 +19,65 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0" style="font-size: 24px; font-weight: bold;">Trackings List</h4>
+                    <h4 class="mb-sm-0" style="font-size: 24px; font-weight: bold;">Payment Details</h4>
                 </div>
             </div>
         </div>
         <!-- End page title -->
-
-       
 
         <!-- Trackings Table -->
         <div class="row">
             <div class="col-12">
                 <div class="card shadow-lg">
                     <div class="card-body">
-                        <h4 class="card-title mb-4" style="font-size: 22px; font-weight: bold;"></h4>
+                        <h4 class="card-title mb-4" style="font-size: 22px; font-weight: bold;">Today's Income Summary</h4>
 
-                        <table id="datatable" class="table table-bordered dt-responsive nowrap" style="width: 100%;">
+                        <!-- Table to Display Today's Income -->
+                        <table class="table table-bordered">
                             <thead class="bg-primary text-white">
                                 <tr>
-                                    <th>Sl</th>
-                                    <th>Sender Name</th>
-                                    <th>Tracking Number</th>
-                                    <th>Receiver Name</th>
-                                    <th> Receiver Location</th>
-                                    <th>Actions</th>
+                                    <th>Payment Method</th>
+                                    <th>Total Income</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($senders as $key => $sender)
-                                <tr>
-                                    <td>{{ $key + 1 }}</td>
-                                    <td>{{ $sender ->senderName }}</td>
-                                    <td>{{ $sender->trackingId ?? 'N/A' }}</td>
-                            
-                                    <td>{{ $sender->receiver->receiverName }}</td>
-                                    <td>{{ $sender->receiver->receiverCountry }}</td>
-                                    <td class="d-flex justify-content-center">
-                                        <a href="{{ route('trackings.edit', $sender->id) }}" 
-                                           class="btn btn-info btn-sm mx-1" title="Edit Data">
-                                           <i class="fas fa-edit"></i>
-                                        </a>
+                                @php
+                                    $totalCash = 0;
+                                    $totalBankTransfer = 0;
+                                @endphp
 
-                                    </td>
-                                </tr>
-                         
+                                <!-- Loop through payments and calculate totals -->
+                                @foreach($payments as $payment)
+                                    @if($payment->payment_method === 'Cash')
+                                        @php $totalCash += $payment->amount; @endphp
+                                    @elseif($payment->payment_method === 'Bank Transfer')
+                                        @php $totalBankTransfer += $payment->amount; @endphp
+                                    @endif
                                 @endforeach
+
+                                <!-- Display Cash Total -->
+                                <tr>
+                                    <td>Cash</td>
+                                    <td>{{ number_format($totalCash, 2) }}</td>
+                                </tr>
+
+                                <!-- Display Bank Transfer Total -->
+                                <tr>
+                                    <td>Bank Transfer</td>
+                                    <td>{{ number_format($totalBankTransfer, 2) }}</td>
+                                </tr>
+
+                                <!-- Display Grand Total -->
+                                <tr class="bg-light">
+                                    <td><strong>Grand Total</strong></td>
+                                    <td><strong>{{ number_format($totalCash + $totalBankTransfer, 2) }}</strong></td>
+                                </tr>
                             </tbody>
                         </table>
-
                     </div>
                 </div>
             </div> <!-- End col -->
         </div> <!-- End row -->
-
     </div> <!-- container-fluid -->
 </div>
 
@@ -110,9 +116,10 @@
     table td {
         vertical-align: middle;
     }
+
+    .bg-light {
+        background-color: #f8f9fa;
+    }
 </style>
 
 @endsection
-
-
-

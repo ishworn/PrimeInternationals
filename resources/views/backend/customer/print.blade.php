@@ -36,49 +36,45 @@ style="font-size: 15px; display: inline-flex; align-items: center; text-decorati
             <div id="invoice-print-content">  <!-- This div ensures only the invoice content is printed -->
                 <table id="invoice-table" class="w-full border-[1px] border-black text-black">
                     <thead>
-                        <tr>
-                            <th colspan="8" class="border-[1px] border-black p-2 text-center bg-gray-50 font-bold text-lg text-black">
-                                INVOICE & PACKING LIST
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="3" class="border-[1px] border-black p-2 text-black">
-                                <div>COUNTRY OF ORIGIN: NEPAL</div>
-                                <div>INVOICE DATE: {{$sender->created_at }}</div>
-                                <div>INVOICE NO: {{ $invoice->number ?? 'INV-001' }}</div>
-                                <div>TOTAL Box: {{ $invoice->total_boxes ?? '2' }}</div>
-                            </td>
-                            <td colspan="4" class="border-[1px] border-black p-2 text-black align-top">
-                                @foreach($shipments as $shipment)
-                                <div>SHIPMENT VIA: {{ $shipment->shipment_via }}</div>
-                                <div>ACTUAL WEIGHT: {{ $shipment->actual_weight }}</div>
-                                <div>Dimension: {{ $shipment->dimension }}</div>
-                                @endforeach
-                            </td>
-                        </tr>
+                    <tr>
+                                <td colspan="4" class="border-[1px] border-black p-2 text-black">
+                                    <div class="font-bold">SHIPPER</div>
+                                    <div>OM X. GLOBAL PVT. LTD. (TRADE NAME- PRIME GORKHA LOGISTICS)</div>
+                                    <div>PAN NO: 619794828</div>
+                                    <div>Aloknagor-310 Kathmandu</div>
+                                    <div>Phone: +977 9708072372</div>
+                                    <div>Email:primegurkha@gmail.com</div>
+                                    
+                                   
+                                </td>
+
+                                <td colspan="4" class="border-[1px] border-black p-2 align-top text-black">
+                                    <div>COUNTRY OF ORIGIN: NEPAL</div>
+                                    <div>INVOICE DATE: {{$sender->created_at }}</div>
+                                    <div>INVOICE NO: {{ $sender->invoiceId ?? 'INV-001' }}</div>
+                                    <div>TOTAL BOXES: {{ $totalBoxes ?? '0' }}</div>
+                                </td>
+                            </tr>
                         <!-- Shipper Details -->
                         <tr>
-                            <td colspan="3" class="border-[1px] border-black p-2 text-black">
-                                <div class="font-bold">SHIPPER</div>
-                                <div>OM X. GLOBAL PVT. LTD. (TRADE NAME- PRIME GORKHA LOGISTICS)</div>
-                                <div>Aloknagor-310 Kathmandu</div>
-                                <div>Phone: +977 9708072372</div>
-                                <div>Sender Name : {{ $sender->senderName }}</div>
-                                <div>Sender Phone : {{ $sender->senderPhone }}</div>
-                                <div>Sender Email : {{ $sender->senderEmail }}</div>
-                            </td>
-                            <td colspan="4" class="border-[1px] border-black p-2 align-top text-black">
-                                <div class="font-bold">CONSIGNEE</div>
-                                @foreach($receivers as $receiver)
-                                <div>Name: {{ $receiver->receiverName }}</div> 
-                                <div>Phone: {{ $receiver->receiverPhone }}</div>
-                                <div>Email: {{ $receiver->receiverEmail }}</div>
-                                <div>Complete Address: {{ $receiver->receiverAddress }}</div>
-                                @endforeach
-                            </td>
-                        </tr>
+                                <td colspan="4" class="border-[1px] border-black align-top p-2 text-black">
+                                    <div class="font-bold">CONSIGNEE</div>
+                                    @foreach($receivers as $receiver)
+                                    <div>Name: {{ $receiver->receiverName }}</div>
+                                    <div>Phone: {{ $receiver->receiverPhone  }}</div>
+                                    <div>Email: {{ $receiver->receiverEmail  }}</div>
+                                    <div>Complete Address: {{ $receiver->receiverAddress  }}</div>
+                                    @endforeach
+                                </td>
+
+                                <td colspan="4" class="border-[1px] border-black align-top p-2 text-black">
+                                    @foreach($shipments as $shipment)
+                                    <div>SHIPMENT VIA: {{ $shipment->shipment_via  }}</div>
+                                    <div>ACTUAL WEIGHT: {{ $shipment->actual_weight }}</div>
+                                    <div>DIMENSION: {{ $shipment->dimension }}</div>
+                                    @endforeach
+                                </td>
+                            </tr>
                     </tbody>
                 </table>
             </div>

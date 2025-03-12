@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
-use App\Models\Customer;
-use App\Models\Tracking;
+use App\Models\Sender;
+use App\Models\Payment;
+
 
 
 use App\Models\InvoiceDetail;
@@ -15,9 +16,12 @@ use Illuminate\Support\Facades\Hash;
 class AdminController extends Controller
 {
     public function index(){
+        $totalIncome = Payment::sum('amount'); 
+        $totalCustomer = Sender::count();
+        $totalUser = User::count();
       
 
-        return view('admin.index',);
+        return view('admin.index', compact('totalIncome' , 'totalCustomer' , 'totalUser'));
     }
     
     public function destroy(Request $request)

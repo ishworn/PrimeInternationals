@@ -224,7 +224,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label>Sender Phone:</label>
-                                                <input type="text" id="senderPhone" name="senderPhone" required>
+                                                <input type="number" id="senderPhone" name="senderPhone" required>
                                             </div>
                                         </div>
                                         <div class="col-md-6">

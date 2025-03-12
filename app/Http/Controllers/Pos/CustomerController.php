@@ -15,7 +15,11 @@ class CustomerController extends Controller
 
     public function CustomerAll()
     {
-        $senders = Sender::select('id', 'invoiceId', 'trackingId', 'senderName', 'senderPhone', 'senderEmail', 'senderAddress')->get();
+
+        $senders = Sender::with('receiver','payments') ->get();
+    
+        
+        
         return view('backend.customer.customer_all', compact('senders'));
     }
 
@@ -42,7 +46,10 @@ class CustomerController extends Controller
 
     public function CustomerAdd()
     {
-        return view('backend.customer.customer_add');
+        $sender=Sender::all();
+        $receiver=Receiver::all();
+        $shipment=Shipment::all();
+        return view('backend.customer.customer_add', compact('sender','receiver','shipment'));
     }
 
     public function CustomerEdit($id)
@@ -313,7 +320,7 @@ class CustomerController extends Controller
     public function CustomerUpdateWeight(Request $request)
     {
         $totalWeight = 0;
-        $totaldime = 0;
+       
         $weightDetails = ''; // String to store each box's weight in the desired format
         $dime = '';
 
@@ -326,7 +333,7 @@ class CustomerController extends Controller
             $totalWeight += $boxData['weight'];
 
             // Add this box's weight to the string
-            $weightDetails .= "{$box['box_number']}: {$boxData['weight']} Kg, ";
+            $weightDetails .= "{$box['box_number']}:{$boxData['weight']}Kg, ";
             $dime .= "{$box['box_number']}: {$boxData['dimension']}, ";
 
             // Save the updated box data to the database
@@ -334,7 +341,7 @@ class CustomerController extends Controller
         }
         // Append the total weight to the string
 
-        $weightDetails .= "= Total Weight: {$totalWeight} Kg";
+        $weightDetails .= "Total Weight:{$totalWeight}Kg";
 
         // Update the actual_weight field in the shipments table
 

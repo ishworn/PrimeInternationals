@@ -66,11 +66,12 @@
                                 <td colspan="4" class="border-[1px] border-black p-2 text-black">
                                     <div class="font-bold">SHIPPER</div>
                                     <div>OM X. GLOBAL PVT. LTD. (TRADE NAME- PRIME GORKHA LOGISTICS)</div>
+                                    <div>PAN NO: 619794828</div>
                                     <div>Aloknagor-310 Kathmandu</div>
                                     <div>Phone: +977 9708072372</div>
-                                    <div>Sender Name : {{ $sender->senderName }}</div>
-                                    <div>Sender Phone : {{ $sender->senderPhone }}</div>
-                                    <div>Sender Email : {{ $sender->senderEmail }}</div>
+                                    <div>Email:primegurkha@gmail.com</div>
+                                    
+                                   
                                 </td>
 
                                 <td colspan="4" class="border-[1px] border-black p-2 align-top text-black">
@@ -118,7 +119,7 @@
                             <tbody>
                                 @foreach($sender->boxes as $box)
                                 <tr>
-                                    <td rowspan="{{ count($box->items) + 1 }}" class="border-[1px] border-black p-2 text-center font-bold">
+                                    <td rowspan="{{ count($box->items) + 1 }}" class=" text-black border-[1px] border-black p-2 text-center font-bold">
                                         {{ $box->box_number }}
                                     </td>
                                 </tr>
@@ -163,13 +164,5 @@
         </div>
     </div>
 </div>
-<script>
-    function printInvoice() {
-        var printWindow = window.open('', '', 'width=800,height=600');
-        var content = document.getElementById('invoice-content').innerHTML;
-        printWindow.document.write('<html><head><title>Print Invoice</title><link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.1/dist/tailwind.min.css" rel="stylesheet"></head><body>' + content + '</body></html>');
-        printWindow.document.close();
-        printWindow.print();
-    }
-</script>
+
 @endsection

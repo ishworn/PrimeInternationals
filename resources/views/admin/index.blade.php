@@ -18,7 +18,7 @@
                         </div>
                         <div class="flex-grow-1 bg-white p-4">
                             <p class="text-uppercase text-secondary mb-0">Total Staff</p>
-                            <h3 class="font-weight-bold mb-0">25</h3>
+                            <h3 class="font-weight-bold mb-0">{{ $totalUser }}</h3>
                         </div>
                     </div>
                 </div>
@@ -48,7 +48,7 @@
                         </div>
                         <div class="flex-grow-1 bg-white p-4">
                             <p class="text-uppercase text-secondary mb-0">Total Company Income</p>
-                            <h3 class="font-weight-bold mb-0">$150,000</h3>
+                            <h3 class="font-weight-bold mb-0">{{ number_format($totalIncome, 2) }}</h3>
                         </div>
                     </div>
                 </div>
@@ -79,7 +79,7 @@
             </div>
             <div class="flex-grow-1 bg-white p-4">
                 <p class="text-uppercase text-secondary mb-0">Total Shipments</p>
-                <h3 class="font-weight-bold mb-0">1,200</h3>
+                <h3 class="font-weight-bold mb-0">{{$totalCustomer}}</h3>
             </div>
         </div>
     </div>

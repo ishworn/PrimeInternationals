@@ -28,7 +28,7 @@ class Sender extends Model
     public function receiver() {
         return $this->hasOne(Receiver::class);
     }
-    public function shipment() {
+    public function shipments() {
         return $this->hasOne(Shipment::class);
     }
 
@@ -38,5 +38,9 @@ class Sender extends Model
             $lastInvoice = static::max('invoiceId');
             $model->invoiceId = $lastInvoice ? $lastInvoice + 1 : 100;
         });
+    }
+    public function payments()
+    {
+        return $this->hasOne(Payment::class,);
     }
 }

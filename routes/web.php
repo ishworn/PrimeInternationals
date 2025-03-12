@@ -3,9 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Pos\CustomerController;
-use App\Http\Controllers\Pos\DefaultController;
-use App\Http\Controllers\Pos\InvoiceController;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
+
+use App\Http\Controllers\Pos\PaymentController;
 use App\Http\Controllers\Pos\TrackingController;
 
 Route::middleware('auth')->group(function () {
@@ -47,6 +46,18 @@ Route::middleware('auth')->group(function () {
         Route::get('/trackings/edit/{id}', 'edit')->name('trackings.edit'); // Show form to edit an existing tracking
         Route::put('/trackings/{id}', 'update')->name('trackings.update'); // Update an existing tracking
     });
+      
+    Route::controller(PaymentController ::class)->group(function () {
+        Route::get('/payments', 'index')->name('payments.index'); // List all payments details
+        Route::get('/payments/details', 'details')->name('payments.details');
+        Route::post('/payments/store', 'store')->name('payments.store');
+ 
+      
+    });
+
+
+
+
     
     
 });
