@@ -57,7 +57,7 @@
                         <thead>
                             <tr>
                                 <th colspan="8" class="border-[1px] border-black p-2 text-center bg-gray-50 font-bold text-lg">
-                                    INVOICE & PACKING LIST
+                                    PRIME GURKHA LOGISTICS PVT. LTD.
                                 </th>
                             </tr>
                         </thead>
@@ -65,17 +65,22 @@
                             <tr>
                                 <td colspan="4" class="border-[1px] border-black p-2 text-black">
                                     <div class="font-bold">SHIPPER</div>
-                                    <div>OM X. GLOBAL PVT. LTD. (TRADE NAME- PRIME GORKHA LOGISTICS)</div>
+                                    <div>OM X. GLOBAL PVT. LTD. (TRADE NAME- PRIME GURKHA LOGISTICS)</div>
                                     <div>PAN NO: 619794828</div>
                                     <div>Aloknagor-310 Kathmandu</div>
                                     <div>Phone: +977 9708072372</div>
                                     <div>Email:primegurkha@gmail.com</div>
-                                    
-                                   
+                                    <div>Name : {{ $sender->senderName }}</div>
+                                    <div>Email: {{ $sender->senderEmail }}</div>
+                                    <div>Phone No : {{ $sender->senderPhone }}</div>
+
+
                                 </td>
 
                                 <td colspan="4" class="border-[1px] border-black p-2 align-top text-black">
-                                    <div>COUNTRY OF ORIGIN: NEPAL</div>
+                                    @foreach($receivers as $receiver)
+                                    <div>DESTINATION COUNTRY: {{ $receiver->receiverCountry }}</div>
+                                    @endforeach
                                     <div>INVOICE DATE: {{$sender->created_at }}</div>
                                     <div>INVOICE NO: {{ $sender->invoiceId ?? 'INV-001' }}</div>
                                     <div>TOTAL BOXES: {{ $totalBoxes ?? '0' }}</div>
@@ -124,7 +129,7 @@
                                     </td>
                                 </tr>
                                 @foreach($box->items as $index => $item)
-                                <tr class="text-black" >
+                                <tr class="text-black">
                                     <td class="border-[1px] border-black p-2">{{ $index + 1 }}</td>
                                     <td class="border-[1px] border-black p-1">{{ $item->item }}</td>
                                     <td class="border-[1px] border-black p-2">{{ $item->hs_code }}</td>
@@ -142,23 +147,23 @@
                                     <td colspan="1" class="border-[1px] border-black p-2 font-bold">Grand total</td>
                                     <td class="border-[1px] border-black p-2 font-bold text-right"> $ {{$grandTotal ?? 'N/A'}}</td>
                                 </tr>
-                             
-                                <tr class="text-black" >
+
+                                <tr class="text-black">
                                     <td colspan="3" class="border-[1px] border-black p-2">
                                         <div class="font-bold">NOTES</div>
                                         <div>We declare that the above mentioned goods are made in Nepal and other descriptions are true.</div>
                                     </td>
                                     <td colspan="4" flex flex justify-between class="border-[1px] border-black p-2">
-                                            <div class="font-bold flex justify-between items-center">
-                                                <div>SIGNATURE</div>
-                                                <span class="font-bold text-right">STAMP</span>
-                                            </div>
-                                            <div class="h-20"></div>
-                                        </td>
+                                        <div class="font-bold flex justify-between items-center">
+                                            <div>SIGNATURE</div>
+                                            <span class="font-bold text-right">STAMP</span>
+                                        </div>
+                                        <div class="h-20"></div>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
-                    </div>  
+                    </div>
                 </table>
             </div>
         </div>

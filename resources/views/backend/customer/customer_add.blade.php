@@ -244,9 +244,35 @@
 
 
                                     </div>
+                                    <div class="card-body">
+                                        <h4 class="card-title mb-4" style="font-size: 22px; font-weight: bold;"></h4>
+
+                                        <table id="datatable" class="table table-bordered dt-responsive nowrap" style="width: 100%;">
+                                            <thead class="bg-primary text-white">
+                                                <tr>
+                                                    <th>Sl</th>
+                                                    <th>Sender Name</th>
+                                                    <th>Sender Email</th>
+                                                    <th>Sender Phone</th>
+                                                    <th>Sender Address</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($senders as $key => $sender)
+                                                <tr>
+                                                    <td>{{ $key + 1 }}</td>
+                                                    <td>{{ $sender->senderName }}</td>
+
+                                                    <td>{{ $sender->senderEmail }}</td>
+                                                    <td>{{ $sender->senderPhone }}</td>
+                                                    <td>{{ $sender->senderAddress }}</td>
+                                                    <!-- Assuming amount field exists -->
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
-
-
                                 <!-- Receiver Section -->
                                 <div id="receiverForm" class="form-section" style="display:none;">
                                     <h3>Receiver Details</h3>
@@ -266,6 +292,7 @@
                                                 <input type="email" name="receiverEmail" class="form-control">
                                             </div>
 
+
                                         </div>
                                         <!-- Column 2 -->
                                         <div class="col-md-6">
@@ -283,6 +310,58 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="card shadow-lg">
+                                                <div class="card-body">
+
+
+                                                    <table id="receiverTable" class="table table-bordered dt-responsive nowrap" style="width: 100%;">
+                                                        <thead class="bg-primary text-white">
+                                                            <tr>
+                                                                <th>Sl</th>
+                                                                <th>Receiver Name</th>
+                                                                <th>Receiver Phone</th>
+                                                                <th>Receiver Email</th>
+                                                                <th>Postal Code</th>
+                                                                <th>Country</th>
+                                                                <th>Address</th>
+                                                                
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody >
+                                                            @foreach($receivers as $key => $receiver)
+                                                            <tr>
+                                                                <td>{{ $key + 1 }}</td>
+                                                                <td>{{ $receiver->receiverName }}</td>
+                                                                <td>{{ $receiver->receiverPhone }}</td> <!-- Assuming receiverName field exists -->
+                                                                <td>{{ $receiver->receiverEmail }}</td> <!-- Assuming country field exists -->
+                                                                <td>{{ $receiver->receiverPostalcode }}</td>
+                                                                <td>{{ $receiver->receiverCountry }}</td>  
+                                                                <td>{{ $receiver->receiverAddress }}</td>  <!-- Assuming amount field exists --> 
+                                                                <!-- Assuming amount field exists -->
+
+
+                                                                <!-- Actions (unchanged) -->
+
+                                                            </tr>
+                                                            @endforeach
+                                                        </tbody>
+
+                                                        <!-- JavaScript -->
+
+
+
+                                                        <!-- JavaScript -->
+
+
+
+                                                    </table>
+
+                                                </div>
+                                            </div>
+                                        </div> <!-- End col -->
+                                    </div>
                                 </div>
                                 <!-- Box Section -->
                                 <div id="boxSection" class="form-section" style="display:none;">
@@ -294,7 +373,7 @@
                                                 <input type="text" name="shipment_via" class="form-control" required>
                                             </div>
                                             <!-- Actual Weight -->
-                                            
+
                                             <!-- Invoice Date -->
                                             <div class="col-12 col-md-6 mb-3">
                                                 <label for="invoice_date">Invoice Date:</label>
@@ -303,7 +382,7 @@
                                             <!-- Dimension -->
                                             <div class="col-12 col-md-6 mb-3">
                                                 <label for="dimension">Dimension (LxWxH):</label>
-                                                <input type="text" name="dimension" class="form-control" >
+                                                <input type="text" name="dimension" class="form-control">
                                             </div>
                                         </div>
                                         <!-- Box Container Section -->
@@ -311,13 +390,14 @@
                                         <!-- Add Box Button -->
                                         <div class="text-center">
                                             <button type="button" class="btn btn-primary  m-3" onclick="addBox()">Add Box</button>
+                                            <div class="form-group    navbar-light bg-light  mx-9  ">
+                                                <input type="submit" class="btn btn-info" value="Submit All Data">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group    navbar-light bg-light  mx-9  ">
-                                <input type="submit" class="btn btn-info" value="Submit All Data">
-                            </div>
+
                         </form>
                     </div>
                 </div>
@@ -328,6 +408,17 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 <script>
+
+
+
+$(document).ready(function() {
+    // Initialize DataTable for the sender table
+   
+
+    // Initialize DataTable for the receiver table
+    $('#receiverTable').DataTable();
+});
+
     function submitForm() {
         const formData = new FormData(document.getElementById('myForm'));
         // Create a simplified 'boxes' array to store only box numbers and sender_id
@@ -352,16 +443,25 @@
             });
     }
     document.querySelectorAll('.nav-link').forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            document.querySelectorAll('.form-section').forEach(section => {
-                section.style.display = 'none';
-            });
-            document.getElementById(e.target.dataset.target).style.display = 'block';
-            link.parentElement.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            link.classList.add('active');
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        // Hide all form sections
+        document.querySelectorAll('.form-section').forEach(section => {
+            section.style.display = 'none';
         });
+        
+        // Show the clicked form section
+        document.getElementById(e.target.dataset.target).style.display = 'block';
+        
+        // Remove 'active' class from all nav links
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        
+        // Add 'active' class to the clicked nav link
+        link.classList.add('active');
     });
+});
+
     // Array to store box IDs
     let boxes = [];
     // Function to add a new box///
@@ -440,9 +540,9 @@
          <td class="d-none d-md-table-cell">${rowIndex + 1}</td> <!-- Hide on mobile -->
         <td><input type="text" name="boxes[${boxId}][items][${rowIndex}][item]" required class="form-control"></td>
         <td><input type="text" name="boxes[${boxId}][items][${rowIndex}][hs_code]" class="form-control"></td>
-        <td><input type="number" name="boxes[${boxId}][items][${rowIndex}][quantity]" required class="form-control"></td>
-        <td><input type="number" name="boxes[${boxId}][items][${rowIndex}][unit_rate]"  class="form-control"></td>
-        <td><input type="number" name="boxes[${boxId}][items][${rowIndex}][amount]" readonly class="form-control"></td>
+        <td><input type="text" name="boxes[${boxId}][items][${rowIndex}][quantity]" required class="form-control"></td>
+        <td><input type="number" name="boxes[${boxId}][items][${rowIndex}][unit_rate]" step="0.001" class="form-control"></td>
+        <td><input type="decimal" name="boxes[${boxId}][items][${rowIndex}][amount]" readonly class="form-control"></td>
         <td><button type="button" class="delete-row-button btn btn-danger" onclick="deleteRow(this)">×</button></td>
            
     `;
@@ -488,6 +588,26 @@
         content.style.display = content.style.display === 'none' ? 'block' : 'none';
         button.textContent = content.style.display === 'none' ? '+' : '-';
     }
+</script>
+<script>
+    document.getElementById('senderName').addEventListener('blur', function() {
+        const name = this.value;
+
+        if (name) {
+            fetch(`/check-sender?name=${name}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.exists) {
+                        document.getElementById('senderPhone').value = data.phone;
+                        document.getElementById('senderEmail').value = data.email;
+                        // Fill other fields similarly
+                    } else {
+                        console.log('Sender not found');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    });
 </script>
 
 @endsection

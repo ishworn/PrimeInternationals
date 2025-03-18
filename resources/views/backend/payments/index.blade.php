@@ -26,7 +26,7 @@
         <!-- End page title -->
 
         <!-- Trackings Table -->
-        <div class="row">
+        <div class="row pb-20">
             <div class="col-12">
                 <div class="card shadow-lg">
                     <div class="card-body">
@@ -64,7 +64,7 @@
                                     </td>
                                     <td>
                                         <div class="dropdown">
-                                            <button class="btn btn-secondary dropdown-toggle btn-sm" type="button" id="paymentMethodDropdown{{ $key }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <button class="btn btn-secondary dropdown-toggle btn-sm" type="button" id="paymentMethodDropdown{{ $key }}" data-bs-toggle="dropdown" aria-expanded="true">
                                                 {{ $item->paymentMethod ?? 'Select Method' }}
                                             </button>
                                             <ul class="dropdown-menu" aria-labelledby="paymentMethodDropdown{{ $key }}">
@@ -79,9 +79,9 @@
                                         <button type="submit" form="paymentForm{{ $sender->id }}" class="btn btn-success btn-sm mx-1" title="Save Payment">
                                             <i class="fas fa-save"></i>
                                         </button>
-                                        
+
                                     </td>
-                                        </form>
+                                    </form>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -106,7 +106,7 @@
 
     .card {
         border-radius: 8px;
-        overflow: hidden;
+        /* overflow: visible; */
     }
 
     table th,
@@ -114,21 +114,48 @@
         text-align: center;
         padding: 12px;
         font-size: 16px;
+        /* overflow: visible; */
     }
 
     table tbody tr:hover {
         background-color: #f1f1f1;
+        overflow: visible;
+    }
+    table {
+        z-index: 1;
+        /* overflow: visible; */
+       
     }
 
     table th {
         background-color: #3e8e41;
         color: white;
         text-align: center;
+        /* overflow: visible; */
     }
 
     table td {
         vertical-align: middle;
+        /* overflow: visible; */
     }
+
+    /* Ensure the dropdown is positioned absolutely */
+.dropdown-menu {
+  position: absolute !important;
+  z-index: 1000; /* Ensure it's above other elements */
+  max-height: none; /* Remove any default max height */
+  /* overflow: visible; Make sure all content is visible */
+}
+
+td {
+  position: relative;
+   /* Make sure the dropdown is positioned relative to the <td> */
+   /* overflow: visible; */
+}
+.page-content, .container-fluid {
+    overflow: visible; /* Ensure the entire page content allows for dropdowns to be fully visible */
+}
+
 </style>
 
 <script>

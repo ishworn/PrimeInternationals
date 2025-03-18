@@ -52,86 +52,75 @@
                                     <th>Country</th>
                                     <th>Tracking Id</th>
                                     <th>Amount</th>
-                                    <th>Payment Method</th>
-                                    <th>Payment Status</th>
-                                    <th>Actions</th>
+                                    <th class='payment-status'>Payment Method</th>
+                                    <th class='payment-status'>Payment Status</th>
+                                    <th style="width: 70px;">Actions</th>
                                 </tr>
                             </thead>
 
 
 
                             <tbody>
-    @foreach($senders as $key => $sender)
-    <tr>
-        <td>{{ $key + 1 }}</td>
-        <td>{{ $sender->senderName }}</td>
-        <td>{{ $sender->receiver->receiverName }}</td> <!-- Assuming receiverName field exists -->
-        <td>{{ $sender->receiver->receiverName }}</td> <!-- Assuming country field exists -->
-        <td>{{ $sender->trackingId ?? 'N/A' }}</td>
-        <td>{{ $sender->payments->amount ?? 'N/A' }}</td> <!-- Assuming amount field exists -->
-        <td>
-    @php
-    $payments = $sender->payments ?? collect();
-    $paymentMethods = $payments->pluck('payment_method')->filter()->unique();        
-        $hasCash = $paymentMethods->contains('Cash');
-        $hasBankTransfer = $paymentMethods->contains('Bank Transfer');
-        $hasBoth = $paymentMethods->contains('Both');
-    @endphp
+                                @foreach($senders as $key => $sender)
+                                <tr>
+                                    <td>{{ $key + 1 }}</td>
+                                    <td>{{ $sender->senderName }}</td>
+                                    <td>{{ $sender->receiver->receiverName }}</td> <!-- Assuming receiverName field exists -->
+                                    <td>{{ $sender->receiver->receiverName }}</td> <!-- Assuming country field exists -->
+                                    <td>{{ $sender->trackingId ?? 'N/A' }}</td>
+                                    <td>{{ $sender->payments->amount ?? 'N/A' }}</td> <!-- Assuming amount field exists -->
+                                    <td class='payment-method'>
+                                        @php
+                                        $paymentMethod = $sender->payments->payment_method ?? 'N/A';
+                                        @endphp
+                                        @if($paymentMethod === 'Cash')
+                                        <span class="badge bg-success" title="Cash">{{ $paymentMethod }}</span>
+                                        @elseif($paymentMethod === 'Bank Transfer')
+                                        <span class="badge bg-primary" title="Bank Transfer">{{ $paymentMethod }}</span>
+                                        @else
+                                        <span class="badge bg-secondary" title="Other Payment Method">{{ $paymentMethod }}</span>
+                                        @endif
+                                    </td>
+                                    <td class='payment-status'>
+                                        @php
 
-    @if($paymentMethods->isEmpty())
-        <span class="text-muted">N/A</span>
-    @else
-        @if($hasBoth)
-            <span class="badge bg-warning" title="Both Cash and Bank Transfer">Both</span>
-        @elseif($hasCash)
-            <span class="badge bg-success" title="Cash">Cash</span>
-        @elseif($hasBankTransfer)
-            <span class="badge bg-primary" title="Bank Transfer">Bank Transfer</span>
-        @endif
-    @endif
-</td>
-<td>
-    @php
-  
-    $payments = $sender->payments ?? collect();
-        $paymentStatuses = $payments->pluck('status')->filter()->unique(); 
-        $hasunpaid = $paymentStatuses->contains('unpaid');  
-        $haspaid = $paymentStatuses->contains('paid');
-    @endphp
+                                        $payments = $sender->payments ?? collect();
+                                        $paymentStatuses = $payments->pluck('status')->filter()->unique();
+                                        $hasunpaid = $paymentStatuses->contains('unpaid');
+                                        $haspaid = $paymentStatuses->contains('paid');
+                                        @endphp
 
-    @if($paymentStatuses->isEmpty())
-        <span class="badge bg-danger">Unpaid</span>
-    @else
-        @if($hasunpaid)
-            <span class="badge bg-danger" title="Both Cash and Bank Transfer">Unpaid</span>
-        @elseif($haspaid)
-            <span class="badge bg-success" title="Cash">Paid</span>
-      
-        
-        @endif
-    @endif
-</td>
+                                        @if($paymentStatuses->isEmpty())
+                                        <span class="badge bg-danger">Unpaid</span>
+                                        @else
+                                        @if($hasunpaid)
+                                        <span class="badge bg-danger" title="Both Cash and Bank Transfer">Unpaid</span>
+                                        @elseif($haspaid)
+                                        <span class="badge bg-success" title="Cash">Paid</span>
 
-        <!-- Actions (unchanged) -->
-        <td class="d-flex justify-content-center">
-            <a href="{{ route('customer.edit', $sender->id) }}" class="btn btn-info btn-sm mx-1" title="Edit Data">
-                <i class="fas fa-edit"></i>
-            </a>
-            <a href="{{ route('customer.delete', $sender->id) }}" class="btn btn-danger btn-sm mx-1" title="Delete Data" id="delete">
-                <i class="fas fa-trash-alt"></i>
-            </a>
-            <a href="{{ route('customer.preview', $sender->id) }}" class="btn btn-dark btn-sm mx-1" title="Preview">
-                <i class="fas fa-eye"></i>
-            </a>
-            <a href="{{ route('customer.addweight', $sender->id) }}" class="btn btn-warning btn-sm mx-1" title="Preview">
-                <i class="fas fa-weight"></i>
-            </a>
-        </td>
-    </tr>
-    @endforeach
-</tbody>
 
-<!-- JavaScript -->
+                                        @endif
+                                        @endif
+                                    </td>
+
+                                    <!-- Actions (unchanged) -->
+                                    <td class="d-flex justify-content-center">
+                                        <a href="{{ route('customer.edit', $sender->id) }}" class="btn btn-info btn-sm mx-1" title="Edit Data">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+
+                                        <a href="{{ route('customer.preview', $sender->id) }}" class="btn btn-dark btn-sm mx-1" title="Preview">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ route('customer.addweight', $sender->id) }}" class="btn btn-warning btn-sm mx-1" title="Preview">
+                                            <i class="fas fa-weight"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+
+                            <!-- JavaScript -->
 
 
 
@@ -168,8 +157,8 @@
     table th,
     table td {
         text-align: center;
-        padding: 12px;
-        font-size: 16px;
+
+        font-size: 14px;
     }
 
     table tbody tr:hover {
@@ -185,42 +174,17 @@
     table td {
         vertical-align: middle;
     }
+
+    .payment-method,
+    .payment-status {
+
+
+        width: 100px;
+        /* Set a specific width for the columns */
+
+    }
 </style>
-<script>
-    // Update Payment Method and change button color based on selection
-    function updatePaymentMethod(element, key) {
-        var button = document.getElementById('paymentMethodDropdown' + key);
-        button.textContent = element.textContent;
 
-        // Change button color based on selection
-        if (element.textContent === 'Credit Card' || element.textContent === 'PayPal') {
-            button.classList.remove('btn-secondary', 'btn-success', 'btn-warning');
-            button.classList.add('btn-primary'); // Default for Credit Card or PayPal
-        } else if (element.textContent === 'Bank Transfer') {
-            button.classList.remove('btn-secondary', 'btn-primary', 'btn-warning');
-            button.classList.add('btn-success'); // Green for Bank Transfer
-        } else if (element.textContent === 'Cash') {
-            button.classList.remove('btn-secondary', 'btn-primary', 'btn-success');
-            button.classList.add('btn-warning'); // Yellow for Cash
-        }
-    }
-
-    // Update Payment Status and change button color based on selection
-    function updatePaymentStatus(element, key, color) {
-        var button = document.getElementById('paymentStatusDropdown' + key);
-        button.textContent = element.textContent;
-
-        // Change button color based on selected status
-        button.classList.remove('btn-secondary', 'btn-success', 'btn-danger', 'btn-warning');
-        if (color === 'green') {
-            button.classList.add('btn-success'); // Green for Paid
-        } else if (color === 'red') {
-            button.classList.add('btn-danger'); // Red for Unpaid
-        } else if (color === 'orange') {
-            button.classList.add('btn-warning'); // Orange for Pending
-        }
-    }
-</script>
 
 
 

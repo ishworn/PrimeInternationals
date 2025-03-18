@@ -38,7 +38,7 @@
 
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="ri-map-pin-line text-xl"></i>
+                        <i class="ri-wallet-line text-xl"></i>
                         <span>Payment</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">

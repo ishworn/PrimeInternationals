@@ -32,52 +32,71 @@ style="font-size: 15px; display: inline-flex; align-items: center; text-decorati
             }
         </style>
 
-        <div class="bg-white p-8 shadow-lg">
-            <div id="invoice-print-content">  <!-- This div ensures only the invoice content is printed -->
+        <!-- Wrap all invoices in a single div for printing -->
+        <div id="invoice-print-content"> <!-- This div ensures all the invoices are printed -->
+            @foreach ($sender->boxes as $box)
+            <div class="bg-white p-8 shadow-lg mb-4">
                 <table id="invoice-table" class="w-full border-[1px] border-black text-black">
                     <thead>
-                    <tr>
-                                <td colspan="4" class="border-[1px] border-black p-2 text-black">
-                                    <div class="font-bold">SHIPPER</div>
-                                    <div>OM X. GLOBAL PVT. LTD. (TRADE NAME- PRIME GORKHA LOGISTICS)</div>
-                                    <div>PAN NO: 619794828</div>
-                                    <div>Aloknagor-310 Kathmandu</div>
-                                    <div>Phone: +977 9708072372</div>
-                                    <div>Email:primegurkha@gmail.com</div>
-                                    
-                                   
-                                </td>
-
-                                <td colspan="4" class="border-[1px] border-black p-2 align-top text-black">
-                                    <div>COUNTRY OF ORIGIN: NEPAL</div>
-                                    <div>INVOICE DATE: {{$sender->created_at }}</div>
-                                    <div>INVOICE NO: {{ $sender->invoiceId ?? 'INV-001' }}</div>
-                                    <div>TOTAL BOXES: {{ $totalBoxes ?? '0' }}</div>
-                                </td>
-                            </tr>
-                        <!-- Shipper Details -->
                         <tr>
-                                <td colspan="4" class="border-[1px] border-black align-top p-2 text-black">
-                                    <div class="font-bold">CONSIGNEE</div>
-                                    @foreach($receivers as $receiver)
-                                    <div>Name: {{ $receiver->receiverName }}</div>
-                                    <div>Phone: {{ $receiver->receiverPhone  }}</div>
-                                    <div>Email: {{ $receiver->receiverEmail  }}</div>
-                                    <div>Complete Address: {{ $receiver->receiverAddress  }}</div>
-                                    @endforeach
-                                </td>
+                            <th colspan="8" class="border-[1px] border-black p-2 text-center bg-gray-50 font-bold text-lg">
+                                PRIME GURKHA LOGISTICS PVT. LTD. ({{ $box->box_number }})
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Shipper Details -->
+                       <tr>
+                            <td colspan="4" class="border-[1px] border-black p-2 text-black">
+                                <div class="font-bold">SHIPPER</div>
+                                <div>OM X. GLOBAL PVT. LTD. (TRADE NAME- PRIME GURKHA LOGISTICS)</div>
+                                <div>PAN NO: 619794828</div>
+                                <div>Aloknagor-310 Kathmandu</div>
+                                <div>Phone: +977 9708072372</div>
+                                <div>Email: primegurkha@gmail.com</div>
+                            </td>
 
-                                <td colspan="4" class="border-[1px] border-black align-top p-2 text-black">
-                                    @foreach($shipments as $shipment)
-                                    <div>SHIPMENT VIA: {{ $shipment->shipment_via  }}</div>
-                                    <div>ACTUAL WEIGHT: {{ $shipment->actual_weight }}</div>
+                            <td colspan="4" class="border-[1px] border-black p-2 align-top text-black">
+                                
+                            @foreach ($receivers as $receiver)
+                    <div>DESTINATION COUNTRY: {{$receiver->receiverCountry }} </div>
+                                  
+                                @endforeach
+
+                               
+                                <div>INVOICE DATE: {{ $sender->created_at->format('Y-m-d') }}</div>
+                                <div>INVOICE NO: {{ $sender->invoiceId ?? 'INV-001' }}</div>
+                                <div>TOTAL BOXES: {{ $sender->boxes->count() }}</div>
+                            </td>
+                        </tr>
+
+                        <!-- Consignee Details -->
+                        <tr>
+                            <td colspan="4" class="border-[1px] border-black p-2 text-black">
+                                <div class="font-bold">CONSIGNEE</div>
+                                @foreach ($receivers as $receiver)
+                                    <div>Name: {{ $receiver->receiverName }}</div>
+                                    <div>Phone: {{ $receiver->receiverPhone }}</div>
+                                    <div>Email: {{ $receiver->receiverEmail }}</div>
+                                    <div>Complete Address: {{ $receiver->receiverAddress }}</div>
+                                @endforeach
+                            </td>
+
+                            <!-- Shipment Details -->
+                            <td colspan="4" class="border-[1px] border-black p-2 text-black">
+                                @foreach ($shipments as $shipment)
+                                    <div>SHIPMENT VIA: {{ $shipment->shipment_via }}</div>
                                     <div>DIMENSION: {{ $shipment->dimension }}</div>
-                                    @endforeach
-                                </td>
-                            </tr>
+                                       
+                                @endforeach
+                                    <div>Box Weight: {{ $box->box_weight }} Kg</div> <!-- Using box weight here -->
+                                
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
+            @endforeach
         </div>
 
         <!-- Print Button (Hidden in print mode) -->

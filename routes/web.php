@@ -35,6 +35,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/customer/updateweight', 'CustomerUpdateWeight')->name('customer.updateweight');
 
         Route::get('/customer/delete/{id}', 'CustomerDelete')->name('customer.delete');
+        Route::get('/check-sender', 'checkSender' )->name('check.sender');
+
     });
 
     // Tracking Routes

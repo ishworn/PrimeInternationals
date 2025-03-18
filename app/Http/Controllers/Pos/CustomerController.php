@@ -34,8 +34,15 @@ class CustomerController extends Controller
         $shipments = Shipment::where('sender_id', $id)->get();
 
         $totalQuantity = $sender->boxes->sum(function ($box) {
-            return $box->items->sum('quantity');
+            return $box->items->sum(function ($item) {
+                // Extract numeric part from quantity (remove non-numeric characters)
+                $numericQuantity = preg_replace('/[^0-9.]/', '', $item->quantity);
+                
+                // Return the numeric value or 0 if the quantity is empty or invalid
+                return is_numeric($numericQuantity) ? floatval($numericQuantity) : 0;
+            });
         });
+        
 
         $grandTotal = $sender->boxes->sum(function ($box) {
             return $box->items->sum('amount');
@@ -44,12 +51,16 @@ class CustomerController extends Controller
         return view('backend.customer.customer_preview', compact('sender', 'receivers', 'shipments', 'totalQuantity', 'grandTotal', 'totalBoxes'));
     }
 
+
+
+
+
     public function CustomerAdd()
     {
-        $sender=Sender::all();
-        $receiver=Receiver::all();
-        $shipment=Shipment::all();
-        return view('backend.customer.customer_add', compact('sender','receiver','shipment'));
+        $senders=Sender::all();
+        $receivers=Receiver::all();
+      
+        return view('backend.customer.customer_add', compact('senders','receivers',));
     }
 
     public function CustomerEdit($id)
@@ -289,24 +300,53 @@ class CustomerController extends Controller
         }
     }
 
+
+
+
+
+
     public function exportToExcel($id)
     {
+
+
+        
         $sender = Sender::with(['boxes.items'])->findOrFail($id);
         $totalBoxes = $sender->boxes()->count();
 
         $receivers = Receiver::where('sender_id', $id)->get();
         $shipments = Shipment::where('sender_id', $id)->get();
 
-        return Excel::download(new ExcelExport($sender, $shipments, $receivers, $totalBoxes), 'invoice.xlsx');
+        $receiverName = $receivers->first()->receiverName ?? 'default_sender';   // Fallback to 'default_sender' if no name is available
+$filename = $receiverName . '.xlsx';
+
+        return Excel::download(new ExcelExport($sender, $shipments, $receivers, $totalBoxes), $filename);
     }
+
+
+ 
+
 
     public function printInvoice($id)
     {
         $sender = Sender::with(['boxes.items'])->findOrFail($id);
+
+        $totalBoxes = $sender->boxes()->count();
+
+
         $receivers = Receiver::where('sender_id', $id)->get();
         $shipments = Shipment::where('sender_id', $id)->get();
 
-        return view('backend.customer.print', compact('sender', 'shipments', 'receivers'));
+    
+
+
+
+
+
+
+
+     
+
+        return view('backend.customer.print', compact('sender', 'shipments', 'receivers', 'totalBoxes'));
     }
 
     public function addweight($id)
@@ -360,4 +400,23 @@ class CustomerController extends Controller
         // Redirect with success message
         return redirect()->route('customer.all')->with('success', 'Box weights updated successfully.');
     }
+
+
+    public function checkSender(Request $request)
+{
+    $name = $request->query('name');
+    $sender = Sender::where('name', $name)->first();
+
+    if ($sender) {
+        return response()->json([
+            'exists' => true,
+            'phone' => $sender->senderPhone,
+            'email' => $sender->senderEmail,
+            // Add other fields here
+        ]);
+    } else {
+        return response()->json(['exists' => false]);
+    }
+}
+
 }

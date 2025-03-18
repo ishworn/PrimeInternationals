@@ -17,6 +17,15 @@ class ExcelExport implements FromCollection, WithHeadings, WithEvents
     private $totalQuantity = 0;
     private $grandTotal = 0;
     private $totalBoxes;
+
+    public function getNumericQuantity($quantity)
+    {
+        // Extract numeric part from quantity (remove non-numeric characters)
+        $numericQuantity = preg_replace('/[^0-9.]/', '', $quantity);
+        
+        // Return the numeric value or 0 if the quantity is empty or invalid
+        return is_numeric($numericQuantity) ? floatval($numericQuantity) : 0;
+    }
     
     // private $totalQuantity;
     // private $grandTotal;
@@ -159,7 +168,7 @@ class ExcelExport implements FromCollection, WithHeadings, WithEvents
                         ],
                     ]);
                 }
-                $sheet->setCellValue('A1', 'INVOICE & PACKING LIST');
+                $sheet->setCellValue('A1', '  PRIME GURKHA LOGISTICS PVT. LTD.');
                 $sheet->getStyle('A1:G1')->applyFromArray([
                     'font' => [
                         'bold' => true,
@@ -185,9 +194,7 @@ class ExcelExport implements FromCollection, WithHeadings, WithEvents
                 $sheet->setCellValue('A8', 'PAN NO: 619794828 ');
                 $sheet->setCellValue('A9', 'Phone : +977 9708072972 ');
                 $sheet->setCellValue('A10', 'Aloknagar-310 Kathmandu');
-                $sheet->setCellValue('A11', 'Sender Name: ' . $this->sender->senderName);
-                $sheet->setCellValue('A12', 'Email: ' . $this->sender->senderEmail);
-                $sheet->setCellValue('A13', 'Phone: ' . $this->sender->senderPhone);
+                
                 $sheet->setCellValue('D2', 'ACTUAL  WEIGHT : ' .  ($shipment ? $shipment->actual_weight : 'N/A'));
                 $sheet->setCellValue('D3', 'TOTAL Box :' . $this->totalBoxes);
                 $sheet->setCellValue('D4', 'Dimension: ' . ($shipment ? $shipment->dimension : 'N/A'));
@@ -220,15 +227,32 @@ class ExcelExport implements FromCollection, WithHeadings, WithEvents
     
                     ]);
                     $sheet->mergeCells("A{$row}:A" . ($row + count($box->items) - 1));
+                      $sheet->getStyle("A{$row}:A" . ($row + count($box->items) - 1))->applyFromArray([
+                  
+                    'alignment' => [
+        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER, // Center the text horizontally
+        'vertical'   => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER  // Optionally center vertically
+    ], 
+                    
+                ]);
                     $sheet->setCellValue("A{$row}", $box->box_number);
                     foreach ($box->items as $index => $item) {
+
+
+                        $sheet->getStyle("B{$row}:G" . ($row ))->applyFromArray([
+                            'font' => ['bold' => true],
+                     
+                            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_MEDIUM]],
+        
+                        ]);
                         $sheet->setCellValue("B{$row}", $index + 1);
                         $sheet->setCellValue("C{$row}", $item->item);
                         $sheet->setCellValue("D{$row}", $item->hs_code);
                         $sheet->setCellValue("E{$row}", $item->quantity);
                         $sheet->setCellValue("F{$row}", number_format($item->unit_rate, 2));
                         $sheet->setCellValue("G{$row}", number_format($item->amount, 2));
-                        $this->totalQuantity += $item->quantity;  // Assuming `quantity` exists in your model
+                        $this->totalQuantity += $this->getNumericQuantity($item->quantity);
+                        // Assuming `quantity` exists in your model
                         $this->grandTotal += $item->amount;  // Assuming `amount` is already calculated
                 
                         
@@ -242,7 +266,7 @@ class ExcelExport implements FromCollection, WithHeadings, WithEvents
                 $sheet->setCellValue("F{$row}", 'Grand Total');
                 $sheet->setCellValue("G{$row}", $this->grandTotal);
                 
-                $sheet->getStyle("D{$row}:G{$row}")->applyFromArray([
+                $sheet->getStyle("A{$row}:G{$row}")->applyFromArray([
                     'font' => ['bold' => true],
                     'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_MEDIUM]],
                 ]);
