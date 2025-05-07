@@ -7,6 +7,12 @@ use App\Http\Controllers\Pos\CustomerController;
 use App\Http\Controllers\Pos\PaymentController;
 use App\Http\Controllers\Pos\TrackingController;
 
+use App\Http\Controllers\Pos\UsermgmtController;
+use App\Http\Controllers\Pos\DispatchManagementController;
+use App\Http\Controllers\ExpenseController;
+
+
+
 Route::middleware('auth')->group(function () {
 
     // Admin Routes
@@ -35,12 +41,11 @@ Route::middleware('auth')->group(function () {
         Route::post('/customer/updateweight', 'CustomerUpdateWeight')->name('customer.updateweight');
 
         Route::get('/customer/delete/{id}', 'CustomerDelete')->name('customer.delete');
-        Route::get('/check-sender', 'checkSender' )->name('check.sender');
-
+      
     });
 
     // Tracking Routes
-    
+
     Route::controller(TrackingController::class)->group(function () {
         Route::get('/trackings', 'index')->name('trackings.index'); // List all trackings
         Route::get('/trackings/create', 'create')->name('trackings.create'); // Show the form to create a new tracking
@@ -48,23 +53,40 @@ Route::middleware('auth')->group(function () {
         Route::get('/trackings/edit/{id}', 'edit')->name('trackings.edit'); // Show form to edit an existing tracking
         Route::put('/trackings/{id}', 'update')->name('trackings.update'); // Update an existing tracking
     });
-      
-    Route::controller(PaymentController ::class)->group(function () {
+
+    Route::controller(PaymentController::class)->group(function () {
         Route::get('/payments', 'index')->name('payments.index'); // List all payments details
         Route::get('/payments/details', 'details')->name('payments.details');
+        Route::post('/payments/addexpenses', 'addexpenses')->name('expenses.store'); // add expenses details
         Route::post('/payments/store', 'store')->name('payments.store');
+        Route::put('/payments/edit/{id}', 'edit')->name('payments.edit'); // Show form to edit an existing tracking
+        Route::put('/payments/{id}', 'update')->name('payments.update'); // Update an
+        Route::get('/payments/manage', 'manage')->name('payments.manage');
+        Route::post('/payments/debits', 'debits')->name('payments.debits');
+        Route::get('/payments/dashboard', 'dashboard')->name('payments.dashboard');
+        Route::get('/payments/invoice/{id}', 'printInvoice')->name('payments.invoice');
+        Route::post('/payments/invoice/store', 'InvoiceStore')->name('invoices.store');
+        
  
-      
+
+        
     });
 
+    Route::controller(UsermgmtController::class)->group(function () {
+        Route::get('/usermgmt', 'index')->name('usermgmt.index');
+        Route::post('/usermgmt/store', [UsermgmtController::class, 'store'])->name('usermgmt.store')->middleware('role:super-admin');
+        Route::get("/usermgmt", [UsermgmtController::class, 'UserDetailsShow'])->name('usermgmt.index')->middleware('role:super-admin');
+        Route::delete('/usermgmt/{id}', action: [UsermgmtController::class, 'destroy'])->name('usermgmt.destroy')->middleware('role:super-admin');
+    });
 
+    Route::controller(DispatchManagementController::class)->group(function () {
+        Route::get('/dispatch', 'index')->name('dispatch.index'); // List all payments details
+        Route::post('/dispatch/store', 'store')->name('dispatch.store');
+    });
 
-
-    
-    
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 Route::get('/', function () {
     return redirect()->route('login');

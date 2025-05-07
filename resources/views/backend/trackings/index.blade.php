@@ -41,7 +41,8 @@
                                     <th>Sender Name</th>
                                     <th>Tracking Number</th>
                                     <th>Receiver Name</th>
-                                    <th> Receiver Location</th>
+                                    <th> Receiver Country</th>
+                                    <th> Dispatch To</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -53,7 +54,8 @@
                                     <td>{{ $sender->trackingId ?? 'N/A' }}</td>
                             
                                     <td>{{ $sender->receiver->receiverName }}</td>
-                                    <td>{{ $sender->receiver->receiverCountry }}</td>
+                                    <td>{{ $sender->receiver->receiverCountry ?? 'N/A'  }}</td>
+                                    <td>{{ $sender->dispatch->dispatch_by }}</td>
                                     <td class="d-flex justify-content-center">
                                         <a href="{{ route('trackings.edit', $sender->id) }}" 
                                            class="btn btn-info btn-sm mx-1" title="Edit Data">

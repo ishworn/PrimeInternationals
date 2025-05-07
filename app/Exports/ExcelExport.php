@@ -105,6 +105,24 @@ class ExcelExport implements FromCollection, WithHeadings, WithEvents
                         ],
                     ],
                 ]);
+
+                $sheet->getStyle("A2:A5")->applyFromArray([
+                    'borders' => [
+                        'left' => [
+                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM, // Thin border
+                            'color' => ['rgb' => '000000'], // Black border color
+                        ],
+                    ],
+                ]);
+                $sheet->getStyle("A7:A15")->applyFromArray([
+                    'borders' => [
+                        'left' => [
+                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM, // Thin border
+                            'color' => ['rgb' => '000000'], // Black border color
+                        ],
+                    ],
+                ]);
+
                 $sheet->getStyle("A7:C7")->applyFromArray([
                     'font' => [
                         'bold' => true,
@@ -124,6 +142,11 @@ class ExcelExport implements FromCollection, WithHeadings, WithEvents
                     ],
                 ]);
                 $sheet->mergeCells('A1:G1');
+               
+               // Merging cells from D10 to G11 as one large cell
+
+               
+                 
                 for ($row = 2; $row <= 13; $row++) {
                     $sheet->mergeCells("A{$row}:C{$row}");
                     $sheet->getStyle("A{$row}:C{$row}")->applyFromArray([
@@ -146,7 +169,7 @@ class ExcelExport implements FromCollection, WithHeadings, WithEvents
                         ],
                     ]);
                 }
-                for ($row = 2; $row <= 13; $row++) {
+                for ($row = 2; $row <= 9; $row++) {
                     $sheet->mergeCells("D{$row}:G{$row}");
                     $sheet->getStyle("D{$row}:G{$row}")->applyFromArray([
                         'borders' => [
@@ -157,7 +180,7 @@ class ExcelExport implements FromCollection, WithHeadings, WithEvents
                         ],
                     ]);
                 }
-                for ($row = 14; $row <= 15; $row++) {
+                for ($row = 13; $row <= 15; $row++) {
                     $sheet->mergeCells("D{$row}:G{$row}");
                     $sheet->getStyle("D{$row}:G{$row}")->applyFromArray([
                         'borders' => [
@@ -168,6 +191,20 @@ class ExcelExport implements FromCollection, WithHeadings, WithEvents
                         ],
                     ]);
                 }
+
+
+                for ($row = 10; $row <= 12; $row++) {
+                   
+                    $sheet->getStyle("D{$row}:G{$row}")->applyFromArray([
+                        'borders' => [
+                            'right' => [
+                                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM, // Thin border
+                                'color' => ['rgb' => '000000'], // Black border color
+                            ],
+                        ],
+                    ]);
+                }
+                $sheet->mergeCells('D10:G12');
                 $sheet->setCellValue('A1', '  PRIME GURKHA LOGISTICS PVT. LTD.');
                 $sheet->getStyle('A1:G1')->applyFromArray([
                     'font' => [
@@ -187,22 +224,27 @@ class ExcelExport implements FromCollection, WithHeadings, WithEvents
                 // Add static details for sender and consignee
                 $sheet->setCellValue('A2', 'COUNTRY OF ORIGIN: NEPAL');
                 $sheet->setCellValue('A3', 'INVOICE DATE: ' .  ($shipment ? $shipment->invoice_date : 'N/A'));
-                $sheet->setCellValue('A4', 'INVOICE NO: ' .  $this->sender->invoice_no ) ;
+                $sheet->setCellValue('A4', 'INVOICE NO: ' .  $this->sender->invoiceId ) ;
                 $sheet->setCellValue('A5', 'SHIPMENT VIA: ' . ($shipment ? $shipment->shipment_via : 'N/A'));
                 $sheet->setCellValue('A6', 'SHIPPER');
                 $sheet->setCellValue('A7', 'OM X. GLOBAL PVT. LTD. (TRADE NAME- PRIME GORKHA SERVICES)');
                 $sheet->setCellValue('A8', 'PAN NO: 619794828 ');
                 $sheet->setCellValue('A9', 'Phone : +977 9708072972 ');
                 $sheet->setCellValue('A10', 'Aloknagar-310 Kathmandu');
-                
-                $sheet->setCellValue('D2', 'ACTUAL  WEIGHT : ' .  ($shipment ? $shipment->actual_weight : 'N/A'));
-                $sheet->setCellValue('D3', 'TOTAL Box :' . $this->totalBoxes);
-                $sheet->setCellValue('D4', 'Dimension: ' . ($shipment ? $shipment->dimension : 'N/A'));
+                $sheet->setCellValue('D2', 'DESTINATION COUNTRY :' . ($receiver ? $receiver->receiverCountry : 'N/A'));
+            
+                $sheet->setCellValue('D4', 'TOTAL Box :' . $this->totalBoxes);
+                $sheet->setCellValue('D5', 'Dimension: ' . ($shipment ? $shipment->dimension : 'N/A'));
                 $sheet->setCellValue('D6', 'CONSIGNEE');
                 $sheet->setCellValue('D7', 'Name: ' . ($receiver ? $receiver->receiverName : 'N/A'));
                 $sheet->setCellValue('D8', 'Phone: ' . ($receiver ? $receiver->receiverPhone : 'N/A'));
                 $sheet->setCellValue('D9', 'Email: ' .  ($receiver ? $receiver->receiverEmail : 'N/A'));
                 $sheet->setCellValue('D10', 'Address: ' . ($receiver ? $receiver->receiverAddress : 'N/A'));
+                $sheet->setCellValue('D13', 'Postal Code: ' . ($receiver ? $receiver->receiverPostalcode : 'N/A'));
+
+                $sheet->getStyle('D10')->getAlignment()->setWrapText(true);
+               // Optionally auto-adjust the column width
+                
                 // Add table headers
                 $sheet->setCellValue('A16', 'BOXES');
                 $sheet->setCellValue('B16', 'SR NO');
@@ -264,7 +306,9 @@ class ExcelExport implements FromCollection, WithHeadings, WithEvents
                 $sheet->setCellValue("D{$row}", 'Total Quantity');
                 $sheet->setCellValue("E{$row}", $this->totalQuantity);
                 $sheet->setCellValue("F{$row}", 'Grand Total');
-                $sheet->setCellValue("G{$row}", $this->grandTotal);
+                $sheet->setCellValue("G{$row}", $this->grandTotal); 
+
+
                 
                 $sheet->getStyle("A{$row}:G{$row}")->applyFromArray([
                     'font' => ['bold' => true],

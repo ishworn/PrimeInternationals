@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Pos;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
-use App\Models\{Sender, Receiver, Box, Shipment, Item,};
+use App\Models\{Sender, Receiver, Box, Shipment, Item, Payment, Dispatch, Billing };
 
 use App\Exports\ExcelExport;
 
@@ -16,39 +16,36 @@ class CustomerController extends Controller
     public function CustomerAll()
     {
 
-        $senders = Sender::with('receiver','payments') ->get();
-    
-        
-        
+        $senders = Sender::with('receiver', 'payments' , 'dispatch' , )->get();
+
+
+
         return view('backend.customer.customer_all', compact('senders'));
     }
 
     public function CustomerShow($id)
     {
         $sender = Sender::with(['boxes.items'])->findOrFail($id);
-
+        
         $totalBoxes = $sender->boxes()->count();
-
-
         $receivers = Receiver::where('sender_id', $id)->get();
         $shipments = Shipment::where('sender_id', $id)->get();
-
+        $payments = Payment::where('sender_id', $id)->get();
+        $dispatchs = Dispatch::where('sender_id', $id)->get();
+        $billings = Billing::where('sender_id', $id)->get();
         $totalQuantity = $sender->boxes->sum(function ($box) {
             return $box->items->sum(function ($item) {
                 // Extract numeric part from quantity (remove non-numeric characters)
                 $numericQuantity = preg_replace('/[^0-9.]/', '', $item->quantity);
-                
                 // Return the numeric value or 0 if the quantity is empty or invalid
                 return is_numeric($numericQuantity) ? floatval($numericQuantity) : 0;
             });
         });
-        
-
         $grandTotal = $sender->boxes->sum(function ($box) {
             return $box->items->sum('amount');
         });
 
-        return view('backend.customer.customer_preview', compact('sender', 'receivers', 'shipments', 'totalQuantity', 'grandTotal', 'totalBoxes'));
+        return view('backend.customer.customer_preview', compact('sender', 'receivers', 'billings', 'shipments', 'totalQuantity', 'grandTotal', 'totalBoxes' , 'payments' , 'dispatchs'));
     }
 
 
@@ -57,20 +54,23 @@ class CustomerController extends Controller
 
     public function CustomerAdd()
     {
-        $senders=Sender::all();
-        $receivers=Receiver::all();
-      
-        return view('backend.customer.customer_add', compact('senders','receivers',));
+        $senders = Sender::all();
+        $receivers = Receiver::all();
+
+        return view('backend.customer.customer_add', compact('senders', 'receivers',));
     }
 
     public function CustomerEdit($id)
     {
         $sender = Sender::with(['boxes.items'])->findOrFail($id);
+        
         $receivers = Receiver::where('sender_id', $id)->get();
         $shipments = Shipment::where('sender_id', $id)->get();
         $nextBoxNumber = count($sender->boxes) + 1;
+        $allSenders = Sender::all();
 
-        return view('backend.customer.customer_edit', compact('sender', 'shipments', 'receivers', 'nextBoxNumber'));
+
+        return view('backend.customer.customer_edit', compact('sender', 'shipments', 'receivers', 'nextBoxNumber', 'allSenders'));
     }
 
     public function CustomerUpdate(Request $request)
@@ -128,7 +128,7 @@ class CustomerController extends Controller
             if ($shipment) {
                 $shipment->update([
                     'shipment_via' => $request->shipment_via,
-                    'actual_weight' => $request->actual_weight,
+                    'actual_weight' => $shipment->actual_weight,
                     'invoice_date' => $request->invoice_date,
                     'dimension' => $request->dimension,
                 ]);
@@ -150,10 +150,10 @@ class CustomerController extends Controller
                     'box_weight' => $box->box_weight,   // Store the weight of the box
                     'dimension' => $box->box_dimension, // Store the dimension of the box (example format: 12*12*12)
                 ];
-            
+
                 // Delete the items related to the box
                 $box->items()->delete();
-            
+
                 // Delete the box itself
                 $box->delete();
             });
@@ -164,20 +164,19 @@ class CustomerController extends Controller
             foreach ($request->boxes as $box_id => $box_data) {
                 // If there is a previously deleted box data available for this box_id, use it
                 if (isset($deletedBoxes[$box_id])) {
-                    $deletedBoxData = $deletedBoxes[$box_id ];
-                      // Assuming box_id starts from 1 and array is 0-indexed
+                    $deletedBoxData = $deletedBoxes[$box_id];
+                    // Assuming box_id starts from 1 and array is 0-indexed
                     //   dd($deletedBoxData);
 
                     // Create a new box with the required details
-                    try{
-                    $box = Box::create([
-                        'sender_id' => $sender->id,
-                        'box_number' => 'Box' . $nextBoxNumber,  // Set the box number (Box1, Box2, etc.)
-                        'box_weight' => $deletedBoxData['box_weight'],  // Use the stored weight from deleted box
-                        'box_dimension' => $deletedBoxData['dimension'],  // Use the stored dimension from deleted box
-                    ]);
-                    
-                    }catch (\Exception $e) {
+                    try {
+                        $box = Box::create([
+                            'sender_id' => $sender->id,
+                            'box_number' => 'Box' . $nextBoxNumber,  // Set the box number (Box1, Box2, etc.)
+                            'box_weight' => $deletedBoxData['box_weight'],  // Use the stored weight from deleted box
+                            'box_dimension' => $deletedBoxData['dimension'],  // Use the stored dimension from deleted box
+                        ]);
+                    } catch (\Exception $e) {
                         return redirect()->route('customer.all')->with('error', 'An error occurred: ' . $e->getMessage());
                     }
                 } else {
@@ -185,7 +184,7 @@ class CustomerController extends Controller
                     $box = Box::create([
                         'sender_id' => $sender->id,
                         'box_number' => 'Box' . $nextBoxNumber,  // Set the box number (Box1, Box2, etc.)
-                
+
                     ]);
                 }
                 // Increment the box number for the next iteration
@@ -234,9 +233,9 @@ class CustomerController extends Controller
         try {
             $sender = Sender::create([
                 'senderName' => $request->senderName,
-                'senderPhone' => $request->senderPhone,
+                'senderPhone' => $request->senderPhone ?? null,
                 'senderEmail' => $request->senderEmail ?? null,
-                'senderAddress' => $request->senderAddress,
+                'senderAddress' => $request->senderAddress ?? null,
             ]);
             $sender->save();
             $lastInvoice = Sender::max('invoiceId');
@@ -246,16 +245,16 @@ class CustomerController extends Controller
             Receiver::create([
                 'sender_id' => $sender->id,
                 'receiverName' => $request->receiverName,
-                'receiverPhone' => $request->receiverPhone,
+                'receiverPhone' => $request->receiverPhone ?? null,
                 'receiverEmail' => $request->receiverEmail ?? null,
-                'receiverAddress' => $request->receiverAddress,
-                'receiverPostalcode' => $request->receiverPostalcode,
-                'receiverCountry' => $request->receiverCountry,
+                'receiverAddress' => $request->receiverAddress ?? null,
+                'receiverPostalcode' => $request->receiverPostalcode ?? null,
+                'receiverCountry' => $request->receiverCountry ?? null,
             ]);
 
             Shipment::create([
                 'sender_id' => $sender->id,
-                'shipment_via' => $request->shipment_via,
+                'shipment_via' => $request->shipment_via ?? null,
                 // 'actual_weight' => $request->actual_weight,
                 'invoice_date' => $request->invoice_date,
                 'dimension' => $request->dimension ?? null,
@@ -309,7 +308,7 @@ class CustomerController extends Controller
     {
 
 
-        
+
         $sender = Sender::with(['boxes.items'])->findOrFail($id);
         $totalBoxes = $sender->boxes()->count();
 
@@ -317,13 +316,13 @@ class CustomerController extends Controller
         $shipments = Shipment::where('sender_id', $id)->get();
 
         $receiverName = $receivers->first()->receiverName ?? 'default_sender';   // Fallback to 'default_sender' if no name is available
-$filename = $receiverName . '.xlsx';
+        $filename = $receiverName . '.xlsx';
 
         return Excel::download(new ExcelExport($sender, $shipments, $receivers, $totalBoxes), $filename);
     }
 
 
- 
+
 
 
     public function printInvoice($id)
@@ -336,7 +335,6 @@ $filename = $receiverName . '.xlsx';
         $receivers = Receiver::where('sender_id', $id)->get();
         $shipments = Shipment::where('sender_id', $id)->get();
 
-    
 
 
 
@@ -344,7 +342,8 @@ $filename = $receiverName . '.xlsx';
 
 
 
-     
+
+
 
         return view('backend.customer.print', compact('sender', 'shipments', 'receivers', 'totalBoxes'));
     }
@@ -360,7 +359,7 @@ $filename = $receiverName . '.xlsx';
     public function CustomerUpdateWeight(Request $request)
     {
         $totalWeight = 0;
-       
+
         $weightDetails = ''; // String to store each box's weight in the desired format
         $dime = '';
 
@@ -402,21 +401,21 @@ $filename = $receiverName . '.xlsx';
     }
 
 
-    public function checkSender(Request $request)
-{
-    $name = $request->query('name');
-    $sender = Sender::where('name', $name)->first();
+    //     public function checkSender(Request $request)
+    // {
+    //     $name = $request->query('name');
+    //     $sender = Sender::where('name', $name)->first();
 
-    if ($sender) {
-        return response()->json([
-            'exists' => true,
-            'phone' => $sender->senderPhone,
-            'email' => $sender->senderEmail,
-            // Add other fields here
-        ]);
-    } else {
-        return response()->json(['exists' => false]);
-    }
-}
+    //     if ($sender) {
+    //         return response()->json([
+    //             'exists' => true,
+    //             'phone' => $sender->senderPhone,
+    //             'email' => $sender->senderEmail,
+    //             // Add other fields here
+    //         ]);
+    //     } else {
+    //         return response()->json(['exists' => false]);
+    //     }
+    // }
 
 }

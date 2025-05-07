@@ -84,6 +84,11 @@
                                     <div>INVOICE DATE: {{$sender->created_at }}</div>
                                     <div>INVOICE NO: {{ $sender->invoiceId ?? 'INV-001' }}</div>
                                     <div>TOTAL BOXES: {{ $totalBoxes ?? '0' }}</div>
+                                    @foreach($shipments as $shipment)
+                                    <div>SHIPMENT VIA: {{ $shipment->shipment_via  }}</div>
+                                    <div>ACTUAL WEIGHT: {{ $shipment->actual_weight }}</div>
+                                    <div>DIMENSION: {{ $shipment->dimension }}</div>
+                                    @endforeach
                                 </td>
                             </tr>
                             <!-- Shipper Details -->
@@ -94,17 +99,33 @@
                                     <div>Name: {{ $receiver->receiverName }}</div>
                                     <div>Phone: {{ $receiver->receiverPhone  }}</div>
                                     <div>Email: {{ $receiver->receiverEmail  }}</div>
+                                    <div>Postal Code: {{ $receiver->receiverPostalcode  }}</div>
                                     <div>Complete Address: {{ $receiver->receiverAddress  }}</div>
                                     @endforeach
                                 </td>
 
-                                <td colspan="4" class="border-[1px] border-black align-top p-2 text-black">
-                                    @foreach($shipments as $shipment)
-                                    <div>SHIPMENT VIA: {{ $shipment->shipment_via  }}</div>
-                                    <div>ACTUAL WEIGHT: {{ $shipment->actual_weight }}</div>
-                                    <div>DIMENSION: {{ $shipment->dimension }}</div>
+                                <td colspan="4" class="border-[1px] border-black p-2 text-black">
+                                    @if($dispatchs->isEmpty())
+                                    <div>Despatch To: N/A</div>
+                                    <div>Despatch Time: N/A</div>
+                                    @else
+                                    @foreach($dispatchs as $dispatch)
+                                    <div>Despatch To: {{ $dispatch->dispatch_by ?? 'N/A' }}</div>
+                                    <div>Despatch Time: {{ $dispatch->dispatched_at ?? 'N/A' }}</div>
                                     @endforeach
+                                    @endif
+
+                                    @if($payments->isEmpty())
+                                    <div>Amount: N/A</div>
+                                    <div>Payment Method: N/A</div>
+                                    @else
+                                    @foreach($payments as $payment)
+                                    <div>Amount: {{ $payment->total_paid ?? 'N/A' }}</div>
+                                    <div>Payment Method: {{ $payment->payment_method ?? 'N/A' }}</div>
+                                    @endforeach
+                                    @endif
                                 </td>
+
                             </tr>
                         </tbody>
                     </div>
@@ -163,6 +184,48 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <div class="mt-8 overflow-x-auto">
+                            <table class="w-full text-left min-w-[600px]">
+                                <thead>
+                                    <tr class="bg-gray-100 text-gray-700 uppercase text-xs">
+                                        <th class="py-3 px-2">Description</th>
+                                        <th class="py-3 px-2 text-right">Quantity</th>
+                                        <th class="py-3 px-2 text-right">Rate</th>
+                                        <th class="py-3 px-2 text-right">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-sm">
+                                    @if ($billings->isEmpty())
+                                    <tr>
+                                        <td colspan="4" class="py-3 px-2 text-center text-gray-500">
+                                            No bill has been generated.
+                                        </td>
+                                    </tr>
+                                    @else
+                                    @foreach ($billings as $item)
+                                    <tr>
+                                        <td class="py-2 px-2">{{ $item->description }}</td>
+                                        <td class="py-2 px-2 text-right">{{ $item->quantity }}</td>
+                                        <td class="py-2 px-2 text-right">{{ number_format($item->rate, 2) }}</td>
+                                        <td class="py-2 px-2 text-right">{{ number_format($item->total, 2) }}</td>
+                                    </tr>
+                                    @endforeach
+                                    @endif
+                                </tbody>
+                                @if (!$billings->isEmpty())
+                                <tfoot>
+                                    <tr class="font-semibold bg-gray-50">
+                                        <td colspan="3" class="py-3 px-2 text-right">Total:</td>
+                                        <td class="py-3 px-2 text-right">
+                                            {{ number_format($billings->sum('total'), 2) }}
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                                @endif
+                            </table>
+
+
+                        </div>
                     </div>
                 </table>
             </div>

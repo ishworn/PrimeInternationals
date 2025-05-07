@@ -36,10 +36,25 @@
 
                                 <!-- Receiver Name -->
                                 <div class="form-group col-md-6">
-                                    <label for="receiver_name" style="font-size: 16px;">Receiver Name:</label>
-                                    <input type="text" name="receiver_name" value="{{ $sender->receiver->receiverName }}" class="form-control" required placeholder=" Receiver Name" readonly style="font-size: 16px; padding: 10px;">
+                                    <label for="receiver_name" style="font-size: 16px;">Sender Email:</label>
+                                    <input type="text" name="sender_email" value="{{ $sender->senderEmail }}" class="form-control" required placeholder=" Sender Email"  style="font-size: 16px; padding: 10px;">
                                 </div>
                             </div>
+                            <div class="row">
+                                <!-- Sender Name -->
+                                <div class="form-group col-md-6">
+                                    <label for="receiver_name" style="font-size: 16px;">Receiver Name:</label>
+                                    <input type="text" name="receiver_name" value="{{ $sender->senderName }}" class="form-control" required placeholder=" Receiver Name"  readonly style="font-size: 16px; padding: 10px;">
+                                </div>
+
+                                <!-- Receiver Name -->
+                                <div class="form-group col-md-6">
+                                    <label for="receiver_name" style="font-size: 16px;">Receiver Email:</label>
+                                    <input type="text" name="receiver_email" value="{{ $sender->receiver->receiverEmail }}" class="form-control" required placeholder=" Receiver Email" style="font-size: 16px; padding: 10px;">
+                                </div>
+                            </div>
+
+
 
                             <div class="row">
                                 <!-- Receiver Location -->

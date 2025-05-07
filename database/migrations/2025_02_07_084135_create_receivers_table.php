@@ -18,11 +18,11 @@ return new class extends Migration
             $table->unsignedBigInteger('sender_id'); // Ensure it's unsigned
             $table->foreign('sender_id')->references('id')->on('senders')->onDelete('cascade');
             $table->string('receiverName');
-            $table->string('receiverPhone');
+            $table->string('receiverPhone')->nullable();;
             $table->string('receiverEmail')->nullable();
-            $table->string('receiverPostalcode');
-            $table->string('receiverCountry');
-            $table->text('receiverAddress');
+            $table->string('receiverPostalcode')->nullable();;
+            $table->string('receiverCountry')->nullable();;
+            $table->text('receiverAddress')->nullable();;
             $table->timestamps(0);
         });
     }

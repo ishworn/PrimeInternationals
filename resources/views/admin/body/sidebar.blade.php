@@ -24,7 +24,7 @@
                         <li><a href="{{ route('customer.all') }}">All Customers</a></li>
                     </ul>
                 </li>
-                
+
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="ri-map-pin-line text-xl"></i>
@@ -32,7 +32,8 @@
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
                         <li><a href="{{ route('trackings.index') }}">Manage Tracking</a></li>
-                        <li><a href="https://primegorkha.aftership.com" onclick="window.open(this.href, '_blank'); return false;">Track</a></li>
+                        <li><a href="https://primegorkha.aftership.com"
+                                onclick="window.open(this.href, '_blank'); return false;">Track</a></li>
                     </ul>
                 </li>
 
@@ -42,9 +43,25 @@
                         <span>Payment</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
+                    <li><a href="{{ route('payments.dashboard') }}">Payment Dashboard</a></li>
                         <li><a href="{{ route('payments.index') }}">Manage Payment</a></li>
-                        <li><a  href="{{ route('payments.details') }}"   >Payment Details</a></li>
+                        <li><a href="{{ route('payments.details') }}">Expenses Management</a></li>
+                        <li><a href="{{ route('payments.manage') }}">Sells Order</a></li>
+                      
+                       
                     </ul>
+                </li>
+                <li>
+                    <a href="{{ route('usermgmt.index') }}" class="waves-effect">
+                        <i class="fa fa-user-plus" aria-hidden="true"></i>
+                        <span>Manage User</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('dispatch.index') }}" class="waves-effect">
+                        <i class="fas fa-shipping-fast" aria-hidden="true"></i>
+                        <span>Dispatch</span>
+                    </a>
                 </li>
             </ul>
         </div>

@@ -3,19 +3,27 @@
 @section('admin')
 
 <div class="page-content">
+
+
     @if (session('error'))
     <div class="alert alert-danger">
         {{ session('error') }}
     </div>
     @endif
+    @if (session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+    @endif
+
     <a href="javascript:history.back()" class="btn btn-warning btn-rounded no-print"
         style="font-size: 15px; display: inline-flex; align-items: center; text-decoration: none; 
           background-color: #FFD700; color: black; padding: 10px 10px; border-radius: 5px; 
           margin-bottom: 15px; margin-top: 5px; margin-left: 20px;">
         <i class="fas fa-arrow-left" style="margin-right: 5px;"></i> Back
     </a>
+
     <div class="container-fluid">
-        <!-- Start page title -->
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
@@ -23,15 +31,11 @@
                 </div>
             </div>
         </div>
-        <!-- End page title -->
 
-        <!-- Trackings Table -->
         <div class="row pb-20">
             <div class="col-12">
                 <div class="card shadow-lg">
                     <div class="card-body">
-                        <h4 class="card-title mb-4" style="font-size: 22px; font-weight: bold;"></h4>
-
                         <table id="datatable" class="table table-bordered dt-responsive nowrap" style="width: 100%;">
                             <thead class="bg-primary text-white">
                                 <tr>
@@ -39,33 +43,37 @@
                                     <th>Sender Name</th>
                                     <th>Receiver Name</th>
                                     <th>Country</th>
-                                    <th style="max-width: 300px; white-space: normal;">Total Weight</th>
-                                    <th>Total Box</th>
-                                    <th style="width: 100px;">Amount</th>
-                                    <th>Payment Method</th>
+                                    <th>Total Weight</th>
+                                    <th style="width: 130px;">Bill Amount</th>
+                                    <th style="width: 150px;">Payment Method</th>
+                                    <th style="width: 200px;">Amount</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($senders as $key => $sender)
                                 <tr>
-                                    <td hidden>{{ $sender->id }}</td>
+                                    <input type="hidden" hidden name="sender_id" value="{{ $sender->id }}">
                                     <td>{{ $key + 1 }}</td>
                                     <td>{{ $sender->senderName }}</td>
                                     <td>{{ $sender->receiver->receiverName }}</td>
                                     <td>{{ $sender->receiver->receiverCountry }}</td>
-                                    <td style="max-width: 300px; white-space: normal;">{{ $sender->shipments->actual_weight }}</td>
-                                    <td>{{ $senderBoxCounts[$sender->id] ?? 'N/A'}}</td>
+                                    <td>{{ $totalWeights[$sender->id] ?? '0' }} Kg</td>
+
                                     <td>
                                         <form id="paymentForm{{ $sender->id }}" action="{{ route('payments.store') }}" method="POST">
                                             @csrf
                                             <input type="hidden" name="sender_id" value="{{ $sender->id }}">
-                                            <input type="number" name="amount" class="form-control" required>
+                                            <input type="number" name="bill_amount" class="form-control"
+                                                value="{{ $sender->payments->bill_amount ?? '' }}"
+                                                {{ isset($sender->payments->bill_amount) && $sender->payments->bill_amount != '' ? 'readonly' : '' }}>
                                     </td>
                                     <td>
                                         <div class="dropdown">
-                                            <button class="btn btn-secondary dropdown-toggle btn-sm" type="button" id="paymentMethodDropdown{{ $key }}" data-bs-toggle="dropdown" aria-expanded="true">
-                                                {{ $item->paymentMethod ?? 'Select Method' }}
+                                            <button class="btn btn-secondary dropdown-toggle btn-sm" type="button"
+                                                id="paymentMethodDropdown{{ $key }}" data-bs-toggle="dropdown"
+                                                aria-expanded="false">
+                                                {{ $sender->payments->payment_method ?? 'Select Method' }}
                                             </button>
                                             <ul class="dropdown-menu" aria-labelledby="paymentMethodDropdown{{ $key }}">
                                                 <li><a class="dropdown-item" href="#" onclick="updatePaymentMethod(this, '{{ $key }}', '{{ $sender->id }}')">Bank Transfer</a></li>
@@ -75,25 +83,137 @@
                                             <input type="hidden" name="payment_method" id="paymentMethod{{ $sender->id }}" value="">
                                         </div>
                                     </td>
+                                    <td>
+                                        <div id="amountFields{{ $sender->id }}" class="amount-fields-container">
+                                            <div class="amount-field" id="cashField{{ $sender->id }}" style="{{ isset($sender->payments->cash_amount) && $sender->payments->cash_amount > 0 ? 'display: block;' : 'display: none;' }}">
+                                                <small class="amount-label">Cash Amount</small>
+                                                <input type="number" name="cash_amount" class="form-control amount-input"
+                                                    value="{{ $sender->payments->cash_amount ?? '' }}" />
+                                            </div>
+                                            <div class="amount-field" id="bankField{{ $sender->id }}" style="{{ isset($sender->payments->bank_amount) && $sender->payments->bank_amount > 0 ? 'display: block;' : 'display: none;' }}">
+                                                <small class="amount-label">Bank Amount</small>
+                                                <input type="number" name="bank_amount" class="form-control amount-input"
+                                                    value="{{ $sender->payments->bank_amount ?? '' }}" />
+                                            </div>
+                                        </div>
+                                    </td>
                                     <td class="d-flex justify-content-center">
-                                        <button type="submit" form="paymentForm{{ $sender->id }}" class="btn btn-success btn-sm mx-1" title="Save Payment">
+                                        @if($sender->payments && is_null($sender->payments->total_paid))
+                                        <button type="submit" form="paymentForm{{ $sender->id }}"
+                                            class="btn btn-success btn-sm mx-1" title="Save Payment">
                                             <i class="fas fa-save"></i>
                                         </button>
+                                        @else
+                                        <button type="submit" form="paymentForm{{ $sender->id }}"
+                                            class="btn btn-success btn-sm mx-1" title="Save Payment" disabled>
+                                            <i class="fas fa-save"></i>
+                                        </button>
+                                        @endif
+                                        </form>
+                                        @if ($sender->payments && !is_null($sender->payments->total_paid))
+                                        <div style="display: flex; justify-content: flex-end;">
+                                            <a href="#" class="btn btn-success no-print" data-bs-toggle="modal" data-bs-target="#editPaymentModal{{ $sender->payments->id }}"
+                                                style="margin-left: 5px;">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        </div>
 
+
+                                        <!-- Modal starts here -->
+                                        <div class="modal fade" id="editPaymentModal{{ $sender->payments->id }}" tabindex="-1" aria-labelledby="editPaymentModalLabel{{ $sender->payments->id }}" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <form action="{{ route('payments.edit', $sender->payments->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="editPaymentModalLabel{{ $sender->payments->id }}">Edit Payment</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <input type="hidden" name="sender_id" value="{{ $sender->id }}">
+
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Bill Amount</label>
+                                                                <input type="number" class="form-control" name="bill_amount" value="{{ $sender->payments->bill_amount }}" readonly>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Received Amount</label>
+                                                                <input type="number" class="form-control" name="received_amount" value="{{ $sender->payments->total_paid }}" readonly>
+                                                            </div>
+                                                            @php
+
+                                                            $remainAmount = $sender->payments->bill_amount - $sender->payments->total_paid;
+
+
+                                                            $remainAmount = $remainAmount < 0 ? 0 : $remainAmount;
+                                                                @endphp
+
+                                                                <div class="mb-3">
+                                                                <label class="form-label">Remain Amount</label>
+                                                                <input type="number" class="form-control" name="remain_amount" value="{{ $remainAmount }}" readonly>
+                                                        </div>
+
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Pay By</label>
+                                                            <select class="form-select" name="pay_by" id="pay_by" required onchange="handlePaymentMethod(this.value)">
+                                                                <option value="" disabled selected>Select Payment Method</option>
+                                                                <option value="cash">Cash</option>
+                                                                <option value="bank">Bank</option>
+                                                                <option value="both">Both</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="mb-3 " id="bothPay">
+                                                            <label class="form-label">Cash Amount</label>
+                                                            <input type="number" class="form-control mb-2" name="pay_cash">
+
+                                                            <label class="form-label">Bank Amount</label>
+                                                            <input type="number" class="form-control" name="pay_bank">
+                                                        </div>
+
+
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-primary">Update Payment</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                </div>
+                                                </form>
+                                            </div>
+                                        </div>
+
+                                        <!-- Modal ends -->
+
+                                        @else
+                                        <button class="btn btn-secondary btn-sm mx-1" disabled title="No payment record">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        @endif
+                                        @if($sender->payments)
+                                        <button class="btn btn-secondary btn-sm mx-1" disabled title="No payment record">
+                                        <i class="fas fa-file-invoice"></i>
+                                        </button>
+                                        @else
+                                        <a href="{{ route('payments.invoice', $sender->id) }}" class="btn btn-warning btn-sm mx-1" title="Billng">
+                                            <i class="fas fa-file-invoice"></i>
+                                        </a>
+                                        @endif
                                     </td>
-                                    </form>
                                 </tr>
                                 @endforeach
                             </tbody>
                         </table>
                     </div>
+
+
+
+
                 </div>
-            </div> <!-- End col -->
-        </div> <!-- End row -->
-    </div> <!-- container-fluid -->
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- Add some custom styles for modern design -->
 <style>
     .btn {
         transition: all 0.3s ease;
@@ -106,7 +226,6 @@
 
     .card {
         border-radius: 8px;
-        /* overflow: visible; */
     }
 
     table th,
@@ -114,70 +233,88 @@
         text-align: center;
         padding: 12px;
         font-size: 16px;
-        /* overflow: visible; */
     }
 
     table tbody tr:hover {
         background-color: #f1f1f1;
-        overflow: visible;
     }
+
     table {
         z-index: 1;
-        /* overflow: visible; */
-       
     }
 
     table th {
         background-color: #3e8e41;
         color: white;
         text-align: center;
-        /* overflow: visible; */
     }
 
     table td {
         vertical-align: middle;
-        /* overflow: visible; */
     }
 
-    /* Ensure the dropdown is positioned absolutely */
-.dropdown-menu {
-  position: absolute !important;
-  z-index: 1000; /* Ensure it's above other elements */
-  max-height: none; /* Remove any default max height */
-  /* overflow: visible; Make sure all content is visible */
-}
+    .dropdown-menu {
+        position: absolute !important;
+        z-index: 1000;
+    }
 
-td {
-  position: relative;
-   /* Make sure the dropdown is positioned relative to the <td> */
-   /* overflow: visible; */
-}
-.page-content, .container-fluid {
-    overflow: visible; /* Ensure the entire page content allows for dropdowns to be fully visible */
-}
+    .amount-fields-container {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
 
+    .amount-field {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .amount-label {
+        font-size: 12px;
+        color: #666;
+        margin-bottom: 2px;
+        text-align: left;
+    }
+
+    .amount-input {
+        width: 100%;
+    }
 </style>
 
+
+
+
+
+
 <script>
-    // Update Payment Method and change button color based on selection
     function updatePaymentMethod(element, key, senderId) {
-        var button = document.getElementById('paymentMethodDropdown' + key);
-        var paymentMethodInput = document.getElementById('paymentMethod' + senderId);
+        const selectedMethod = element.textContent.trim();
+        const button = document.getElementById(`paymentMethodDropdown${key}`);
+        const paymentMethodInput = document.getElementById(`paymentMethod${senderId}`);
+        const cashField = document.getElementById(`cashField${senderId}`);
+        const bankField = document.getElementById(`bankField${senderId}`);
 
-        button.textContent = element.textContent;
-        paymentMethodInput.value = element.textContent;
+        // Update button label
+        button.textContent = selectedMethod;
 
-        if (element.textContent === 'Cash') {
-            button.classList.remove('btn-secondary', 'btn-primary', 'btn-warning');
-            button.classList.add('btn-success'); // Green for Cash
-        } else if (element.textContent === 'Bank Transfer') {
-            button.classList.remove('btn-secondary', 'btn-primary', 'btn-success');
-            button.classList.add('btn-warning'); // Yellow for Bank Transfer
-        } else if (element.textContent === 'Both') {
-            button.classList.remove('btn-secondary', 'btn-primary', 'btn-success');
-            button.classList.add('btn-primary'); // Blue for Both
+        // Update hidden input
+        paymentMethodInput.value = selectedMethod;
+
+        // Show/hide amount fields based on method
+        if (selectedMethod === 'Cash') {
+            cashField.style.display = 'block';
+            bankField.style.display = 'none';
+        } else if (selectedMethod === 'Bank Transfer') {
+            cashField.style.display = 'none';
+            bankField.style.display = 'block';
+        } else if (selectedMethod === 'Both') {
+            cashField.style.display = 'block';
+            bankField.style.display = 'block';
         }
     }
+
+    // Initialize datatable
 </script>
+
 
 @endsection

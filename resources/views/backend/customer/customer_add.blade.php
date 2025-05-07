@@ -224,7 +224,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label>Sender Phone:</label>
-                                                <input type="number" id="senderPhone" name="senderPhone" required>
+                                                <input type="number" id="senderPhone" name="senderPhone" >
                                             </div>
                                         </div>
                                         <div class="col-md-6">
@@ -235,13 +235,9 @@
                                             </div>
                                             <div class="form-group">
                                                 <label>Sender Address:</label>
-                                                <input type="text" id="senderAddress" name="senderAddress" required>
+                                                <input type="text" id="senderAddress" name="senderAddress" >
                                             </div>
                                         </div>
-
-
-
-
 
                                     </div>
                                     <div class="card-body">
@@ -281,11 +277,11 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Receiver Name:</label>
-                                                <input type="text" name="receiverName" required class="form-control">
+                                                <input type="text" name="receiverName" required class="form-control " required>
                                             </div>
                                             <div class="form-group">
                                                 <label>Receiver Phone:</label>
-                                                <input type="text" name="receiverPhone" required class="form-control">
+                                                <input type="text" name="receiverPhone" class="form-control">
                                             </div>
                                             <div class="form-group">
                                                 <label>Receiver Email:</label>
@@ -306,7 +302,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label>Address:</label>
-                                                <textarea name="receiverAddress" required class="form-control"></textarea>
+                                                <textarea name="receiverAddress"  class="form-control"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -370,7 +366,7 @@
                                             <!-- Shipment Via -->
                                             <div class="col-12 col-md-6 mb-3">
                                                 <label for="shipment_via">Shipment Via:</label>
-                                                <input type="text" name="shipment_via" class="form-control" required>
+                                                <input type="text" name="shipment_via" class="form-control" >
                                             </div>
                                             <!-- Actual Weight -->
 
@@ -379,11 +375,7 @@
                                                 <label for="invoice_date">Invoice Date:</label>
                                                 <input type="date" name="invoice_date" class="form-control" required>
                                             </div>
-                                            <!-- Dimension -->
-                                            <div class="col-12 col-md-6 mb-3">
-                                                <label for="dimension">Dimension (LxWxH):</label>
-                                                <input type="text" name="dimension" class="form-control">
-                                            </div>
+                                          
                                         </div>
                                         <!-- Box Container Section -->
                                         <div id="boxContainer" class="mt-4"></div>
@@ -414,6 +406,8 @@
 $(document).ready(function() {
     // Initialize DataTable for the sender table
    
+
+    
 
     // Initialize DataTable for the receiver table
     $('#receiverTable').DataTable();

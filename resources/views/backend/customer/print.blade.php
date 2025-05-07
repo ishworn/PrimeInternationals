@@ -2,32 +2,45 @@
 @section('admin')
 <script src="https://cdn.tailwindcss.com"></script>
 <div class="page-content">
-<a href="javascript:history.back()" class="btn btn-warning btn-rounded no-print" 
-style="font-size: 15px; display: inline-flex; align-items: center; text-decoration: none; 
+    <a href="javascript:history.back()" class="btn btn-warning btn-rounded no-print"
+        style="font-size: 15px; display: inline-flex; align-items: center; text-decoration: none; 
           background-color: #FFD700; color: black; padding: 10px 10px; border-radius: 5px; 
           margin-bottom: 15px; margin-top: 10px; margin-left: 10px;">
-    <i class="fas fa-arrow-left" style="margin-right: 5px;"></i> Back
-</a>
+        <i class="fas fa-arrow-left" style="margin-right: 5px;"></i> Back
+    </a>
 
-  <style>@media print { .no-print { display: none !important; } }</style>
+    <style>
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
     <div class="container-fluid">
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.1/dist/tailwind.min.css" rel="stylesheet">
         <style>
             @media print {
                 body * {
-                    visibility: hidden; /* Hide everything */
+                    visibility: hidden;
+                    /* Hide everything */
                 }
-                #invoice-print-content, #invoice-print-content * {
-                    visibility: visible; /* Show only the invoice content */
+
+                #invoice-print-content,
+                #invoice-print-content * {
+                    visibility: visible;
+                    /* Show only the invoice content */
                 }
+
                 #invoice-print-content {
                     position: absolute;
                     left: 0;
                     top: 0;
                     width: 100%;
                 }
+
                 .no-print {
-                    display: none !important; /* Ensure elements marked with 'no-print' class are hidden */
+                    display: none !important;
+                    /* Ensure elements marked with 'no-print' class are hidden */
                 }
             }
         </style>
@@ -46,7 +59,7 @@ style="font-size: 15px; display: inline-flex; align-items: center; text-decorati
                     </thead>
                     <tbody>
                         <!-- Shipper Details -->
-                       <tr>
+                        <tr>
                             <td colspan="4" class="border-[1px] border-black p-2 text-black">
                                 <div class="font-bold">SHIPPER</div>
                                 <div>OM X. GLOBAL PVT. LTD. (TRADE NAME- PRIME GURKHA LOGISTICS)</div>
@@ -57,13 +70,13 @@ style="font-size: 15px; display: inline-flex; align-items: center; text-decorati
                             </td>
 
                             <td colspan="4" class="border-[1px] border-black p-2 align-top text-black">
-                                
-                            @foreach ($receivers as $receiver)
-                    <div>DESTINATION COUNTRY: {{$receiver->receiverCountry }} </div>
-                                  
+
+                                @foreach ($receivers as $receiver)
+                                <div>DESTINATION COUNTRY: {{$receiver->receiverCountry }} </div>
+
                                 @endforeach
 
-                               
+
                                 <div>INVOICE DATE: {{ $sender->created_at->format('Y-m-d') }}</div>
                                 <div>INVOICE NO: {{ $sender->invoiceId ?? 'INV-001' }}</div>
                                 <div>TOTAL BOXES: {{ $sender->boxes->count() }}</div>
@@ -75,22 +88,23 @@ style="font-size: 15px; display: inline-flex; align-items: center; text-decorati
                             <td colspan="4" class="border-[1px] border-black p-2 text-black">
                                 <div class="font-bold">CONSIGNEE</div>
                                 @foreach ($receivers as $receiver)
-                                    <div>Name: {{ $receiver->receiverName }}</div>
-                                    <div>Phone: {{ $receiver->receiverPhone }}</div>
-                                    <div>Email: {{ $receiver->receiverEmail }}</div>
-                                    <div>Complete Address: {{ $receiver->receiverAddress }}</div>
+                                <div>Name: {{ $receiver->receiverName }}</div>
+                                <div>Phone: {{ $receiver->receiverPhone }}</div>
+                                <div>Email: {{ $receiver->receiverEmail }}</div>
+                                <div>Postal Code: {{ $receiver->receiverPostalcode }}</div>
+                                <div>Complete Address: {{ $receiver->receiverAddress }}</div>
                                 @endforeach
                             </td>
 
                             <!-- Shipment Details -->
                             <td colspan="4" class="border-[1px] border-black p-2 text-black">
-                                @foreach ($shipments as $shipment)
-                                    <div>SHIPMENT VIA: {{ $shipment->shipment_via }}</div>
-                                    <div>DIMENSION: {{ $shipment->dimension }}</div>
-                                       
-                                @endforeach
-                                    <div>Box Weight: {{ $box->box_weight }} Kg</div> <!-- Using box weight here -->
+                           
+                               
+                                <div>DIMENSION: {{ $box->box_dimension ?? 'N/A' }}</div>
+
                                 
+                                <div>Box Weight: {{ $box->box_weight }} Kg</div> <!-- Using box weight here -->
+
                             </td>
                         </tr>
                     </tbody>

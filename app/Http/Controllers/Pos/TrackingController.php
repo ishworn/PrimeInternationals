@@ -17,15 +17,17 @@ class TrackingController extends Controller
 
     public function index()
     {
+        $senders = Sender::with('receiver', 'dispatch')
+            ->whereHas('dispatch', function ($query) {
+                $query->whereNotNull('dispatch_by'); // Ensure 'dispatch_by' has a value, indicating dispatch is done
+            })
+            ->whereNull('trackingId') // Exclude records where trackingId is not null
+            ->get();
     
-        $senders = Sender::with('receiver')
-                     ->whereNull('trackingId')  // Only select rows where trackingId is null
-                     ->get();
-  
-
-         // Fetch all tracking records
-        return view('backend.trackings.index', compact( 'senders' ,  )); // Return the index view with tracking data
+        // Fetch all tracking records
+        return view('backend.trackings.index', compact('senders')); // Return the index view with tracking data
     }
+    
 
    
 
@@ -40,12 +42,16 @@ class TrackingController extends Controller
     // Update an existing tracking record
     public function update(Request $request, $id)
     {// Find the tracking record by ID
-        $sender = Sender::findOrFail($id);
+        $sender = Sender::with('receiver')->findOrFail($id); 
        
         // Validate the updated input data
+        $sender->senderEmail = $request->input('sender_email');
         $sender->trackingId = $request->input('tracking_number'); 
+        $sender->receiver->receiverEmail = $request->input('receiver_email');  
+
         // Update the tracking record in the database
         $sender->save();
+        $sender->receiver->save();
         Mail::to($sender->senderEmail)->send(new TrackingUpdated($sender, $sender->receiver));
         Mail::to($sender->receiver->receiverEmail)->send(new TrackingUpdated($sender, $sender->receiver));
         // Redirect back to the index route after successful update

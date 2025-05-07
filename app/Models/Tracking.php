@@ -11,4 +11,9 @@ class Tracking extends Model
 
     // Make these fields mass assignable
     protected $fillable = ['tracking_number', 'receiver_name', 'location'];
+
+    public function sender()
+    {
+        return $this->belongsTo(Sender::class);
+    }
 }

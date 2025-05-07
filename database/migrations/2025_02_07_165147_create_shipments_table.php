@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('shipments', function (Blueprint $table) {
             $table->id(); // Automatically creates an 'id' column as primary key
             $table->integer('sender_id');
-            $table->string('shipment_via');
+            $table->string('shipment_via')->nullable();;
             $table->string('actual_weight')->nullable();
             $table->date('invoice_date');
             $table->string('dimension')->nullable();

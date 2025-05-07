@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Hash;
 class AdminController extends Controller
 {
     public function index(){
-        $totalIncome = Payment::sum('amount'); 
+        $totalIncome = Payment::sum('total_paid'); 
         $totalCustomer = Sender::count();
         $totalUser = User::count();
       

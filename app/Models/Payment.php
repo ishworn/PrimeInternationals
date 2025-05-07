@@ -14,8 +14,14 @@ class Payment extends Model
 
     // Define fillable columns for mass assignment (optional)
     protected $fillable = [
-        'amount',
+        
+        'bill_amount',
         'payment_method',
+        'cash_amount',
+        'bank_amount',
+        'total_paid',
+        'debits',
+        
         'status',
         'sender_id',
     ];

@@ -18,7 +18,7 @@ class TrackingUpdated extends Mailable
     {
         $this->sender = $sender;
         $this->receiver = $receiver;
-    }
+    } 
 
     public function build()
     {

@@ -168,14 +168,21 @@
     }
 </style>
 <div class="page-content">
+    <a href="javascript:history.back()" class="btn btn-warning"
+        style="font-size: 15px; display: inline-flex; align-items: center; text-decoration: none; 
+          background-color: #FFD700; color: black; padding: 10px 10px; border-radius: 5px; 
+          margin-bottom: 10px; margin-top: 10px; margin-left: 10px;">
+        <i class="fas fa-arrow-left" style="margin-right: 5px;"></i> Back
+    </a>
     <div class="container-fluid">
 
         <div class="row">
+            <h2 class="card-title">Edit Customer Page </h2>
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
 
-                        <h4 class="card-title">Edit Customer Page </h4><br><br>
+
 
                         <form method="post" action="{{ route('customer.update') }}" id="myForm" enctype="multipart/form-data">
                             @csrf
@@ -206,28 +213,61 @@
                                 <!-- Sender Section -->
                                 <div id="senderForm" class="form-section">
                                     <h3>Sender Details</h3>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Sender ID:</label>
+                                                <input type="text" id='id' value="{{ $sender->id }}" name="id" readonly required>
+                                            </div>
 
+                                            <div class="form-group">
+                                                <label>Sender Name:</label>
+                                                <input type="text" id='senderName' value="{{ $sender->senderName }}" name="senderName" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Sender Phone:</label>
+                                                <input type="text" id='senderPhone' value="{{ $sender->senderPhone }}" name="senderPhone">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
 
-                                    <div class="form-group">
-                                        <label>Sender Id:</label>
-                                        <input type="text" id='id' value="{{ $sender->id }}" name="id" readonly required>
+                                            <div class="form-group">
+                                                <label>Sender Email:</label>
+                                                <input type="email" id='senderEmail' value="{{ $sender->senderEmail }}" name="senderEmail">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Sender Address:</label>
+                                                <input type="text" id='senderAddress' value="{{ $sender->senderAddress }}" name="senderAddress">
+                                            </div>
+                                        </div>
                                     </div>
+                                    <div class="card-body">
+                                        <h4 class="card-title mb-4" style="font-size: 22px; font-weight: bold;"></h4>
 
-                                    <div class="form-group">
-                                        <label>Sender Name:</label>
-                                        <input type="text" id='senderName' value="{{ $sender->senderName }}" name="senderName" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Sender Phone:</label>
-                                        <input type="text" id='senderPhone' value="{{ $sender->senderPhone }}" name="senderPhone" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Sender Email:</label>
-                                        <input type="email" id='senderEmail' value="{{ $sender->senderEmail }}" name="senderEmail">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Sender Address:</label>
-                                        <input type="text" id='senderAddress' value="{{ $sender->senderAddress }}" name="senderAddress" required>
+                                        <table id="datatable" class="table table-bordered dt-responsive nowrap" style="width: 100%;">
+                                            <thead class="bg-primary text-white">
+                                                <tr>
+                                                    <th>Sl</th>
+                                                    <th>Sender Name</th>
+                                                    <th>Sender Email</th>
+                                                    <th>Sender Phone</th>
+                                                    <th>Sender Address</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($allSenders as $key => $singleSender)
+                                                <tr>
+                                                    <td>{{ $key + 1 }}</td>
+                                                    <td>{{ $singleSender->senderName }}</td>
+
+                                                    <td>{{ $singleSender->senderEmail }}</td>
+                                                    <td>{{ $singleSender->senderPhone }}</td>
+                                                    <td>{{ $singleSender->senderAddress }}</td>
+                                                    <!-- Assuming amount field exists -->
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
 
@@ -246,7 +286,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label>Receiver Phone:</label>
-                                                <input type="text" name="receiverPhone" value="{{ $receiver->receiverPhone }}" required class="form-control">
+                                                <input type="text" name="receiverPhone" value="{{ $receiver->receiverPhone }}" class="form-control">
                                             </div>
                                             <div class="form-group">
                                                 <label>Receiver Email:</label>
@@ -266,7 +306,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label>Address:</label>
-                                                <input name="receiverAddress" value="{{ $receiver->receiverAddress }}" required class="form-control"></input>
+                                                <input name="receiverAddress" value="{{ $receiver->receiverAddress }}" class="form-control"></input>
                                             </div>
                                         </div>
                                     </div>
@@ -278,24 +318,13 @@
                                     <div class="container-fluid">
                                         <div class="row">
                                             <!-- Shipment Via -->
-                                            <div class="col-12 col-md-6 mb-3">
-                                                <label for="shipment_via">Shipment Via:</label>
-                                                <input type="text" name="shipment_via" value="{{ $shipment->shipment_via }}" class="form-control" required>
-                                            </div>
-                                            <!-- Actual Weight -->
-                                            <div class="col-12 col-md-6 mb-3">
-                                                <label for="actual_weight">Actual Weight (kg):</label>
-                                                <input type="string" name="actual_weight" value="{{ $shipment->actual_weight }}" class="form-control" >
-                                            </div>
+                                          
                                             <!-- Invoice Date -->
                                             <div class="col-12 col-md-6 mb-3">
                                                 <label for="invoice_date">Invoice Date:</label>
                                                 <input type="date" name="invoice_date" value="{{ $shipment  ->invoice_date }}" class="form-control" required>
                                             </div>
-                                            <!-- Dimension -->
-                                            <div class="col-12 col-md-6 mb-3">
-                                                <label for="dimension">Dimension (LxWxH):</label>
-                                                <input type="text" name="dimension" value="{{ $shipment  ->dimension }}" class="form-control" >
+                                      
                                             </div>
                                         </div>
                                         <div id="boxContainer">
@@ -327,7 +356,7 @@
                                                                     <td><input type="text" name="boxes[{{ $box->id }}][items][{{ $loop->index }}][item]" value="{{ $item->item }}" required class="form-control"></td>
                                                                     <td><input type="text" name="boxes[{{ $box->id }}][items][{{ $loop->index }}][hs_code]" value="{{ $item->hs_code }}" class="form-control"></td>
                                                                     <td><input type="number" name="boxes[{{ $box->id }}][items][{{ $loop->index }}][quantity]" value="{{ $item->quantity }}" required class="form-control"></td>
-                                                                    <td><input type="number" name="boxes[{{ $box->id }}][items][{{ $loop->index }}][unit_rate]" value="{{ $item->unit_rate }}"  class="form-control"></td>
+                                                                    <td><input type="number" name="boxes[{{ $box->id }}][items][{{ $loop->index }}][unit_rate]" value="{{ $item->unit_rate }}" class="form-control"></td>
                                                                     <td><input type="number" name="boxes[{{ $box->id }}][items][{{ $loop->index }}][amount]" value="{{ $item->amount }}" readonly class="form-control"></td>
                                                                     <td><button type="button" class="delete-row-button btn btn-danger" onclick="deleteRow(this)">×</button></td>
                                                                 </tr>
@@ -357,9 +386,9 @@
 
                             <div class="form-group    navbar-light bg-light  mx-9  ">
                                 <input type="submit" class="btn btn-info waves-effect waves-light" value="Update Customer">
-                              
+
                             </div>
-  <div id="next-box-number" data-next-box-number="{{ $nextBoxNumber }}"></div>
+                            <div id="next-box-number" data-next-box-number="{{ $nextBoxNumber }}"></div>
 
                         </form>
 
@@ -389,13 +418,13 @@
 
 
     let nextBoxNumber = document.getElementById('next-box-number').getAttribute('data-next-box-number');
-    nextBoxNumber=Number(nextBoxNumber)
-  // Check the value in the console
+    nextBoxNumber = Number(nextBoxNumber)
+    // Check the value in the console
 
-   
+
     let boxes = [];
- 
-        // boxes.push(boxes.length);
+
+    // boxes.push(boxes.length);
     function addBox() {
         const boxId = Date.now().toString(); // Unique ID for each box
         boxes.push(boxId);
@@ -445,7 +474,7 @@
         const tbody = row.parentElement;
         row.remove();
         updateRowNumbers(tbody.closest('.box-section'));
-    }
+    }
 
     function updateBoxNumbers() {
         document.querySelectorAll('.box-section').forEach((box, index) => {
@@ -463,6 +492,7 @@
             });
         });
     }
+
     function addRow(boxId) {
         const box = document.querySelector(`[data-box-id="${boxId}"]`);
         const tbody = box.querySelector('tbody');
@@ -474,7 +504,7 @@
          <td class="d-none d-md-table-cell">${rowIndex + 1}</td> <!-- Hide on mobile -->
         <td><input type="text" name="boxes[${boxId}][items][${rowIndex}][item]" required class="form-control"></td>
         <td><input type="text" name="boxes[${boxId}][items][${rowIndex}][hs_code]" class="form-control"></td>
-        <td><input type="number" name="boxes[${boxId}][items][${rowIndex}][quantity]" required class="form-control"></td>
+        <td><input type="number" name="boxes[${boxId}][items][${rowIndex}][quantity]"  class="form-control"></td>
         <td><input type="number" name="boxes[${boxId}][items][${rowIndex}][unit_rate]" step="0.001"  class="form-control"></td>
         <td><input type="number" name="boxes[${boxId}][items][${rowIndex}][amount]" readonly class="form-control"></td>
         <td><button type="button" class="delete-row-button btn btn-danger" onclick="deleteRow(this)">×</button></td> `;
@@ -502,6 +532,7 @@
         content.style.display = content.style.display === 'none' ? 'block' : 'none';
         button.textContent = content.style.display === 'none' ? '+' : '-';
     }
+
     function updateRowNumbers(box) {
         const tbody = box.querySelector('tbody');
         tbody.querySelectorAll('tr').forEach((row, index) => {

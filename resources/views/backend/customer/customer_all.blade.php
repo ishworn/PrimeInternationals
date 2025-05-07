@@ -29,9 +29,9 @@
         <div class="row">
             <div class="col-12 mb-3">
                 <a href="{{ route('customer.add') }}" class="btn btn-warning btn-rounded waves-effect waves-orange"
-                    style="float:right; padding: 12px 20px; background-color: #FFA500; color: #555; border: 2px solid #FFA500; 
+                    style="float:right;  background-color: #FFA500; color: #555; border: 2px solid #FFA500; 
                           transition: all 0.3s ease-in-out; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-                    <i class="fas fa-plus-circle"></i> Add Customer
+                    <i class="fas fa-plus-circle"></i> Add Sender
                 </a>
             </div>
         </div>
@@ -47,12 +47,14 @@
                             <thead class="bg-primary text-white">
                                 <tr>
                                     <th>Sl</th>
-                                    <th>Sender Name</th>
+                                    <th> Sender Name </th>
                                     <th>Receiver Name</th>
                                     <th>Country</th>
+                                    <th>Dispatch To</th>
+                                    <th>Dispatch Status</th>
                                     <th>Tracking Id</th>
                                     <th>Amount</th>
-                                    <th class='payment-status'>Payment Method</th>
+
                                     <th class='payment-status'>Payment Status</th>
                                     <th style="width: 70px;">Actions</th>
                                 </tr>
@@ -64,44 +66,74 @@
                                 @foreach($senders as $key => $sender)
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
-                                    <td>{{ $sender->senderName }}</td>
+                                    <td> {{$sender->senderName}} </td>
                                     <td>{{ $sender->receiver->receiverName }}</td> <!-- Assuming receiverName field exists -->
-                                    <td>{{ $sender->receiver->receiverName }}</td> <!-- Assuming country field exists -->
-                                    <td>{{ $sender->trackingId ?? 'N/A' }}</td>
-                                    <td>{{ $sender->payments->amount ?? 'N/A' }}</td> <!-- Assuming amount field exists -->
-                                    <td class='payment-method'>
+                                    <td>{{ $sender->receiver->receiverCountry }}</td> <!-- Assuming country field exists -->
+                                    <td>
                                         @php
-                                        $paymentMethod = $sender->payments->payment_method ?? 'N/A';
+                                        $dispatch = $sender->dispatch ?? null; // Fetch the dispatch related to the sender
+                                        $dispatchBy = $dispatch ? $dispatch->dispatch_by : null;
                                         @endphp
-                                        @if($paymentMethod === 'Cash')
-                                        <span class="badge bg-success" title="Cash">{{ $paymentMethod }}</span>
-                                        @elseif($paymentMethod === 'Bank Transfer')
-                                        <span class="badge bg-primary" title="Bank Transfer">{{ $paymentMethod }}</span>
+
+                                        @if(!$dispatchBy)
+                                        <span class="badge bg-secondary">N/A</span>
+                                        @elseif($dispatchBy === 'Apex')
+                                        <span class="badge bg-success" title="Apex">Apex</span>
+                                        @elseif($dispatchBy === 'Dpnex')
+                                        <span class="badge bg-warning" title="Dpnex">Dpnex</span>
+                                        @elseif($dispatchBy === 'Pacific')
+                                        <span class="badge bg-primary" title="Pacific">Pacific</span>
+                                        @elseif($dispatchBy === 'Nepal Express')
+                                        <span class="badge bg-info" title="Nepal Express">Nepal Express</span>
+                                        @elseif($dispatchBy === 'DTDC')
+                                        <span class="badge bg-danger" title="DTDC">DTDC</span>
+                                        @elseif($dispatchBy === 'Aramax')
+                                        <span class="badge bg-dark" title="Aramax">Aramax</span>
+                                        @elseif($dispatchBy === 'Nepal Post')
+                                        <span class="badge bg-light" title="Nepal Post">Nepal Post</span>
+                                        @elseif($dispatchBy === 'SF International')
+                                        <span class="badge bg-info" title="SF International">SF International</span>
                                         @else
-                                        <span class="badge bg-secondary" title="Other Payment Method">{{ $paymentMethod }}</span>
+                                        <span class="badge bg-warning" title="Unknown">Unknown</span>
                                         @endif
                                     </td>
+
+                                    <td>
+                                        @php
+                                        $dispatch = $sender->dispatch ?? null; // Fetch the dispatch related to the sender
+                                        $dispatchStatus = $dispatch ? $dispatch->status : null;
+                                        @endphp
+
+                                        @if(!$dispatchStatus)
+                                        <span class="badge bg-danger">Pending</span>
+                                        @elseif($dispatchStatus === 'pending')
+                                        <span class="badge bg-danger" title="Not Sent">Pending</span>
+                                        @elseif($dispatchStatus === 'dispatch')
+                                        <span class="badge bg-success" title="Sent">Dispatch</span>
+                                        @else
+                                        <span class="badge bg-warning">Unknown Status</span>
+                                        @endif
+                                    </td>
+                                    <td>{{ $sender->trackingId ?? 'N/A' }}</td>
+                                    <td>{{ $sender->payments->total_paid ?? 'N/A' }}</td> <!-- Assuming amount field exists -->
+
                                     <td class='payment-status'>
                                         @php
-
-                                        $payments = $sender->payments ?? collect();
-                                        $paymentStatuses = $payments->pluck('status')->filter()->unique();
-                                        $hasunpaid = $paymentStatuses->contains('unpaid');
-                                        $haspaid = $paymentStatuses->contains('paid');
+                                        $paymentStatus = optional($sender->payments)->status ?? 'pending';
                                         @endphp
 
-                                        @if($paymentStatuses->isEmpty())
-                                        <span class="badge bg-danger">Unpaid</span>
+                                        @if($paymentStatus === 'pending')
+                                        <span class="badge bg-danger">Pending</span>
+                                        @elseif($paymentStatus === 'partial')
+                                        <span class="badge bg-warning">Partial</span>
+                                        @elseif($paymentStatus === 'completed')
+                                        <span class="badge bg-success">Completed</span>
                                         @else
-                                        @if($hasunpaid)
-                                        <span class="badge bg-danger" title="Both Cash and Bank Transfer">Unpaid</span>
-                                        @elseif($haspaid)
-                                        <span class="badge bg-success" title="Cash">Paid</span>
-
-
-                                        @endif
+                                        <span class="badge bg-secondary">Unknown</span>
                                         @endif
                                     </td>
+
+
 
                                     <!-- Actions (unchanged) -->
                                     <td class="d-flex justify-content-center">

@@ -12,18 +12,23 @@ class CreatePaymentsTable extends Migration
     public function up(): void
     {
         Schema::create('payments', function (Blueprint $table) {
-            $table->id(); // Auto-incrementing primary key
-            $table->decimal('amount', 8, 2)->nullable(); // Decimal column for amount (8 digits total, 2 decimal places)
-            $table->string('payment_method')->nullable(); // String column for payment method (nullable)
-            $table->enum('status', ['paid', 'unpaid'])->nullable(); // Enum column for status (paid or unpaid, nullable)
-            
-            // Add foreign key for sender_id
-            $table->unsignedBigInteger('sender_id')->nullable(); // Unsigned big integer for sender_id
-            $table->foreign('sender_id')->references('id')->on('senders')->onDelete('cascade'); // Foreign key constraint
-
-            $table->timestamps(); // Adds `created_at` and `updated_at` columns
+            $table->id();
+            $table->foreignId('sender_id')->constrained()->onDelete('cascade');
+            $table->decimal('bill_amount', 12, 2);
+            $table->enum('payment_method', ['cash', 'bank_transfer', 'both']);
+            $table->decimal('cash_amount', 12, 2)->nullable();
+            $table->decimal('bank_amount', 12, 2)->nullable();
+            $table->decimal('total_paid', 12, 2);
+            $table->enum('status', ['completed', 'pending', 'partial',])->nullable();
+            $table->dateTime('payment_date')->useCurrent();
+            $table->timestamps();
         });
+       
     }
+
+
+
+   
 
     /**
      * Reverse the migrations.

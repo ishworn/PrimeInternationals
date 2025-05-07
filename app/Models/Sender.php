@@ -17,6 +17,7 @@ class Sender extends Model
         'senderPhone',
         'senderEmail',
         'senderAddress',
+
    
         'trackingId',
 
@@ -42,5 +43,17 @@ class Sender extends Model
     public function payments()
     {
         return $this->hasOne(Payment::class,);
+    }
+    public function dispatch()
+    {
+        return $this->hasOne(Dispatch::class,);
+    }
+    public function tracking()
+    {
+        return $this->hasOne(Tracking::class,);
+    }
+    public function billing()
+    {
+        return $this->hasMany(Billing::class,);
     }
 }
