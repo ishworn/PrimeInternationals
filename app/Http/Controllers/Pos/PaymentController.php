@@ -147,7 +147,7 @@ class PaymentController extends Controller
         $payment->total_paid += $newPay;
         $payment->status = $payment->total_paid >= $payment->bill_amount ? 'completed' : 'partial';
 
-      if  ($payment->payment_method == $payBy) // Update payment method
+        if ($payment->payment_method == $payBy) // Update payment method
         {
             $payment->payment_method = $payBy;
         } else {
@@ -515,15 +515,40 @@ class PaymentController extends Controller
                 'status' => 'partial'
             ]);
 
-            $pdf = Pdf::loadView('invoices.pdf', compact('sender', 'billings'));
-            $fileName = 'invoice_' . $sender->invoiceId . '.pdf';
-            $pdfPath = storage_path('app/public/' . $fileName);
-            $pdf->save($pdfPath);
+            try {
+                $pdf = Pdf::loadView('invoices.pdf', compact('sender', 'billings'));
+                $fileName = 'invoice_' . $sender->invoiceId . '.pdf';
+                $pdfPath = storage_path('app/public/' . $fileName);
+                $pdf->save($pdfPath);
+            } catch (\Exception $e) {
+                Log::error('PDF generation failed', [
+                    'message' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+                return response()->json(['success' => false, 'message' => 'Failed to generate invoice PDF.']);
+            }
 
-            Mail::to($sender->senderEmail)->send(new InvoiceMail($sender,  $billings,  $pdfPath, [
-                'as' => $fileName,
-                'mime' => 'application/pdf',
-            ]));
+            try {
+                Mail::to($sender->senderEmail)->send(new InvoiceMail($sender,  $billings,  $pdfPath, [
+                    'as' => $fileName,
+                    'mime' => 'application/pdf',
+                ]));
+            } catch (\Exception $e) {
+                Log::error('PDF generation failed', [
+                    'message' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+                return response()->json(['success' => false, 'message' => 'Failed to generate invoice PDF.']);
+            }
+
+
+
+
+
+
+
+
+
 
 
 

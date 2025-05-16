@@ -56,7 +56,7 @@
                     <!-- Consignee Details -->
                     <tr>
                         <td colspan="2" class=" p-2 text-black">
-                            <div>Name : {{ $sender->senderName }}</div>
+                            <div>Name : {{ $sender->senderName  ?? 'N/A' }}</div>
                             <div>Email: {{ $sender->senderEmail }}</div>
                             <div>Phone No : {{ $sender->senderPhone }}</div>
                         </td>
