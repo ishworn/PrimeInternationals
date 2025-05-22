@@ -209,7 +209,7 @@ class PaymentController extends Controller
         return redirect()->back()->with('success', 'Payment recorded successfully');
     }
 
-    public function update(Request $request, $id) {}
+
 
     public function manage()
     {

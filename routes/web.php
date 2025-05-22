@@ -10,6 +10,7 @@ use App\Http\Controllers\Pos\TrackingController;
 use App\Http\Controllers\Pos\UsermgmtController;
 use App\Http\Controllers\Pos\DispatchManagementController;
 use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\Pos\AgenciesController;
 
 
 
@@ -41,6 +42,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/customer/updateweight', 'CustomerUpdateWeight')->name('customer.updateweight');
 
         Route::get('/customer/delete/{id}', 'CustomerDelete')->name('customer.delete');
+
       
     });
 
@@ -65,11 +67,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/payments/debits', 'debits')->name('payments.debits')->middleware('role:super-admin');
         Route::get('/payments/dashboard', 'dashboard')->name('payments.dashboard')->middleware('role:super-admin');
         Route::get('/payments/invoice/{id}', 'printInvoice')->name('payments.invoice')->middleware('role:super-admin');
-        Route::post('/payments/invoice/store', 'InvoiceStore')->name('invoices.store')->middleware('role:super-admin');
-        
- 
-
-        
+        Route::post('/payments/invoice/store', 'InvoiceStore')->name('invoices.store')->middleware('role:super-admin'); 
     });
 
     Route::controller(UsermgmtController::class)->group(function () {
@@ -83,6 +81,19 @@ Route::middleware('auth')->group(function () {
         Route::get('/dispatch', 'index')->name('dispatch.index'); // List all payments details
         Route::post('/dispatch/store', 'store')->name('dispatch.store');
     });
+     
+
+Route::controller(AgenciesController::class)->group(function () {
+    Route::get('/agencies', 'index')->name('agencies.index');           // Show all agencies
+    // Route::get('/agencies/create', 'create')->name('agencies.create');  // Show form to create
+    // Route::post('/agencies/store', 'store')->name('agencies.store');    // Store new agency
+    
+    // Route::get('/agencies/{id}/edit', 'edit')->name('agencies.edit');   // Edit form
+    // Route::put('/agencies/{id}', 'update')->name('agencies.update');    // Update agency
+    // Route::delete('/agencies/{id}', 'destroy')->name('agencies.destroy'); // Delete agency
+    //   Route::get('/agencies/{id}', 'show')->name('agencies.show');
+});
+
 
 });
 
