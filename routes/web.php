@@ -55,17 +55,17 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::controller(PaymentController::class)->group(function () {
-        Route::get('/payments', 'index')->name('payments.index'); // List all payments details
-        Route::get('/payments/details', 'details')->name('payments.details');
-        Route::post('/payments/addexpenses', 'addexpenses')->name('expenses.store'); // add expenses details
-        Route::post('/payments/store', 'store')->name('payments.store');
-        Route::put('/payments/edit/{id}', 'edit')->name('payments.edit'); // Show form to edit an existing tracking
-        Route::put('/payments/{id}', 'update')->name('payments.update'); // Update an
-        Route::get('/payments/manage', 'manage')->name('payments.manage');
-        Route::post('/payments/debits', 'debits')->name('payments.debits');
-        Route::get('/payments/dashboard', 'dashboard')->name('payments.dashboard');
-        Route::get('/payments/invoice/{id}', 'printInvoice')->name('payments.invoice');
-        Route::post('/payments/invoice/store', 'InvoiceStore')->name('invoices.store');
+        Route::get('/payments', 'index')->name('payments.index')->middleware('role:super-admin');
+        Route::get('/payments/details', 'details')->name('payments.details')->middleware('role:super-admin');
+        Route::post('/payments/addexpenses', 'addexpenses')->name('expenses.store')->middleware('role:super-admin');
+        Route::post('/payments/store', 'store')->name('payments.store')->middleware('role:super-admin');
+        Route::put('/payments/edit/{id}', 'edit')->name('payments.edit')->middleware('role:super-admin');
+        Route::put('/payments/{id}', 'update')->name('payments.update')->middleware('role:super-admin');
+        Route::get('/payments/manage', 'manage')->name('payments.manage')->middleware('role:super-admin');
+        Route::post('/payments/debits', 'debits')->name('payments.debits')->middleware('role:super-admin');
+        Route::get('/payments/dashboard', 'dashboard')->name('payments.dashboard')->middleware('role:super-admin');
+        Route::get('/payments/invoice/{id}', 'printInvoice')->name('payments.invoice')->middleware('role:super-admin');
+        Route::post('/payments/invoice/store', 'InvoiceStore')->name('invoices.store')->middleware('role:super-admin');
         
  
 
