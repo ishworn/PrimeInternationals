@@ -355,7 +355,7 @@
                                                                     <td>{{ $loop->iteration }}</td>
                                                                     <td><input type="text" name="boxes[{{ $box->id }}][items][{{ $loop->index }}][item]" value="{{ $item->item }}" required class="form-control"></td>
                                                                     <td><input type="text" name="boxes[{{ $box->id }}][items][{{ $loop->index }}][hs_code]" value="{{ $item->hs_code }}" class="form-control"></td>
-                                                                    <td><input type="number" name="boxes[{{ $box->id }}][items][{{ $loop->index }}][quantity]" value="{{ $item->quantity }}" required class="form-control"></td>
+                                                                    <td><input type="text" name="boxes[{{ $box->id }}][items][{{ $loop->index }}][quantity]" value="{{ $item->quantity }}" required class="form-control"></td>
                                                                     <td><input type="number" name="boxes[{{ $box->id }}][items][{{ $loop->index }}][unit_rate]" value="{{ $item->unit_rate }}" class="form-control"></td>
                                                                     <td><input type="number" name="boxes[{{ $box->id }}][items][{{ $loop->index }}][amount]" value="{{ $item->amount }}" readonly class="form-control"></td>
                                                                     <td><button type="button" class="delete-row-button btn btn-danger" onclick="deleteRow(this)">×</button></td>
@@ -504,7 +504,7 @@
          <td class="d-none d-md-table-cell">${rowIndex + 1}</td> <!-- Hide on mobile -->
         <td><input type="text" name="boxes[${boxId}][items][${rowIndex}][item]" required class="form-control"></td>
         <td><input type="text" name="boxes[${boxId}][items][${rowIndex}][hs_code]" class="form-control"></td>
-        <td><input type="number" name="boxes[${boxId}][items][${rowIndex}][quantity]"  class="form-control"></td>
+        <td><input type="text" name="boxes[${boxId}][items][${rowIndex}][quantity]"  class="form-control"></td>
         <td><input type="number" name="boxes[${boxId}][items][${rowIndex}][unit_rate]" step="0.001"  class="form-control"></td>
         <td><input type="number" name="boxes[${boxId}][items][${rowIndex}][amount]" readonly class="form-control"></td>
         <td><button type="button" class="delete-row-button btn btn-danger" onclick="deleteRow(this)">×</button></td> `;
