@@ -75,7 +75,7 @@
                     <tr>
                         <td colspan="2" class="  p-2 text-black">
                             <div>Aloknagor-310 Kathmandu</div>
-                            <div>Phone: +977 9708072372</div>
+                            <div>Phone: ‪+977 9708072372‬</div>
                             <div>Invoice No: {{ $sender->invoiceId ?? 'INV-001' }}</div>
                         </td>
                         <td colspan="2" class=" p-2 align-top text-black">
@@ -344,4 +344,4 @@
         document.addEventListener('DOMContentLoaded', updateInvoice);
     </script>
 
-    @endsection
+    @endsection
