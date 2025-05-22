@@ -18,6 +18,7 @@ use App\Models\Billing;
 use Illuminate\Support\Facades\Log;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Mail\InvoiceMail;
+use Exception;
 
 class PaymentController extends Controller
 {
@@ -487,7 +488,6 @@ class PaymentController extends Controller
     {
 
 
-
         try {
             $totalBillAmount = 0;
 
@@ -504,16 +504,18 @@ class PaymentController extends Controller
                 ]);
             }
             $billing->save();
-
-
+     
             $sender = Sender::with('payments', 'receiver', 'boxes', 'shipments',)->findOrFail($request->sender_id);
             $billings = Billing::where('sender_id', $request->sender_id)->get();
-
-            Payment::create([
+      
+  Payment::create([
                 'sender_id' => $request->sender_id,
                 'bill_amount' => $totalBillAmount,
                 'status' => 'partial'
             ]);
+         
+
+     
 
             try {
                 $pdf = Pdf::loadView('invoices.pdf', compact('sender', 'billings'));
