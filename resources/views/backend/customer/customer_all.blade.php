@@ -11,22 +11,22 @@
         {{ session('error') }}
     </div>
     @endif
-    
+
     <div class="row">
-            <div class="col-12 mb-3">
-                <a href="javascript:history.back()" class="btn btn-warning btn-rounded no-print"
-        style="font-size: 15px; display: inline-flex; align-items: center; text-decoration: none; 
+        <div class="col-12 mb-3">
+            <a href="javascript:history.back()" class="btn btn-warning btn-rounded no-print"
+                style="font-size: 15px; display: inline-flex; align-items: center; text-decoration: none; 
           background-color: #FFD700; color: black; padding: 10px 10px; border-radius: 5px; 
           margin-bottom: 15px; margin-top: 5px; margin-left: 20px;">
-        <i class="fas fa-arrow-left" style="margin-right: 5px;"></i> Back
-    </a>
-                <a href="{{ route('customer.add') }}" class="btn btn-warning btn-rounded waves-effect waves-orange"
-                    style="float:right;  background-color: #FFA500; color: #555; border: 2px solid #FFA500; 
+                <i class="fas fa-arrow-left" style="margin-right: 5px;"></i> Back
+            </a>
+            <a href="{{ route('customer.add') }}" class="btn btn-warning btn-rounded waves-effect waves-orange"
+                style="float:right;  background-color: #FFA500; color: #555; border: 2px solid #FFA500; 
                           transition: all 0.3s ease-in-out; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);margin-right:15px;">
-                    <i class="fas fa-plus-circle"></i> Add Sender
-                </a>
-            </div>
+                <i class="fas fa-plus-circle"></i> Add Sender
+            </a>
         </div>
+    </div>
     <div class="container-fluid">
         <!-- Start page title -->
         <div class="row">
@@ -36,7 +36,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- End page title -->
 
         <div class="row">
@@ -138,18 +138,28 @@
 
 
                                     <!-- Actions (unchanged) -->
-                                    <td class="d-flex justify-content-center">
-                                        <a href="{{ route('customer.edit', $sender->id) }}" class="btn btn-info btn-sm mx-1" title="Edit Data">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-
-                                        <a href="{{ route('customer.preview', $sender->id) }}" class="btn btn-dark btn-sm mx-1" title="Preview">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="{{ route('customer.addweight', $sender->id) }}" class="btn btn-warning btn-sm mx-1" title="Preview">
-                                            <i class="fas fa-weight"></i>
-                                        </a>
+                                    <td class="text-center">
+                                        <div class="dropdown">
+                                            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenu{{ $sender->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Actions
+                                            </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenu{{ $sender->id }}">
+                                                <a class="dropdown-item" href="{{ route('customer.edit', $sender->id) }}">
+                                                    <i class="fas fa-edit"></i> Edit
+                                                </a>
+                                                <a class="dropdown-item" href="{{ route('customer.preview', $sender->id) }}">
+                                                    <i class="fas fa-eye"></i> Preview
+                                                </a>
+                                                <a class="dropdown-item" href="{{ route('customer.addweight', $sender->id) }}">
+                                                    <i class="fas fa-weight"></i> Add Weight
+                                                </a>
+                                                <a class="dropdown-item" href="{{ route('customer.delete', $sender->id) }}">
+                                                    <i class="fas fa-trash"></i> Delete
+                                                </a>
+                                            </div>
+                                        </div>
                                     </td>
+
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -173,6 +183,14 @@
 </div>
 
 <!-- Add some custom styles for modern design -->
+ <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Use this -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 <style>
     .btn {
         transition: all 0.3s ease;
@@ -185,7 +203,7 @@
 
     .card {
         border-radius: 8px;
-        overflow: hidden;
+
     }
 
     table th,

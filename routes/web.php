@@ -91,7 +91,7 @@ Route::controller(AgenciesController::class)->group(function () {
     // Route::get('/agencies/{id}/edit', 'edit')->name('agencies.edit');   // Edit form
     // Route::put('/agencies/{id}', 'update')->name('agencies.update');    // Update agency
     // Route::delete('/agencies/{id}', 'destroy')->name('agencies.destroy'); // Delete agency
-    //   Route::get('/agencies/{id}', 'show')->name('agencies.show');
+    //Route::get('/agencies/{agency_name}', 'show')->name('agencies.show');
 });
 
 
@@ -102,3 +102,5 @@ require __DIR__ . '/auth.php';
 Route::get('/', function () {
     return redirect()->route('login');
 });
+
+
