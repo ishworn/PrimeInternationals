@@ -71,6 +71,9 @@
                 </li>
                  <li>
                    <a href="{{ route('customer.recyclebin') }}" class="waves-effect">
+
+                    <a href="{{ route('customer.recyclebin') }}" class="waves-effect">
+
                        <i class="fas fa-trash" aria-hidden="true"></i>
 
                 

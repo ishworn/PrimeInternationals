@@ -42,6 +42,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/customer/updateweight', 'CustomerUpdateWeight')->name('customer.updateweight');
 
         Route::get('/customer/delete/{id}', 'CustomerDelete')->name('customer.delete');
+        Route::get('/customer/recyclebin', 'recycle')->name('customer.recyclebin');
+        Route::get('/restore/{id}','restore')->name('customer.restore');
 
       
     });
@@ -91,7 +93,11 @@ Route::controller(AgenciesController::class)->group(function () {
     // Route::get('/agencies/{id}/edit', 'edit')->name('agencies.edit');   // Edit form
     // Route::put('/agencies/{id}', 'update')->name('agencies.update');    // Update agency
     // Route::delete('/agencies/{id}', 'destroy')->name('agencies.destroy'); // Delete agency
+
     //Route::get('/agencies/{agency_name}', 'show')->name('agencies.show');
+
+   Route::get('/agencies/{id}', 'show')->name('agencies.show');
+
 });
 
 
