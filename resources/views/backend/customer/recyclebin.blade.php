@@ -20,11 +20,7 @@
           margin-bottom: 15px; margin-top: 5px; margin-left: 20px;">
                 <i class="fas fa-arrow-left" style="margin-right: 5px;"></i> Back
             </a>
-            <a href="{{ route('customer.add') }}" class="btn btn-warning btn-rounded waves-effect waves-orange"
-                style="float:right;  background-color: #FFA500; color: #555; border: 2px solid #FFA500; 
-                          transition: all 0.3s ease-in-out; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);margin-right:15px;">
-                <i class="fas fa-plus-circle"></i> Add Sender
-            </a>
+            
         </div>
     </div>
     <div class="container-fluid">
@@ -32,7 +28,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0" style="font-size: 24px; font-weight: bold;">Customers List</h4>
+                    <h4 class="mb-sm-0" style="font-size: 24px; font-weight: bold;"> Deleted Customers List</h4>
                 </div>
             </div>
         </div>
@@ -58,7 +54,7 @@
                                     <th>Amount</th>
 
                                     <th class='payment-status'>Payment Status</th>
-                                    <th style="width: 70px;">Actions</th>
+                                    <th style="width: 70px;">Restore</th>
                                 </tr>
                             </thead>
 
@@ -139,25 +135,10 @@
 
                                     <!-- Actions (unchanged) -->
                                     <td class="text-center">
-                                        <div class="dropdown">
-                                            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenu{{ $sender->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                Actions
-                                            </button>
-                                            <div class="dropdown-menu" aria-labelledby="dropdownMenu{{ $sender->id }}">
-                                                <a class="dropdown-item" href="{{ route('customer.edit', $sender->id) }}">
-                                                    <i class="fas fa-edit"></i> Edit
-                                                </a>
-                                                <a class="dropdown-item" href="{{ route('customer.preview', $sender->id) }}">
-                                                    <i class="fas fa-eye"></i> Preview
-                                                </a>
-                                                <a class="dropdown-item" href="{{ route('customer.addweight', $sender->id) }}">
-                                                    <i class="fas fa-weight"></i> Add Weight
-                                                </a>
-                                                <a class="dropdown-item" href="{{ route('customer.delete', $sender->id) }}">
-                                                    <i class="fas fa-trash"></i> Delete
-                                                </a>
-                                            </div>
-                                        </div>
+                                        <a href="{{ route('customer.restore', $sender->id)}}"
+                                            class="bg-green-700 text-white px-2 py-1 rounded hover:bg-green-600">
+                                            Restore
+                                        </a>
                                     </td>
 
                                 </tr>
@@ -182,14 +163,8 @@
     </div> <!-- container-fluid -->
 </div>
 
+<script src="https://cdn.tailwindcss.com"></script>
 <!-- Add some custom styles for modern design -->
- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
-<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- Use this -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <style>
     .btn {
