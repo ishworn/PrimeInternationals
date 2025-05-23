@@ -400,6 +400,19 @@ class CustomerController extends Controller
         return redirect()->route('customer.all')->with('success', 'Box weights updated successfully.');
     }
 
+    public function recycle()
+    {
+        $senders = Sender::onlyTrashed()->get();
+        return view('backend.customer.recyclebin', compact('senders'));
+    }
+    //restore
+    public function restore($id)
+    {
+        $senders = Sender::withTrashed()->find($id);
+        $senders->restore();
+        return redirect()->route('customer.all')->with('success', 'User deleted successfully!');
+    }
+
 
     //     public function checkSender(Request $request)
     // {
