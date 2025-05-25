@@ -31,11 +31,29 @@
         <!-- Start page title -->
         <div class="row">
             <div class="col-12">
-                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <div class=" d-sm-flex align-items-center justify-content-between">
                     <h4 class="mb-sm-0" style="font-size: 24px; font-weight: bold;">Customers List</h4>
                 </div>
+
+                <a href="{{ route('customer.delete', $sender->id) }}" id="deleteButton"
+                    class="btn btn-warning btn-rounded waves-effect waves-orange"
+                    style="display:none; float:right; background-color: #B21807; color: white; 
+          border: 2px solid #FFA500; transition: all 0.3s ease-in-out; 
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); margin-right:15px; margin-bottom:10px;">
+                    <i class="fas fa-plus-circle"></i> Delete Sender
+                </a>
+
             </div>
         </div>
+        <!-- <div class="row">
+            <div class="col-12">
+                <a href="{{ route('customer.add') }}" class="btn btn-warning btn-rounded waves-effect waves-orange"
+                    style="float:right;  background-color: #FFA500; color: #555; border: 2px solid #FFA500; 
+                          transition: all 0.3s ease-in-out; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);margin-right:15px;margin-bottom:10px;">
+                    <i class="fas fa-plus-circle"></i> Add Sender
+                </a>
+            </div>
+        </div> -->
 
         <!-- End page title -->
 
@@ -48,6 +66,7 @@
                         <table id="datatable" class="table table-bordered dt-responsive nowrap" style="width: 100%;">
                             <thead class="bg-primary text-white">
                                 <tr>
+                                    <th><input type="checkbox" id="selectAllCheckbox"></th>
                                     <th>Sl</th>
                                     <th> Sender Name </th>
                                     <th>Receiver Name</th>
@@ -67,6 +86,7 @@
                             <tbody>
                                 @foreach($senders as $key => $sender)
                                 <tr>
+                                    <td><input type="checkbox" class="checkboxes" ></td>
                                     <td>{{ $key + 1 }}</td>
                                     <td> {{$sender->senderName}} </td>
                                     <td>{{ $sender->receiver->receiverName }}</td> <!-- Assuming receiverName field exists -->
@@ -141,7 +161,7 @@
                                     <td class="text-center">
                                         <div class="dropdown">
                                             <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenu{{ $sender->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                Actions
+                                                ...
                                             </button>
                                             <div class="dropdown-menu" aria-labelledby="dropdownMenu{{ $sender->id }}">
                                                 <a class="dropdown-item" href="{{ route('customer.edit', $sender->id) }}">
@@ -183,13 +203,39 @@
 </div>
 
 <!-- Add some custom styles for modern design -->
- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- Use this -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- for select all -->
+<script>
+    $('#selectAllCheckbox').change(function() {
+        $('.checkboxes').prop('checked', $(this).prop('checked'));
+    });
+
+    function updateDeleteButtonVisibility() {
+        if ($('.checkboxes:checked').length > 0) {
+            $('#deleteButton').show();
+        } else {
+            $('#deleteButton').hide();
+        }
+    }
+
+    // Handle individual checkboxes
+    $(document).on('change', '.checkboxes', function () {
+        updateDeleteButtonVisibility();
+    });
+
+    // Handle Select All
+    $('#selectAllCheckbox').change(function () {
+        $('.checkboxes').prop('checked', $(this).prop('checked'));
+        updateDeleteButtonVisibility();
+    });
+</script>
 
 <style>
     .btn {
