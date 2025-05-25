@@ -35,13 +35,16 @@
                     <h4 class="mb-sm-0" style="font-size: 24px; font-weight: bold;">Customers List</h4>
                 </div>
 
-                <a href="{{ route('customer.delete', $sender->id) }}" id="deleteButton"
-                    class="btn btn-warning btn-rounded waves-effect waves-orange"
-                    style="display:none; float:right; background-color: #B21807; color: white; 
-          border: 2px solid #FFA500; transition: all 0.3s ease-in-out; 
+                <!-- Delete form -->
+                <form id="deleteForm" method="POST">
+                    <a id="deleteButton"
+                        class="btn btn-warning btn-rounded waves-effect waves-orange"
+                        style="display:none; float:right; background-color: #B21807; color: white; 
+          border: 2px solid #f44336; transition: all 0.3s ease-in-out; 
           box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); margin-right:15px; margin-bottom:10px;">
-                    <i class="fas fa-plus-circle"></i> Delete Sender
-                </a>
+                        <i class="fas fa-trash"></i> Delete Sender
+                    </a>
+                </form>
 
             </div>
         </div>
@@ -86,7 +89,8 @@
                             <tbody>
                                 @foreach($senders as $key => $sender)
                                 <tr>
-                                    <td><input type="checkbox" class="checkboxes" ></td>
+                                    <td><input type="checkbox" class="checkboxes"
+                                            name="sender_ids[]" value="{{ $sender->id }}"></td>
                                     <td>{{ $key + 1 }}</td>
                                     <td> {{$sender->senderName}} </td>
                                     <td>{{ $sender->receiver->receiverName }}</td> <!-- Assuming receiverName field exists -->
@@ -226,14 +230,43 @@
     }
 
     // Handle individual checkboxes
-    $(document).on('change', '.checkboxes', function () {
+    $(document).on('change', '.checkboxes', function() {
         updateDeleteButtonVisibility();
     });
 
     // Handle Select All
-    $('#selectAllCheckbox').change(function () {
+    $('#selectAllCheckbox').change(function() {
         $('.checkboxes').prop('checked', $(this).prop('checked'));
         updateDeleteButtonVisibility();
+    });
+
+    //delete script
+    document.getElementById('deleteButton').addEventListener('click', function() {
+        let checked = document.querySelectorAll('input[name="sender_ids[]"]:checked');
+        if (checked.length === 0) {
+            alert("Please select at least one sender to delete.");
+            return;
+        }
+
+        if (confirm("Are you sure you want to delete selected sender(s)?")) {
+            let ids = Array.from(checked).map(cb => cb.value);
+
+            fetch("{{ route('customer.bulkDelete') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                    },
+                    body: JSON.stringify({
+                        sender_ids: ids
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    alert(data.message);
+                    location.reload();
+                });
+        }
     });
 </script>
 
