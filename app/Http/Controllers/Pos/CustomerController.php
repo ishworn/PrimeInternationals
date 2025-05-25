@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Pos;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
-use App\Models\{Sender, Receiver, Box, Shipment, Item, Payment, Dispatch, Billing };
+use App\Models\{Sender, Receiver, Box, Shipment, Item, Payment, Dispatch, Billing};
 
 use App\Exports\ExcelExport;
 
@@ -16,7 +16,7 @@ class CustomerController extends Controller
     public function CustomerAll()
     {
 
-        $senders = Sender::with('receiver', 'payments' , 'dispatch' , )->get();
+        $senders = Sender::with('receiver', 'payments', 'dispatch',)->get();
 
 
 
@@ -26,7 +26,7 @@ class CustomerController extends Controller
     public function CustomerShow($id)
     {
         $sender = Sender::with(['boxes.items'])->findOrFail($id);
-        
+
         $totalBoxes = $sender->boxes()->count();
         $receivers = Receiver::where('sender_id', $id)->get();
         $shipments = Shipment::where('sender_id', $id)->get();
@@ -45,7 +45,7 @@ class CustomerController extends Controller
             return $box->items->sum('amount');
         });
 
-        return view('backend.customer.customer_preview', compact('sender', 'receivers', 'billings', 'shipments', 'totalQuantity', 'grandTotal', 'totalBoxes' , 'payments' , 'dispatchs'));
+        return view('backend.customer.customer_preview', compact('sender', 'receivers', 'billings', 'shipments', 'totalQuantity', 'grandTotal', 'totalBoxes', 'payments', 'dispatchs'));
     }
 
 
@@ -63,7 +63,7 @@ class CustomerController extends Controller
     public function CustomerEdit($id)
     {
         $sender = Sender::with(['boxes.items'])->findOrFail($id);
-        
+
         $receivers = Receiver::where('sender_id', $id)->get();
         $shipments = Shipment::where('sender_id', $id)->get();
         $nextBoxNumber = count($sender->boxes) + 1;
@@ -412,6 +412,35 @@ class CustomerController extends Controller
         $senders->restore();
         return redirect()->route('customer.all')->with('success', 'User deleted successfully!');
     }
+
+    //bulk  restore
+    public function bulkRestore(Request $request)
+    {
+        $ids = $request->sender_ids;
+        Sender::onlyTrashed()->whereIn('id', $ids)->restore();
+
+        return response()->json(['message' => 'Selected senders restored successfully.']);
+    }
+    //Bulk delete
+    public function bulkDelete(Request $request)
+    {
+        $ids = $request->sender_ids;
+        Sender::whereIn('id', $ids)->delete();
+
+        return response()->json(['message' => 'Selected senders deleted successfully.']);
+    }
+
+    //bulk force delete(delete from database)
+    public function bulkForceDelete(Request $request)
+    {
+        $ids = $request->sender_ids;
+
+        Sender::whereIn('id', $ids)->forceDelete();
+
+
+        return response()->json(['message' => 'Selected senders permanently deleted.']);
+    }
+
 
 
     //     public function checkSender(Request $request)
