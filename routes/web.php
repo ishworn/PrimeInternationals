@@ -44,6 +44,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/customer/delete/{id}', 'CustomerDelete')->name('customer.delete');
         Route::get('/customer/recyclebin', 'recycle')->name('customer.recyclebin');
         Route::get('/restore/{id}','restore')->name('customer.restore');
+        //bulk restore
+                Route::post('/customers/restore-selected', [CustomerController::class, 'bulkRestore'])->name('customer.bulkRestore');
+        //bulk delete
+        Route::post('/customers/delete-selected', [CustomerController::class, 'bulkDelete'])->name('customer.bulkDelete');
+        Route::post('/customers/forceDelete-selected', [CustomerController::class, 'bulkForceDelete'])->name('customer.bulkForceDelete');
 
       
     });
