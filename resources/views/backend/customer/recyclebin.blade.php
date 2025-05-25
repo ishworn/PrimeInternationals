@@ -20,7 +20,7 @@
           margin-bottom: 15px; margin-top: 5px; margin-left: 20px;">
                 <i class="fas fa-arrow-left" style="margin-right: 5px;"></i> Back
             </a>
-            
+
         </div>
     </div>
     <div class="container-fluid">
@@ -30,6 +30,13 @@
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                     <h4 class="mb-sm-0" style="font-size: 24px; font-weight: bold;"> Deleted Customers List</h4>
                 </div>
+                <a id="deleteButton"
+                    class="btn btn-warning btn-rounded waves-effect waves-orange"
+                    style="display:none; float:right; background-color: #B21807; color: white; 
+          border: 2px solid #FFA500; transition: all 0.3s ease-in-out; 
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); margin-right:15px; margin-bottom:10px;">
+                    <i class="fas fa-plus-circle"></i> Delete Selected
+                </a>
             </div>
         </div>
 
@@ -44,6 +51,7 @@
                         <table id="datatable" class="table table-bordered dt-responsive nowrap" style="width: 100%;">
                             <thead class="bg-primary text-white">
                                 <tr>
+                                    <th><input type="checkbox" id="selectAllCheckbox"></th>
                                     <th>Sl</th>
                                     <th> Sender Name </th>
                                     <th>Receiver Name</th>
@@ -63,6 +71,8 @@
                             <tbody>
                                 @foreach($senders as $key => $sender)
                                 <tr>
+                                    <!-- <input type="checkbox" name="user_ids[]"> -->
+                                    <td><input type="checkbox" class="checkboxes"></td>
                                     <td>{{ $key + 1 }}</td>
                                     <td> {{$sender->senderName}} </td>
                                     <td>{{ $sender->receiver->receiverName }}</td> <!-- Assuming receiverName field exists -->
@@ -163,7 +173,34 @@
     </div> <!-- container-fluid -->
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.tailwindcss.com"></script>
+
+<!-- for select all -->
+<script>
+    $('#selectAllCheckbox').change(function() {
+        $('.checkboxes').prop('checked', $(this).prop('checked'));
+    });
+
+    function updateDeleteButtonVisibility() {
+        if ($('.checkboxes:checked').length > 0) {
+            $('#deleteButton').show();
+        } else {
+            $('#deleteButton').hide();
+        }
+    }
+
+    // Handle individual checkboxes
+    $(document).on('change', '.checkboxes', function() {
+        updateDeleteButtonVisibility();
+    });
+
+    // Handle Select All
+    $('#selectAllCheckbox').change(function() {
+        $('.checkboxes').prop('checked', $(this).prop('checked'));
+        updateDeleteButtonVisibility();
+    });
+</script>
 <!-- Add some custom styles for modern design -->
 
 <style>
