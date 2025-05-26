@@ -48,7 +48,7 @@
                         </div>
                         <div class="flex-grow-1 bg-white p-4">
                             <p class="text-uppercase text-secondary mb-0">Pending Deliveries</p>
-                            <h3 class="font-weight-bold mb-0">85</h3>
+                            <h3 class="font-weight-bold mb-0">{{$pendingDispatch}}</h3>
                         </div>
                     </div>
                 </div>
@@ -60,7 +60,7 @@
     <div class="card mb-4">
         <div class="card-header font-weight-bold">
             <i class="fa fa-chart-line"></i>
-            MONTHLY INCOME STATISTICS
+            Agencies WIse Weight Statistics
         </div>
         <div class="card-body mt-4">
             <canvas id="barChart" style="width:100%;max-width:100%;height: 300px;"></canvas>
@@ -87,7 +87,7 @@
 
 <script src="https://cdn.tailwindcss.com"></script>
 <!-- Include Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 
 <!-- Custom CSS for Animations -->
@@ -158,13 +158,16 @@
 
 <!-- doughnut graph script -->
 <script>
-    var xValues = ["Partial", "Pending", "Completed", "Unknown"];
-    var yValues = [49, 44, 24, 15];
+   
+    
+    var xValues = @json($chartLabels);
+    var yValues =  @json($chartValues);
     var barColors = [
+        "#22bb33",
         "#f0ad4e",
         "#bb2124",
-        "#22bb33",
-        "#aaaaaa"
+        
+       
 
     ];
 
@@ -190,8 +193,9 @@
 
 <!-- bar graph  -->
 <script>
-    var xValues = ["Italy", "France", "Spain", "USA", "Argentina", "Italy", "France", "Spain", "USA", "Argentina"];
-    var yValues = [55, 49, 44, 24, 15, 55, 49, 44, 24, 15];
+
+      var xValues = @json($barchartLabels);
+    var yValues =  @json($barchartValues);
     var barColors = ["red", "green", "blue", "orange", "brown", "red", "green", "blue", "orange", "brown"];
 
     new Chart("barChart", {
@@ -209,7 +213,7 @@
             },
             title: {
                 display: true,
-                text: "World Wine Production 2018"
+                text: "Agencies WIse Weight Statistics"
             }
         }
     });
@@ -217,8 +221,8 @@
 
 <!-- pie chart -->
 <script>
-    var xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
-    var yValues = [55, 49, 44, 24, 15];
+      var xValues = @json($pichartLabels);
+    var yValues =  @json($pichartValues);
     var barColors = [
         "#b91d47",
         "#00aba9",
