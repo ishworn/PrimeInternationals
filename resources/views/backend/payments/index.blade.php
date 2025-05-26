@@ -66,7 +66,7 @@
                                             <input type="hidden" name="sender_id" value="{{ $sender->id }}">
                                             <input type="number" name="bill_amount" class="form-control"
                                                 value="{{ $sender->payments->bill_amount ?? '' }}"
-                                                {{ isset($sender->payments->bill_amount) && $sender->payments->bill_amount != '' ? 'readonly' : '' }}>
+                                             >
                                     </td>
                                     <td>
                                         <div class="dropdown">
@@ -189,15 +189,7 @@
                                             <i class="fas fa-edit"></i>
                                         </button>
                                         @endif
-                                        @if($sender->payments)
-                                        <button class="btn btn-secondary btn-sm mx-1" disabled title="No payment record">
-                                        <i class="fas fa-file-invoice"></i>
-                                        </button>
-                                        @else
-                                        <a href="{{ route('payments.invoice', $sender->id) }}" class="btn btn-warning btn-sm mx-1" title="Billng">
-                                            <i class="fas fa-file-invoice"></i>
-                                        </a>
-                                        @endif
+                                      
                                     </td>
                                 </tr>
                                 @endforeach

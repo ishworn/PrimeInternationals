@@ -191,192 +191,73 @@
                         <form method="post" action="{{ route('customer.store') }}" id="myForm" enctype="multipart/form-data">
                             @csrf
                             <div>
-                                <!-- Navigation -->
-                                <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
-                                    <div class="container-fluid">
-                                        <!-- Toggler Button for Mobile View -->
-                                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                                            <span class="navbar-toggler-icon"></span>
-                                        </button>
-                                        <div class="collapse navbar-collapse" id="navbarNav">
-                                            <ul class="navbar-nav">
-                                                <li class="nav-item">
-                                                    <a class="nav-link active" href="#" data-target="senderForm">Sender</a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a class="nav-link" href="#" data-target="receiverForm">Receiver</a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a class="nav-link" href="#" data-target="boxSection">Boxes</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </nav>
-                                <!-- Sender Section -->
-                                <div id="senderForm" class="form-section">
-                                    <h3>Sender Details</h3>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Sender Name:</label>
-                                                <input type="text" id="senderName" name="senderName" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Sender Phone:</label>
-                                                <input type="number" id="senderPhone" name="senderPhone" >
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
+                                <div class="container mx-auto px-4 py-6">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                                            <div class="form-group">
-                                                <label>Sender Email:</label>
-                                                <input type="email" id="senderEmail" name="senderEmail">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Sender Address:</label>
-                                                <input type="text" id="senderAddress" name="senderAddress" >
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <div class="card-body">
-                                        <h4 class="card-title mb-4" style="font-size: 22px; font-weight: bold;"></h4>
-
-                                        <table id="datatable" class="table table-bordered dt-responsive nowrap" style="width: 100%;">
-                                            <thead class="bg-primary text-white">
-                                                <tr>
-                                                    <th>Sl</th>
-                                                    <th>Sender Name</th>
-                                                    <th>Sender Email</th>
-                                                    <th>Sender Phone</th>
-                                                    <th>Sender Address</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach($senders as $key => $sender)
-                                                <tr>
-                                                    <td>{{ $key + 1 }}</td>
-                                                    <td>{{ $sender->senderName }}</td>
-
-                                                    <td>{{ $sender->senderEmail }}</td>
-                                                    <td>{{ $sender->senderPhone }}</td>
-                                                    <td>{{ $sender->senderAddress }}</td>
-                                                    <!-- Assuming amount field exists -->
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <!-- Receiver Section -->
-                                <div id="receiverForm" class="form-section" style="display:none;">
-                                    <h3>Receiver Details</h3>
-                                    <div class="row">
-                                        <!-- Column 1 -->
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Receiver Name:</label>
-                                                <input type="text" name="receiverName" required class="form-control " required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Receiver Phone:</label>
-                                                <input type="text" name="receiverPhone" class="form-control">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Receiver Email:</label>
-                                                <input type="email" name="receiverEmail" class="form-control">
-                                            </div>
-
-
-                                        </div>
-                                        <!-- Column 2 -->
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Postal Code:</label>
-                                                <input type="text" name="receiverPostalcode" class="form-control">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Country:</label>
-                                                <input type="text" name="receiverCountry" class="form-control">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Address:</label>
-                                                <textarea name="receiverAddress"  class="form-control"></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <div class="card shadow-lg">
-                                                <div class="card-body">
-
-
-                                                    <table id="receiverTable" class="table table-bordered dt-responsive nowrap" style="width: 100%;">
-                                                        <thead class="bg-primary text-white">
-                                                            <tr>
-                                                                <th>Sl</th>
-                                                                <th>Receiver Name</th>
-                                                                <th>Receiver Phone</th>
-                                                                <th>Receiver Email</th>
-                                                                <th>Postal Code</th>
-                                                                <th>Country</th>
-                                                                <th>Address</th>
-                                                                
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody >
-                                                            @foreach($receivers as $key => $receiver)
-                                                            <tr>
-                                                                <td>{{ $key + 1 }}</td>
-                                                                <td>{{ $receiver->receiverName }}</td>
-                                                                <td>{{ $receiver->receiverPhone }}</td> <!-- Assuming receiverName field exists -->
-                                                                <td>{{ $receiver->receiverEmail }}</td> <!-- Assuming country field exists -->
-                                                                <td>{{ $receiver->receiverPostalcode }}</td>
-                                                                <td>{{ $receiver->receiverCountry }}</td>  
-                                                                <td>{{ $receiver->receiverAddress }}</td>  <!-- Assuming amount field exists --> 
-                                                                <!-- Assuming amount field exists -->
-
-
-                                                                <!-- Actions (unchanged) -->
-
-                                                            </tr>
-                                                            @endforeach
-                                                        </tbody>
-
-                                                        <!-- JavaScript -->
-
-
-
-                                                        <!-- JavaScript -->
-
-
-
-                                                    </table>
-
+                                        <!-- Sender Form -->
+                                        <div class="bg-white shadow-md rounded-xl p-6">
+                                            <h3 class="text-xl font-semibold mb-4 text-center">Sender Details</h3>
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div>
+                                                    <label class="block text-sm font-medium mb-1">Sender Name</label>
+                                                    <input type="text" name="senderName" id="senderName" required class="w-full border rounded px-3 py-2">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium mb-1">Sender Phone</label>
+                                                    <input type="number" name="senderPhone" id="senderPhone" class="w-full border rounded px-3 py-2">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium mb-1">Sender Email</label>
+                                                    <input type="email" name="senderEmail" id="senderEmail" class="w-full border rounded px-3 py-2">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium mb-1">Sender Address</label>
+                                                    <input type="text" name="senderAddress" id="senderAddress" class="w-full border rounded px-3 py-2">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium mb-1">Invoice Date</label>
+                                                    <input type="date" name="invoice_date" class="w-full border rounded px-3 py-2">
                                                 </div>
                                             </div>
-                                        </div> <!-- End col -->
+                                        </div>
+
+                                        <!-- Receiver Form -->
+                                        <div class="bg-white shadow-md rounded-xl p-6">
+                                            <h3 class="text-xl font-semibold mb-4 text-center">Receiver Details</h3>
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div>
+                                                    <label class="block text-sm font-medium mb-1">Receiver Name</label>
+                                                    <input type="text" name="receiverName" required class="w-full border rounded px-3 py-2">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium mb-1">Receiver Phone</label>
+                                                    <input type="text" name="receiverPhone" class="w-full border rounded px-3 py-2">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium mb-1">Receiver Email</label>
+                                                    <input type="email" name="receiverEmail" class="w-full border rounded px-3 py-2">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium mb-1">Postal Code</label>
+                                                    <input type="text" name="receiverPostalcode" class="w-full border rounded px-3 py-2">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium mb-1">Country</label>
+                                                    <input type="text" name="receiverCountry" class="w-full border rounded px-3 py-2">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium mb-1">Address</label>
+                                                    <textarea name="receiverAddress" rows="2" class="w-full border rounded px-3 py-2"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
                                 <!-- Box Section -->
-                                <div id="boxSection" class="form-section" style="display:none;">
+                                <div id="boxSection" class="form-section">
                                     <div class="container-fluid">
-                                        <div class="row">
-                                            <!-- Shipment Via -->
-                                            <div class="col-12 col-md-6 mb-3">
-                                                <label for="shipment_via">Shipment Via:</label>
-                                                <input type="text" name="shipment_via" class="form-control" >
-                                            </div>
-                                            <!-- Actual Weight -->
 
-                                            <!-- Invoice Date -->
-                                            <div class="col-12 col-md-6 mb-3">
-                                                <label for="invoice_date">Invoice Date:</label>
-                                                <input type="date" name="invoice_date" class="form-control" required>
-                                            </div>
-                                          
-                                        </div>
                                         <!-- Box Container Section -->
                                         <div id="boxContainer" class="mt-4"></div>
                                         <!-- Add Box Button -->
@@ -399,19 +280,17 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
 <script>
+    $(document).ready(function() {
+        // Initialize DataTable for the sender table
 
 
 
-$(document).ready(function() {
-    // Initialize DataTable for the sender table
-   
 
-    
-
-    // Initialize DataTable for the receiver table
-    $('#receiverTable').DataTable();
-});
+        // Initialize DataTable for the receiver table
+        $('#receiverTable').DataTable();
+    });
 
     function submitForm() {
         const formData = new FormData(document.getElementById('myForm'));
@@ -436,25 +315,7 @@ $(document).ready(function() {
                 console.error('Error submitting form:', error);
             });
     }
-    document.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', (e) => {
-        e.preventDefault();
-        
-        // Hide all form sections
-        document.querySelectorAll('.form-section').forEach(section => {
-            section.style.display = 'none';
-        });
-        
-        // Show the clicked form section
-        document.getElementById(e.target.dataset.target).style.display = 'block';
-        
-        // Remove 'active' class from all nav links
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        
-        // Add 'active' class to the clicked nav link
-        link.classList.add('active');
-    });
-});
+
 
     // Array to store box IDs
     let boxes = [];

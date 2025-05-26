@@ -181,208 +181,146 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-
-
-
                         <form method="post" action="{{ route('customer.update') }}" id="myForm" enctype="multipart/form-data">
                             @csrf
+
                             <div>
+                                <div class="container mx-auto px-4 py-6">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                                <!-- Navigation -->
-                                <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
-                                    <div class="container-fluid">
-                                        <!-- Toggler Button for Mobile View -->
-                                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                                            <span class="navbar-toggler-icon"></span>
-                                        </button>
-                                        <div class="collapse navbar-collapse" id="navbarNav">
-                                            <ul class="navbar-nav">
-                                                <li class="nav-item">
-                                                    <a class="nav-link active" href="#" data-target="senderForm">Sender</a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a class="nav-link" href="#" data-target="receiverForm">Receiver</a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a class="nav-link" href="#" data-target="boxSection">Boxes</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </nav>
-                                <!-- Sender Section -->
-                                <div id="senderForm" class="form-section">
-                                    <h3>Sender Details</h3>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Sender ID:</label>
-                                                <input type="text" id='id' value="{{ $sender->id }}" name="id" readonly required>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label>Sender Name:</label>
-                                                <input type="text" id='senderName' value="{{ $sender->senderName }}" name="senderName" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Sender Phone:</label>
-                                                <input type="text" id='senderPhone' value="{{ $sender->senderPhone }}" name="senderPhone">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-
-                                            <div class="form-group">
-                                                <label>Sender Email:</label>
-                                                <input type="email" id='senderEmail' value="{{ $sender->senderEmail }}" name="senderEmail">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Sender Address:</label>
-                                                <input type="text" id='senderAddress' value="{{ $sender->senderAddress }}" name="senderAddress">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="card-body">
-                                        <h4 class="card-title mb-4" style="font-size: 22px; font-weight: bold;"></h4>
-
-                                        <table id="datatable" class="table table-bordered dt-responsive nowrap" style="width: 100%;">
-                                            <thead class="bg-primary text-white">
-                                                <tr>
-                                                    <th>Sl</th>
-                                                    <th>Sender Name</th>
-                                                    <th>Sender Email</th>
-                                                    <th>Sender Phone</th>
-                                                    <th>Sender Address</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach($allSenders as $key => $singleSender)
-                                                <tr>
-                                                    <td>{{ $key + 1 }}</td>
-                                                    <td>{{ $singleSender->senderName }}</td>
-
-                                                    <td>{{ $singleSender->senderEmail }}</td>
-                                                    <td>{{ $singleSender->senderPhone }}</td>
-                                                    <td>{{ $singleSender->senderAddress }}</td>
-                                                    <!-- Assuming amount field exists -->
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-                                <!-- Receiver Section -->
-                                @foreach($receivers as $receiver)
-                                <div id="receiverForm" class="form-section" style="display:none;">
-                                    <h3>Receiver Details</h3>
-                                    <div class="row">
-                                        <!-- Column 1 -->
-
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Receiver Name:</label>
-                                                <input type="text" name="receiverName" value="{{ $receiver->receiverName }}" required class="form-control">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Receiver Phone:</label>
-                                                <input type="text" name="receiverPhone" value="{{ $receiver->receiverPhone }}" class="form-control">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Receiver Email:</label>
-                                                <input type="email" name="receiverEmail" value="{{ $receiver->receiverEmail }}" class="form-control">
-                                            </div>
-
-                                        </div>
-                                        <!-- Column 2 -->
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Postal Code:</label>
-                                                <input type="text" name="receiverPostalcode" value="{{ $receiver->receiverPostalcode }}" class="form-control">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Country:</label>
-                                                <input type="text" name="receiverCountry" value="{{ $receiver->receiverCountry }}" required class="form-control">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Address:</label>
-                                                <input name="receiverAddress" value="{{ $receiver->receiverAddress }}" class="form-control"></input>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                @endforeach
-                                <!-- Box Section -->
-                                @foreach($shipments as $shipment)
-                                <div id="boxSection" class="form-section" style="display:none;">
-                                    <div class="container-fluid">
-                                        <div class="row">
-                                            <!-- Shipment Via -->
-                                          
-                                            <!-- Invoice Date -->
-                                            <div class="col-12 col-md-6 mb-3">
-                                                <label for="invoice_date">Invoice Date:</label>
-                                                <input type="date" name="invoice_date" value="{{ $shipment  ->invoice_date }}" class="form-control" required>
-                                            </div>
-                                      
-                                            </div>
-                                        </div>
-                                        <div id="boxContainer">
-                                            @foreach($sender->boxes as $box)
-                                            <div class="box-section" data-box-id="{{ $box->id }}">
-                                                <div class="box-header">
-                                                    <h4><span class="box-number">Box {{ $loop->iteration }}</span></h4>
-                                                    <button type="button" class="minimize-button" onclick="toggleMinimize(this)">-</button>
-                                                    <button type="button" class="delete-box-button" onclick="deleteBox('{{ $box->id }}')">×</button>
+                                        <!-- Sender Form -->
+                                        <div class="bg-white shadow-md rounded-xl p-6">
+                                            <h3 class="text-xl font-semibold mb-4 text-center">Sender Details</h3>
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div>
+                                                    <label class="block text-sm font-medium mb-1">Sender ID</label>
+                                                    <input type="text" id='id' value="{{ $sender->id }}" name="id" readonly required class="w-full border rounded px-3 py-2">
                                                 </div>
-                                                <div class="box-content">
-                                                    <div class="table-wrapper">
-                                                        <table>
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>Id</th>
-                                                                    <th>Item</th>
-                                                                    <th>HS Code</th>
-                                                                    <th>Quantity</th>
-                                                                    <th>Unit Rate</th>
-                                                                    <th>Amount</th>
-                                                                    <th>Actions</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                @foreach ($box->items as $item)
-                                                                <tr data-row-index="{{ $loop->index }}">
-                                                                    <td>{{ $loop->iteration }}</td>
-                                                                    <td><input type="text" name="boxes[{{ $box->id }}][items][{{ $loop->index }}][item]" value="{{ $item->item }}" required class="form-control"></td>
-                                                                    <td><input type="text" name="boxes[{{ $box->id }}][items][{{ $loop->index }}][hs_code]" value="{{ $item->hs_code }}" class="form-control"></td>
-                                                                    <td><input type="text" name="boxes[{{ $box->id }}][items][{{ $loop->index }}][quantity]" value="{{ $item->quantity }}" required class="form-control"></td>
-                                                                    <td><input type="number" name="boxes[{{ $box->id }}][items][{{ $loop->index }}][unit_rate]" value="{{ $item->unit_rate }}" class="form-control"></td>
-                                                                    <td><input type="number" name="boxes[{{ $box->id }}][items][{{ $loop->index }}][amount]" value="{{ $item->amount }}" readonly class="form-control"></td>
-                                                                    <td><button type="button" class="delete-row-button btn btn-danger" onclick="deleteRow(this)">×</button></td>
-                                                                </tr>
-                                                                @endforeach
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                    <button type="button" class="add-row-button" onclick="addRow('{{ $box->id }}')">Add Item</button>
+
+                                                <div>
+                                                    <label class="block text-sm font-medium mb-1">Sender Name</label>
+                                                    <input type="text" id='senderName' value="{{ $sender->senderName }}" class="w-full border rounded px-3 py-2" name="senderName" required>
+
+
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium mb-1">Sender Phone</label>
+                                                    <input type="text" id='senderPhone' value="{{ $sender->senderPhone }}" name="senderPhone" class="w-full border rounded px-3 py-2">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium mb-1">Sender Email</label>
+                                                    <input type="email" id='senderEmail' value="{{ $sender->senderEmail }}" name="senderEmail" class="w-full border rounded px-3 py-2">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium mb-1">Sender Address</label>
+                                                    <input type="text" id='senderAddress' value="{{ $sender->senderAddress }}" name="senderAddress" class="w-full border rounded px-3 py-2">
+                                                </div>
+                                                <div>
+                                                    @foreach($shipments as $shipment)
+                                                    <label class="block text-sm font-medium mb-1">Invoice Date</label>
+                                                    <input type="date" name="invoice_date" value="{{ $shipment  ->invoice_date }}" class="form-control" required class="w-full border rounded px-3 py-2">
+                                                    @endforeach
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        @foreach($receivers as $receiver)
+                                        <!-- Receiver Form -->
+                                        <div class="bg-white shadow-md rounded-xl p-6">
+                                            <h3 class="text-xl font-semibold mb-4 text-center">Receiver Details</h3>
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div>
+                                                    <label class="block text-sm font-medium mb-1">Receiver Name</label>
+                                                    <input type="text" name="receiverName" value="{{ $receiver->receiverName }}" required class="w-full border rounded px-3 py-2">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium mb-1">Receiver Phone</label>
+                                                    <input type="text" name="receiverPhone" value="{{ $receiver->receiverPhone }}" class="w-full border rounded px-3 py-2">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium mb-1">Receiver Email</label>
+                                                    <input type="email" name="receiverEmail" value="{{ $receiver->receiverEmail }}" class="w-full border rounded px-3 py-2">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium mb-1">Postal Code</label>
+                                                    <input type="text" name="receiverPostalcode" value="{{ $receiver->receiverPostalcode }}" class="w-full border rounded px-3 py-2">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium mb-1">Country</label>
+                                                    <input type="text" name="receiverCountry" value="{{ $receiver->receiverCountry }}" required class="w-full border rounded px-3 py-2">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium mb-1">Address</label>
+                                                    <textarea name="receiverAddress" value="{{ $receiver->receiverAddress }}" class="w-full border rounded px-3 py-2"></textarea>
                                                 </div>
                                             </div>
-                                            @endforeach
                                         </div>
-                                        <div class="text-center">
-                                            <button type="button" class="btn btn-primary  m-3" onclick="addBox()">Add Box</button>
-                                        </div>
+                                        @endforeach
 
                                     </div>
-
-
-                                    <!-- <div class="text-center">
-                                        <button type="button" class="btn btn-primary  m-3" onclick="addBox()">Add Box</button>
-                                    </div> -->
                                 </div>
-                                @endforeach
+                            </div>
+
+
+
+
+
+
+
+                            <!-- Box Section -->
+
+                            <div id="boxSection" class="form-section">
+
+                                <div id="boxContainer">
+                                    @foreach($sender->boxes as $box)
+                                    <div class="box-section" data-box-id="{{ $box->id }}">
+                                        <div class="box-header">
+                                            <h4><span class="box-number">Box {{ $loop->iteration }}</span></h4>
+                                            <button type="button" class="minimize-button" onclick="toggleMinimize(this)">-</button>
+                                            <button type="button" class="delete-box-button" onclick="deleteBox('{{ $box->id }}')">×</button>
+                                        </div>
+                                        <div class="box-content">
+                                            <div class="table-wrapper">
+                                                <table>
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Id</th>
+                                                            <th>Item</th>
+                                                            <th>HS Code</th>
+                                                            <th>Quantity</th>
+                                                            <th>Unit Rate</th>
+                                                            <th>Amount</th>
+                                                            <th>Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach ($box->items as $item)
+                                                        <tr data-row-index="{{ $loop->index }}">
+                                                            <td>{{ $loop->iteration }}</td>
+                                                            <td><input type="text" name="boxes[{{ $box->id }}][items][{{ $loop->index }}][item]" value="{{ $item->item }}" required class="form-control"></td>
+                                                            <td><input type="text" name="boxes[{{ $box->id }}][items][{{ $loop->index }}][hs_code]" value="{{ $item->hs_code }}" class="form-control"></td>
+                                                            <td><input type="text" name="boxes[{{ $box->id }}][items][{{ $loop->index }}][quantity]" value="{{ $item->quantity }}" required class="form-control"></td>
+                                                            <td><input type="number" name="boxes[{{ $box->id }}][items][{{ $loop->index }}][unit_rate]" value="{{ $item->unit_rate }}" class="form-control"></td>
+                                                            <td><input type="number" name="boxes[{{ $box->id }}][items][{{ $loop->index }}][amount]" value="{{ $item->amount }}" readonly class="form-control"></td>
+                                                            <td><button type="button" class="delete-row-button btn btn-danger" onclick="deleteRow(this)">×</button></td>
+                                                        </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <button type="button" class="add-row-button" onclick="addRow('{{ $box->id }}')">Add Item</button>
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                </div>
+                                <div class="text-center">
+                                    <button type="button" class="btn btn-primary  m-3" onclick="addBox()">Add Box</button>
+                                </div>
 
                             </div>
+
+
+
 
                             <div class="form-group    navbar-light bg-light  mx-9  ">
                                 <input type="submit" class="btn btn-info waves-effect waves-light" value="Update Customer">
@@ -402,6 +340,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
 
 <script>
     document.querySelectorAll('.nav-link').forEach(link => {
