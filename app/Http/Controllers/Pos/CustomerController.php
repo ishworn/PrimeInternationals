@@ -236,7 +236,9 @@ class CustomerController extends Controller
                 'senderPhone' => $request->senderPhone ?? null,
                 'senderEmail' => $request->senderEmail ?? null,
                 'senderAddress' => $request->senderAddress ?? null,
+                // pending
             ]);
+
             $sender->save();
             $lastInvoice = Sender::max('invoiceId');
             $sender->invoiceId = $lastInvoice ? $lastInvoice + 1 : 100;
