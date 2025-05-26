@@ -1,7 +1,7 @@
 @extends('admin.admin_master')
 @section('admin')
 
-<div class="content p-4">
+<div class="content p-4 mb-10">
     <h2 class="mb-4 border-bottom pb-3 text-uppercase">Dashboard</h2>
 
     <!-- Animated Cards -->
@@ -23,32 +23,32 @@
                     </div>
                 </div>
 
-                <!-- Total Manager Card -->
-                <div class="col-md-4">
+                <!-- Total Shipments Card -->
+                <div class="col-md-4 ">
                     <div class="d-flex border animated-card">
                         <div class="bg-custom-background text-light p-4">
                             <div class="d-flex align-items-center h-100">
-                                <i class="fa fa-3x fa-fw fa-users"></i>
+                                <i class="fa fa-3x fa-fw fa-box"></i>
                             </div>
                         </div>
                         <div class="flex-grow-1 bg-white p-4">
-                            <p class="text-uppercase text-secondary mb-0">Total Manager</p>
-                            <h3 class="font-weight-bold mb-0">15</h3>
+                            <p class="text-uppercase text-secondary mb-0">Total Shipments</p>
+                            <h3 class="font-weight-bold mb-0">{{$totalCustomer}}</h3>
                         </div>
                     </div>
                 </div>
 
-                <!-- Total Company Income Card -->
-                <div class="col-md-4">
+                <!-- Pending Deliveries Card -->
+                <div class="col-md-4 ">
                     <div class="d-flex border animated-card">
                         <div class="bg-custom-background text-light p-4">
                             <div class="d-flex align-items-center h-100">
-                                <i class="fa fa-3x fa-fw fa-money-bill-alt"></i>
+                                <i class="fa fa-3x fa-fw fa-truck"></i>
                             </div>
                         </div>
                         <div class="flex-grow-1 bg-white p-4">
-                            <p class="text-uppercase text-secondary mb-0">Total Company Income</p>
-                            <h3 class="font-weight-bold mb-0">{{ number_format($totalIncome, 2) }}</h3>
+                            <p class="text-uppercase text-secondary mb-0">Pending Deliveries</p>
+                            <h3 class="font-weight-bold mb-0">85</h3>
                         </div>
                     </div>
                 </div>
@@ -63,47 +63,32 @@
             MONTHLY INCOME STATISTICS
         </div>
         <div class="card-body mt-4">
-            <canvas id="monthlyIncomeChart" style="height: 250px;"></canvas>
+            <canvas id="barChart" style="width:100%;max-width:100%;height: 300px;"></canvas>
         </div>
     </div>
 
-    <!-- Additional Cards -->
-    <div class="row mb-5">
-    <!-- Total Shipments Card -->
-    <div class="col-md-6 col-12">
-        <div class="d-flex border animated-card">
-            <div class="bg-yellow-orange text-light p-4">
-                <div class="d-flex align-items-center h-100">
-                    <i class="fa fa-3x fa-fw fa-box"></i>
-                </div>
-            </div>
-            <div class="flex-grow-1 bg-white p-4">
-                <p class="text-uppercase text-secondary mb-0">Total Shipments</p>
-                <h3 class="font-weight-bold mb-0">{{$totalCustomer}}</h3>
-            </div>
-        </div>
-    </div>
 
-    <!-- Pending Deliveries Card -->
-    <div class="col-md-6 col-12">
-        <div class="d-flex border animated-card">
-            <div class="bg-yellow-orange text-light p-4">
-                <div class="d-flex align-items-center h-100">
-                    <i class="fa fa-3x fa-fw fa-truck"></i>
-                </div>
-            </div>
-            <div class="flex-grow-1 bg-white p-4">
-                <p class="text-uppercase text-secondary mb-0">Pending Deliveries</p>
-                <h3 class="font-weight-bold mb-0">85</h3>
-            </div>
+    <div class="grid grid-cols-2 gap-4">
+        <div>
+
+            <!-- Doughnut graph -->
+            <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
         </div>
+        <div>
+
+            <!-- pie chart -->
+            <canvas id="pieChart" style="width:100%;max-width:600px"></canvas>
+        </div>
+
     </div>
-</div>
 
 </div>
 
+
+<script src="https://cdn.tailwindcss.com"></script>
 <!-- Include Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 
 <!-- Custom CSS for Animations -->
 <style>
@@ -127,7 +112,7 @@
 
 <!-- Chart Script -->
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         var ctx = document.getElementById('monthlyIncomeChart').getContext('2d');
         var monthlyIncomeChart = new Chart(ctx, {
             type: 'bar',
@@ -168,6 +153,95 @@
                 }
             }
         });
+    });
+</script>
+
+<!-- doughnut graph script -->
+<script>
+    var xValues = ["Partial", "Pending", "Completed", "Unknown"];
+    var yValues = [49, 44, 24, 15];
+    var barColors = [
+        "#f0ad4e",
+        "#bb2124",
+        "#22bb33",
+        "#aaaaaa"
+
+    ];
+
+    new Chart("myChart", {
+        type: "doughnut",
+        data: {
+            labels: xValues,
+            datasets: [{
+                backgroundColor: barColors,
+                data: yValues,
+
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                text: "Payment Status",
+
+            }
+        }
+    });
+</script>
+
+<!-- bar graph  -->
+<script>
+    var xValues = ["Italy", "France", "Spain", "USA", "Argentina", "Italy", "France", "Spain", "USA", "Argentina"];
+    var yValues = [55, 49, 44, 24, 15, 55, 49, 44, 24, 15];
+    var barColors = ["red", "green", "blue", "orange", "brown", "red", "green", "blue", "orange", "brown"];
+
+    new Chart("barChart", {
+        type: "bar",
+        data: {
+            labels: xValues,
+            datasets: [{
+                backgroundColor: barColors,
+                data: yValues
+            }]
+        },
+        options: {
+            legend: {
+                display: false
+            },
+            title: {
+                display: true,
+                text: "World Wine Production 2018"
+            }
+        }
+    });
+</script>
+
+<!-- pie chart -->
+<script>
+    var xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
+    var yValues = [55, 49, 44, 24, 15];
+    var barColors = [
+        "#b91d47",
+        "#00aba9",
+        "#2b5797",
+        "#e8c3b9",
+        "#1e7145"
+    ];
+
+    new Chart("pieChart", {
+        type: "pie",
+        data: {
+            labels: xValues,
+            datasets: [{
+                backgroundColor: barColors,
+                data: yValues
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                text: "World Wide Wine Production 2018"
+            }
+        }
     });
 </script>
 
