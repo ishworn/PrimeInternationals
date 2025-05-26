@@ -168,6 +168,9 @@
                                                 ...
                                             </button>
                                             <div class="dropdown-menu" aria-labelledby="dropdownMenu{{ $sender->id }}">
+                                                <a href="{{ route('payments.invoice', $sender->id) }}" class="dropdown-item" >
+                                                    <i class="fas fa-file-invoice"></i> Billing
+                                                </a>
                                                 <a class="dropdown-item" href="{{ route('customer.edit', $sender->id) }}">
                                                     <i class="fas fa-edit"></i> Edit
                                                 </a>

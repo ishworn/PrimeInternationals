@@ -195,6 +195,7 @@ class PaymentController extends Controller
             // If payment exists, update it, otherwise create a new payment record
 
             $payment->update([
+                'bill_amount' => $request->bill_amount,
                 'sender_id' => $request->sender_id,
                 'payment_method' => $payment_method,
                 'cash_amount' => $request->cash_amount ?? 0,
@@ -542,18 +543,6 @@ class PaymentController extends Controller
                 ]);
                 return response()->json(['success' => false, 'message' => 'Failed to generate invoice PDF.']);
             }
-
-
-
-
-
-
-
-
-
-
-
-
             return response()->json(['success' => true, 'message' => 'Invoice saved successfully!']);
         } catch (\Exception $e) {
 
