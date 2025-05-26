@@ -236,7 +236,6 @@ class CustomerController extends Controller
                 'senderPhone' => $request->senderPhone ?? null,
                 'senderEmail' => $request->senderEmail ?? null,
                 'senderAddress' => $request->senderAddress ?? null,
-                // pending
             ]);
 
             $sender->save();
@@ -253,6 +252,7 @@ class CustomerController extends Controller
                 'receiverPostalcode' => $request->receiverPostalcode ?? null,
                 'receiverCountry' => $request->receiverCountry ?? null,
             ]);
+
 
             Shipment::create([
                 'sender_id' => $sender->id,
