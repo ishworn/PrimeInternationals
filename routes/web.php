@@ -62,6 +62,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/trackings/edit/{id}', 'edit')->name('trackings.edit'); // Show form to edit an existing tracking
         Route::put('/trackings/{id}', 'update')->name('trackings.update'); // Update an existing tracking
         Route::get('/trackings/status', 'status')->name('trackings.parcel_status'); // Show tracking status
+        Route::put('/senders/{id}', 'updateStatus')->name('senders.updateStatus');
+
     });
 
     Route::controller(PaymentController::class)->group(function () {
