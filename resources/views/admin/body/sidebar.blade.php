@@ -32,6 +32,8 @@
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
                         <li><a href="{{ route('trackings.index') }}">Manage Tracking</a></li>
+                        <li><a href="{{ route('trackings.parcel_status') }}">Parcel Status</a></li>
+
                         <li><a href="https://primegorkha.aftership.com"
                                 onclick="window.open(this.href, '_blank'); return false;">Track</a></li>
                     </ul>
