@@ -19,9 +19,8 @@ class Sender extends Model
         'senderPhone',
         'senderEmail',
         'senderAddress',
-
-   
         'trackingId',
+        'status',
 
     ];
 
