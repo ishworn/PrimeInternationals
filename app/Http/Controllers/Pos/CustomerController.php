@@ -236,6 +236,7 @@ class CustomerController extends Controller
                 'senderPhone' => $request->senderPhone ?? null,
                 'senderEmail' => $request->senderEmail ?? null,
                 'senderAddress' => $request->senderAddress ?? null,
+                //sender_status => 'pending' ?? null,
 
             ]);
             $sender->save();

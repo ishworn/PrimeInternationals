@@ -35,7 +35,6 @@ class TrackingController extends Controller
     public function edit($id)
     {
         $sender = Sender::with('receiver')->findOrFail($id); // Find the tracking record by ID
-    // dd($sender);
         return view('backend.trackings.edit', compact('sender' )); // Return the edit view with the tracking data
     }
 
@@ -57,6 +56,12 @@ class TrackingController extends Controller
         // Redirect back to the index route after successful update
         return redirect()->route('trackings.index')->with('success', 'Tracking record updated!');
         
+    }
+
+    public function status()
+    {
+        $sender = Sender::with('receiver');
+       return view('backend.trackings.parcel_status', compact('sender'));
     }
    
 }
