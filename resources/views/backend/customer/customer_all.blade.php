@@ -163,27 +163,44 @@
 
                                     <!-- Actions (unchanged) -->
                                     <td class="text-center">
-                                        <div class="dropdown">
-                                            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenu{{ $sender->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                ...
-                                            </button>
-                                            <div class="dropdown-menu" aria-labelledby="dropdownMenu{{ $sender->id }}">
-                                                <a href="{{ route('payments.invoice', $sender->id) }}" class="dropdown-item" >
-                                                    <i class="fas fa-file-invoice"></i> Billing
-                                                </a>
-                                                <a class="dropdown-item" href="{{ route('customer.edit', $sender->id) }}">
-                                                    <i class="fas fa-edit"></i> Edit
-                                                </a>
-                                                <a class="dropdown-item" href="{{ route('customer.preview', $sender->id) }}">
-                                                    <i class="fas fa-eye"></i> Preview
-                                                </a>
-                                                <a class="dropdown-item" href="{{ route('customer.addweight', $sender->id) }}">
-                                                    <i class="fas fa-weight"></i> Add Weight
-                                                </a>
-                                                <a class="dropdown-item" href="{{ route('customer.delete', $sender->id) }}">
-                                                    <i class="fas fa-trash"></i> Delete
-                                                </a>
+                                        <div style="display: flex; align-items: center;gap:10px;">
+                                            <div class="dropdown">
+                                                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenu{{ $sender->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    ...
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenu{{ $sender->id }}">
+                                                    <a href="{{ route('payments.invoice', $sender->id) }}" class="dropdown-item">
+                                                        <i class="fas fa-file-invoice"></i> Billing
+                                                    </a>
+                                                    <a class="dropdown-item" href="{{ route('customer.edit', $sender->id) }}">
+                                                        <i class="fas fa-edit"></i> Edit
+                                                    </a>
+                                                    <a class="dropdown-item" href="{{ route('customer.preview', $sender->id) }}">
+                                                        <i class="fas fa-eye"></i> Preview
+                                                    </a>
+                                                    <a class="dropdown-item" href="{{ route('customer.addweight', $sender->id) }}">
+                                                        <i class="fas fa-weight"></i> Add Weight
+                                                    </a>
+                                                    <a class="dropdown-item" href="{{ route('customer.delete', $sender->id) }}">
+                                                        <i class="fas fa-trash"></i> Delete
+                                                    </a>
+                                                </div>
                                             </div>
+                                            <!-- <a href="{{ route('invoice.print', $sender->id) }}?autoPrint=1"  class="btn btn-info btn-sm mx-1" title="Print">
+                                                <i class="fas fa-print"></i>
+                                            </a> -->
+                                            <iframe id="printFrame" style="display:none;"></iframe>
+                                            <a href="#"
+                                                onclick="printInvoice('{{ $sender->id }}'); return false;"
+                                                class="btn btn-info btn-sm mx-1"
+                                                title="Print">
+                                                <i class="fas fa-print"></i>
+                                            </a>
+
+
+
+
+
                                         </div>
                                     </td>
 
@@ -271,6 +288,20 @@
                 });
         }
     });
+
+    //Print
+    // function printInvoice() {
+    //     window.print();
+    // }
+    function printInvoice(id) {
+        const iframe = document.getElementById('printFrame');
+        iframe.src = `/customer/print/${id}`; // URL of your print view
+
+        iframe.onload = function() {
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print();
+        };
+    }
 </script>
 
 <style>
