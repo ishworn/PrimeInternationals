@@ -59,12 +59,21 @@
                         <span>Manage User</span>
                     </a>
                 </li>
-                <li>
-                    <a href="{{ route('dispatch.index') }}" class="waves-effect">
-                        <i class="fas fa-shipping-fast" aria-hidden="true"></i>
+                  <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                       <i class="fas fa-shipping-fast" aria-hidden="true"></i>
                         <span>Dispatch</span>
                     </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                    <li><a href="{{ route('payments.dashboard') }}">Payment Dashboard</a></li>
+                        <li><a href="{{ route('payments.index') }}">Manage Payment</a></li>
+                        <li><a href="{{ route('payments.details') }}">Expenses Management</a></li>
+                        <li><a href="{{ route('payments.manage') }}">Agencies Expenses</a></li>
+                      
+                       
+                    </ul>
                 </li>
+               
                  <li>
                     <a href="{{ route('agencies.index') }}" class="waves-effect">
                       <i class="fa-solid fa-briefcase" aria-hidden="true"></i>

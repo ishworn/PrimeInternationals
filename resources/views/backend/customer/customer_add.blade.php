@@ -200,19 +200,19 @@
                                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 <div>
                                                     <label class="block text-sm font-medium mb-1">Sender Name</label>
-                                                    <input type="text" name="senderName" id="senderName" required class="w-full border rounded px-3 py-2">
+                                                    <input placeholder="Prime Gurkha" type="text" name="senderName" id="senderName" required class="w-full border rounded px-3 py-2">
                                                 </div>
                                                 <div>
                                                     <label class="block text-sm font-medium mb-1">Sender Phone</label>
-                                                    <input type="number" name="senderPhone" id="senderPhone" class="w-full border rounded px-3 py-2">
+                                                    <input placeholder="9876123456" type="number" name="senderPhone" id="senderPhone" class="w-full border rounded px-3 py-2">
                                                 </div>
                                                 <div>
                                                     <label class="block text-sm font-medium mb-1">Sender Email</label>
-                                                    <input type="email" name="senderEmail" id="senderEmail" class="w-full border rounded px-3 py-2">
+                                                    <input placeholder="primegurkha@gmail.com" type="email" name="senderEmail" id="senderEmail" class="w-full border rounded px-3 py-2">
                                                 </div>
                                                 <div>
                                                     <label class="block text-sm font-medium mb-1">Sender Address</label>
-                                                    <input type="text" name="senderAddress" id="senderAddress" class="w-full border rounded px-3 py-2">
+                                                    <input placeholder="Kathmandu" type="text" name="senderAddress" id="senderAddress" class="w-full border rounded px-3 py-2">
                                                 </div>
                                                 <div>
                                                     <label class="block text-sm font-medium mb-1">Invoice Date</label>
@@ -227,28 +227,29 @@
                                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 <div>
                                                     <label class="block text-sm font-medium mb-1">Receiver Name</label>
-                                                    <input type="text" name="receiverName" required class="w-full border rounded px-3 py-2">
+                                                    <input placeholder="Prime Gurkha" type="text" name="receiverName" required class="w-full border rounded px-3 py-2">
                                                 </div>
                                                 <div>
                                                     <label class="block text-sm font-medium mb-1">Receiver Phone</label>
-                                                    <input type="text" name="receiverPhone" class="w-full border rounded px-3 py-2">
+                                                    <input placeholder="+123456789" type="text" name="receiverPhone" class="w-full border rounded px-3 py-2">
                                                 </div>
                                                 <div>
                                                     <label class="block text-sm font-medium mb-1">Receiver Email</label>
-                                                    <input type="email" name="receiverEmail" class="w-full border rounded px-3 py-2">
+                                                    <input placeholder="primegurkha@gmail.com" type="email" name="receiverEmail" class="w-full border rounded px-3 py-2">
                                                 </div>
                                                 <div>
-                                                    <label class="block text-sm font-medium mb-1">Postal Code</label>
-                                                    <input type="text" name="receiverPostalcode" class="w-full border rounded px-3 py-2">
+                                                    <label class="block text-sm font-medium mb-1">Address 1</label>
+                                                    <textarea placeholder="house No. , street name" name="receiverAddress" rows="2" class="w-full border rounded px-3 py-2"></textarea>
                                                 </div>
                                                 <div>
-                                                    <label class="block text-sm font-medium mb-1">Country</label>
-                                                    <input type="text" name="receiverCountry" class="w-full border rounded px-3 py-2">
+                                                    <label class="block text-sm font-medium mb-1"> Address 2</label>
+                                                    <input placeholder="Postal Code , City" type="text" name="receiverPostalcode" class="w-full border rounded px-3 py-2">
                                                 </div>
                                                 <div>
-                                                    <label class="block text-sm font-medium mb-1">Address</label>
-                                                    <textarea name="receiverAddress" rows="2" class="w-full border rounded px-3 py-2"></textarea>
+                                                    <label class="block text-sm font-medium mb-1"> Address 3</label>
+                                                    <input placeholder="Country" type="text" name="receiverCountry" class="w-full border rounded px-3 py-2">
                                                 </div>
+
                                             </div>
                                         </div>
 
@@ -323,6 +324,7 @@
     function addBox() {
         const boxId = Date.now().toString(); // Unique ID for each box
         boxes.push(boxId);
+       
         const boxDiv = document.createElement('div');
         boxDiv.className = 'box-section';
         boxDiv.dataset.boxId = boxId;
@@ -350,12 +352,19 @@
                 </thead>
                 <tbody></tbody>
             </table>
-         <div style="display: flex; align-items: center;">
-    <button type="button" class="add-row-button" onclick="addRow('${boxId}')">Add Item</button>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 20px;">
+      <!-- Add Button on the left -->
+      <button type="button" class="add-row-button" onclick="addRow('${boxId}')">Add Item</button>
 
-</div>
+      <!-- Sender Phone on the right, label and input inline -->
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <label for="box_weight_${boxId}" class="block text-sm font-bold">Weight</label>
+       <input placeholder="20 kg" type="text" id="box_weight_${boxId}" name="box_weight[]" class="form-control" style="width: 160px;">
+      </div>
 
-    `;
+      </div>
+
+      `;
         document.getElementById('boxContainer').appendChild(boxDiv);
         addRow(boxId); // Add the first row to the new box
         updateBoxNumbers();
@@ -444,25 +453,6 @@
         button.textContent = content.style.display === 'none' ? '+' : '-';
     }
 </script>
-<script>
-    document.getElementById('senderName').addEventListener('blur', function() {
-        const name = this.value;
 
-        if (name) {
-            fetch(`/check-sender?name=${name}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.exists) {
-                        document.getElementById('senderPhone').value = data.phone;
-                        document.getElementById('senderEmail').value = data.email;
-                        // Fill other fields similarly
-                    } else {
-                        console.log('Sender not found');
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-        }
-    });
-</script>
 
 @endsection

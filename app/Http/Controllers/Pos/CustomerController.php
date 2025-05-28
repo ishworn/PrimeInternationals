@@ -225,6 +225,8 @@ class CustomerController extends Controller
     public function CustomerStore(Request $request)
     {
         // dd($request);
+        // Get box weights from the request
+         $weight = $request->input('box_weight', []);
         $validated = $request->validate([
             'boxes' => 'required|array',
             'senderEmail' => 'nullable|email',
@@ -264,7 +266,7 @@ class CustomerController extends Controller
                 'dimension' => $request->dimension ?? null,
             ]);
 
-            $this->createBoxesAndItems($sender, $validated['boxes']);
+            $this->createBoxesAndItems($sender, $weight, $validated['boxes' ], );
 
             return redirect()->route('customer.all')->with('success', 'Data saved successfully.');
         } catch (\Exception $e) {
@@ -272,16 +274,20 @@ class CustomerController extends Controller
         }
     }
 
-    private function createBoxesAndItems($sender, $boxes)
+    private function createBoxesAndItems($sender, $boxes , $weight)
     {
+
         foreach ($boxes as $index => $boxData) {
 
+            
             // dd($boxData);
             try {
                 $box = Box::create([
                     'sender_id' => $sender->id,
                     'box_number' => 'Box' . ($index + 1),
-                    // 'box_weight' => $boxData['totalWeight'],
+                 
+                    
+                    
                 ]);
             } catch (\Exception $e) {
                 // Return the exact error message from the exception
@@ -300,6 +306,17 @@ class CustomerController extends Controller
                     'amount' => $itemData['amount'],
                 ]);
             }
+        }
+
+        foreach($weight as $index => $boxWeight) {
+            // Find the box by its ID
+            $box = Box::findOrFail($index); // Assuming box IDs start from 1
+            // Update the box weight and dimension
+            $box->box_weight = $boxWeight['weight'];
+            // $box->box_dimension = $boxWeight['dimension'];
+            // Save the updated box data to the database
+            $box->save();
+           
         }
     }
 

@@ -66,6 +66,8 @@ class TrackingController extends Controller
             ->whereNotNull('trackingId') // Only those with trackingId set
             ->get();
 
+            
+
         return view('backend.trackings.parcel_status', compact('sender'));
     }
 
