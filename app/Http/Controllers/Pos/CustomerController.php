@@ -222,103 +222,91 @@ class CustomerController extends Controller
     }
 
 
-    public function CustomerStore(Request $request)
-    {
-        // dd($request);
-        // Get box weights from the request
-         $weight = $request->input('box_weight', []);
-        $validated = $request->validate([
-            'boxes' => 'required|array',
-            'senderEmail' => 'nullable|email',
+   public function CustomerStore(Request $request)
+{
+    // Validate required structure
+    $weight = $request->input('box_weight', []);
+    $validated = $request->validate([
+        'boxes' => 'required|array',
+        'senderEmail' => 'nullable|email',
+        'receiverEmail' => 'nullable|email',
+    ]);
+
+    $lastInvoice = Sender::max('invoiceId');
+$nextInvoiceId = $lastInvoice ? $lastInvoice + 1 : 100;
+
+    try {
+        // Create Sender
+        $sender = Sender::create([
+            'senderName'     => $request->senderName,
+            'senderPhone'    => $request->senderPhone ?? null,
+            'senderEmail'    => $request->senderEmail ?? null,
+            'senderAddress'  => $request->address1 ?? null, // Optional
+            'company_name'   => $request->company_name ?? null,
+            'address1'       => $request->address1 ?? null,
+            'address2'       => $request->address2 ?? null,
+            'address3'       => $request->address3 ?? null,
+            'status'         => 'pending',
+             'invoiceId'      => $nextInvoiceId,
         ]);
-        // dd($request);
+
+      
+
+        // Create Receiver
+        Receiver::create([
+            'sender_id'            => $sender->id,
+            'receiverName'         => $request->receiverName,
+            'receiverPhone'        => $request->receiverPhone ?? null,
+            'receiverEmail'        => $request->receiverEmail ?? null,
+            'receiverAddress'      => $request->receiverAddress ?? null,
+            'receiverPostalcode'   => $request->receiverPostalcode ?? null,
+            'receiverCountry'      => $request->receiverCountry ?? null,
+            'receiver_company_name'  => $request->receiver_company_name ?? null,
+        ]);
+
+        // Create Shipment
+        Shipment::create([
+            'sender_id'     => $sender->id,
+            'shipment_via'  => $request->shipment_via ?? null,
+            'invoice_date'  => $request->invoice_date,
+            'dimension'     => $request->dimension ?? null,
+        ]);
+
+        // Create Boxes and Items
+        $this->createBoxesAndItems($sender, $validated['boxes'], $weight);
+
+        return redirect()->route('customer.all')->with('success', 'Data saved successfully.');
+    } catch (\Exception $e) {
+        return redirect()->route('customer.all')->with('error', 'An error occurred: ' . $e->getMessage());
+    }
+}
+
+private function createBoxesAndItems($sender, $boxes, $weight)
+{
+    foreach ($boxes as $index => $boxData) {
         try {
-            $sender = Sender::create([
-                'senderName' => $request->senderName,
-                'senderPhone' => $request->senderPhone ?? null,
-                'senderEmail' => $request->senderEmail ?? null,
-                'senderAddress' => $request->senderAddress ?? null,
-                'status' => 'pending',
-
+            $box = Box::create([
+                'sender_id'   => $sender->id,
+                'box_number'  => 'Box' . ($index + 1),
+                'box_weight'      => $weight[$index] ?? null, // Save weight if needed
             ]);
-
-            $sender->save();
-            $lastInvoice = Sender::max('invoiceId');
-            $sender->invoiceId = $lastInvoice ? $lastInvoice + 1 : 100;
-            $sender->save();
-
-            Receiver::create([
-                'sender_id' => $sender->id,
-                'receiverName' => $request->receiverName,
-                'receiverPhone' => $request->receiverPhone ?? null,
-                'receiverEmail' => $request->receiverEmail ?? null,
-                'receiverAddress' => $request->receiverAddress ?? null,
-                'receiverPostalcode' => $request->receiverPostalcode ?? null,
-                'receiverCountry' => $request->receiverCountry ?? null,
-            ]);
-
-
-            Shipment::create([
-                'sender_id' => $sender->id,
-                'shipment_via' => $request->shipment_via ?? null,
-                // 'actual_weight' => $request->actual_weight,
-                'invoice_date' => $request->invoice_date,
-                'dimension' => $request->dimension ?? null,
-            ]);
-
-            $this->createBoxesAndItems($sender, $weight, $validated['boxes' ], );
-
-            return redirect()->route('customer.all')->with('success', 'Data saved successfully.');
         } catch (\Exception $e) {
-            return redirect()->route('customer.all')->with('error', 'An error occurred: ' . $e->getMessage());
+            return redirect()->route('customer.all')->with('error', $e->getMessage());
+        }
+
+        foreach ($boxData['items'] as $itemData) {
+            Item::create([
+                'box_id'     => $box->id,
+                'item'       => $itemData['item'],
+                'hs_code'    => $itemData['hs_code'] ?? null,
+                'quantity'   => $itemData['quantity'],
+                'unit_rate'  => $itemData['unit_rate'] ?? null,
+                'amount'     => $itemData['amount'],
+            ]);
         }
     }
+}
 
-    private function createBoxesAndItems($sender, $boxes , $weight)
-    {
-
-        foreach ($boxes as $index => $boxData) {
-
-            
-            // dd($boxData);
-            try {
-                $box = Box::create([
-                    'sender_id' => $sender->id,
-                    'box_number' => 'Box' . ($index + 1),
-                 
-                    
-                    
-                ]);
-            } catch (\Exception $e) {
-                // Return the exact error message from the exception
-                return redirect()->route('customer.all')->with('error', $e->getMessage());
-            }
-
-
-            foreach ($boxData['items'] as $itemData) {
-                Item::create([
-                    'box_id' => $box->id,
-
-                    'item' => $itemData['item'],
-                    'hs_code' => $itemData['hs_code'] ?? null,
-                    'quantity' => $itemData['quantity'],
-                    'unit_rate' => $itemData['unit_rate'] ?? null,
-                    'amount' => $itemData['amount'],
-                ]);
-            }
-        }
-
-        foreach($weight as $index => $boxWeight) {
-            // Find the box by its ID
-            $box = Box::findOrFail($index); // Assuming box IDs start from 1
-            // Update the box weight and dimension
-            $box->box_weight = $boxWeight['weight'];
-            // $box->box_dimension = $boxWeight['dimension'];
-            // Save the updated box data to the database
-            $box->save();
-           
-        }
-    }
 
 
 

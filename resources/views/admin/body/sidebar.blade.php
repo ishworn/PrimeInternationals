@@ -65,10 +65,9 @@
                         <span>Dispatch</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
-                    <li><a href="{{ route('payments.dashboard') }}">Payment Dashboard</a></li>
-                        <li><a href="{{ route('payments.index') }}">Manage Payment</a></li>
-                        <li><a href="{{ route('payments.details') }}">Expenses Management</a></li>
-                        <li><a href="{{ route('payments.manage') }}">Agencies Expenses</a></li>
+                    <li><a href="{{ route('dispatch.airline') }}">Airline Dispatch </a></li>
+                        <li><a href="{{ route('dispatch.agencies') }}">Agencies Dispatch </a></li>
+                    
                       
                        
                     </ul>

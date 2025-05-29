@@ -199,6 +199,10 @@
                                             <h3 class="text-xl font-semibold mb-4 text-center">Sender Details</h3>
                                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 <div>
+                                                    <label class="block text-sm font-medium mb-1">Company Name</label>
+                                                    <input placeholder="Prime Gurkha" type="text" name="company_name" id="company_name" required class="w-full border rounded px-3 py-2">
+                                                </div>
+                                                <div>
                                                     <label class="block text-sm font-medium mb-1">Sender Name</label>
                                                     <input placeholder="Prime Gurkha" type="text" name="senderName" id="senderName" required class="w-full border rounded px-3 py-2">
                                                 </div>
@@ -210,10 +214,19 @@
                                                     <label class="block text-sm font-medium mb-1">Sender Email</label>
                                                     <input placeholder="primegurkha@gmail.com" type="email" name="senderEmail" id="senderEmail" class="w-full border rounded px-3 py-2">
                                                 </div>
-                                                <div>
-                                                    <label class="block text-sm font-medium mb-1">Sender Address</label>
-                                                    <input placeholder="Kathmandu" type="text" name="senderAddress" id="senderAddress" class="w-full border rounded px-3 py-2">
+                                                  <div>
+                                                    <label class="block text-sm font-medium mb-1">Address 1</label>
+                                                   <input placeholder="Kathmandu" type="text" name="address1" id="senderAddress" class="w-full border rounded px-3 py-2">
                                                 </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium mb-1"> Address 2</label>
+                                                    <input placeholder="Postal Code , City" type="text" name="address2" class="w-full border rounded px-3 py-2">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium mb-1"> Address 3</label>
+                                                    <input placeholder="Country" type="text" name="address3" class="w-full border rounded px-3 py-2">
+                                                </div>
+                                             
                                                 <div>
                                                     <label class="block text-sm font-medium mb-1">Invoice Date</label>
                                                     <input type="date" name="invoice_date" class="w-full border rounded px-3 py-2">
@@ -225,6 +238,10 @@
                                         <div class="bg-white shadow-md rounded-xl p-6">
                                             <h3 class="text-xl font-semibold mb-4 text-center">Receiver Details</h3>
                                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                 <div>
+                                                    <label class="block text-sm font-medium mb-1">Company Name</label>
+                                                    <input placeholder="Prime Gurkha" type="text" name="receiver_company_name" id="company_name" required class="w-full border rounded px-3 py-2">
+                                                </div>
                                                 <div>
                                                     <label class="block text-sm font-medium mb-1">Receiver Name</label>
                                                     <input placeholder="Prime Gurkha" type="text" name="receiverName" required class="w-full border rounded px-3 py-2">
@@ -239,7 +256,7 @@
                                                 </div>
                                                 <div>
                                                     <label class="block text-sm font-medium mb-1">Address 1</label>
-                                                    <textarea placeholder="house No. , street name" name="receiverAddress" rows="2" class="w-full border rounded px-3 py-2"></textarea>
+                                                    <input placeholder="house No. , street name" name="receiverAddress" rows="2" class="w-full border rounded px-3 py-2">
                                                 </div>
                                                 <div>
                                                     <label class="block text-sm font-medium mb-1"> Address 2</label>

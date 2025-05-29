@@ -9,6 +9,8 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Events\AfterSheet;
+use NumberFormatter;
+
 class ExcelExport implements FromCollection, WithHeadings, WithEvents
 {
     private $sender;
@@ -18,6 +20,7 @@ class ExcelExport implements FromCollection, WithHeadings, WithEvents
     private $grandTotal = 0;
     private $totalBoxes;
 
+   
     public function getNumericQuantity($quantity)
     {
         // Extract numeric part from quantity (remove non-numeric characters)
@@ -123,12 +126,7 @@ class ExcelExport implements FromCollection, WithHeadings, WithEvents
                     ],
                 ]);
 
-                $sheet->getStyle("A7:C7")->applyFromArray([
-                    'font' => [
-                        'bold' => true,
-                        'size' => 11,
-                    ],
-                ]);
+              
                 $sheet->getStyle("D6:G6")->applyFromArray([
                     'font' => [
                         'bold' => true,
@@ -150,6 +148,9 @@ class ExcelExport implements FromCollection, WithHeadings, WithEvents
                 for ($row = 2; $row <= 13; $row++) {
                     $sheet->mergeCells("A{$row}:C{$row}");
                     $sheet->getStyle("A{$row}:C{$row}")->applyFromArray([
+                        'alignment' => [
+                        'horizontal' => Alignment::HORIZONTAL_LEFT, // Align text to the left
+                    ],
                         'borders' => [
                             'right' => [
                                 'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM, // Thin border
@@ -194,8 +195,12 @@ class ExcelExport implements FromCollection, WithHeadings, WithEvents
 
 
                 for ($row = 10; $row <= 12; $row++) {
+                    $sheet->mergeCells("D{$row}:G{$row}");
                    
                     $sheet->getStyle("D{$row}:G{$row}")->applyFromArray([
+                        'alignment' => [
+                        'horizontal' => Alignment::HORIZONTAL_LEFT, // Align text to the left
+                    ],
                         'borders' => [
                             'right' => [
                                 'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM, // Thin border
@@ -204,7 +209,7 @@ class ExcelExport implements FromCollection, WithHeadings, WithEvents
                         ],
                     ]);
                 }
-                $sheet->mergeCells('D10:G12');
+               
                 $sheet->setCellValue('A1', '  PRIME GURKHA LOGISTICS PVT. LTD.');
                 $sheet->getStyle('A1:G1')->applyFromArray([
                     'font' => [
@@ -225,24 +230,34 @@ class ExcelExport implements FromCollection, WithHeadings, WithEvents
                 $sheet->setCellValue('A2', 'COUNTRY OF ORIGIN: NEPAL');
                 $sheet->setCellValue('A3', 'INVOICE DATE: ' .  ($shipment ? $shipment->invoice_date : 'N/A'));
                 $sheet->setCellValue('A4', 'INVOICE NO: ' .  $this->sender->invoiceId ) ;
-                $sheet->setCellValue('A5', 'SHIPMENT VIA: ' . ($shipment ? $shipment->shipment_via : 'N/A'));
+             
                 $sheet->setCellValue('A6', 'SHIPPER');
-                $sheet->setCellValue('A7', 'OM X. GLOBAL PVT. LTD. (TRADE NAME- PRIME GORKHA SERVICES)');
-                $sheet->setCellValue('A8', 'PAN NO: 619794828 ');
-                $sheet->setCellValue('A9', 'Phone : +977 9708072972 ');
-                $sheet->setCellValue('A10', 'Aloknagar-310 Kathmandu');
-                $sheet->setCellValue('D2', 'DESTINATION COUNTRY :' . ($receiver ? $receiver->receiverCountry : 'N/A'));
-            
-                $sheet->setCellValue('D4', 'TOTAL Box :' . $this->totalBoxes);
-                $sheet->setCellValue('D5', 'Dimension: ' . ($shipment ? $shipment->dimension : 'N/A'));
+                $sheet->setCellValue('A7', strtoupper($this->sender->company_name) ); 
+                
+                $sheet->setCellValue('A8',  strtoupper($this->sender->senderName));
+                $sheet->setCellValue('A9', strtoupper($this->sender->address1) );
+                $sheet->setCellValue('A11', 'ADDRESS 2');
+                $sheet->setCellValue('A10', strtoupper($this->sender->address2) );
+                $sheet->setCellValue('A12', strtoupper($this->sender->address3) );
+               
+                $sheet->setCellValue('A13', 'EMAIL: ' . strtoupper($this->sender->senderEmail));
+                 $sheet->setCellValue('A14', 'PHONE NUMBER: ' .strtoupper ($this->sender->senderPhone));
+                $sheet->setCellValue('D2', 'ACTUAL WEIGHT :' .strtoupper ($shipment ? $shipment->actual_weight : 'N/A'));
+                $sheet->setCellValue('D3', 'TOTAL BOXES :' .strtoupper ($this->totalBoxes));
+                // $sheet->setCellValue('D5', 'Dimension: ' . ($shipment ? $shipment->dimension : 'N/A'));
                 $sheet->setCellValue('D6', 'CONSIGNEE');
-                $sheet->setCellValue('D7', 'Name: ' . ($receiver ? $receiver->receiverName : 'N/A'));
-                $sheet->setCellValue('D8', 'Phone: ' . ($receiver ? $receiver->receiverPhone : 'N/A'));
-                $sheet->setCellValue('D9', 'Email: ' .  ($receiver ? $receiver->receiverEmail : 'N/A'));
-                $sheet->setCellValue('D10', 'Address: ' . ($receiver ? $receiver->receiverAddress : 'N/A'));
-                $sheet->setCellValue('D13', 'Postal Code: ' . ($receiver ? $receiver->receiverPostalcode : 'N/A'));
+                $sheet->setCellValue('D7',  strtoupper($receiver ? $receiver->receiver_company_name : 'N/A'));
+                $sheet->setCellValue('D8', strtoupper($receiver ? $receiver->receiverName : 'N/A'));
+                $sheet->setCellValue('D9', strtoupper($receiver ? $receiver->receiverAddress : 'N/A'));
+                $sheet->setCellValue('A11', 'ADDRESS 2');
+                $sheet->setCellValue('D10',  strtoupper($receiver ? $receiver->receiverPostalcode : 'N/A'));
+                $sheet->setCellValue('D12', strtoupper ($receiver ? $receiver->receiverCountry : 'N/A'));
+                $sheet->setCellValue('D13', 'EMAIL: ' .  strtoupper($receiver ? $receiver->receiverEmail : 'N/A'));
+                $sheet->setCellValue('D14', 'PHONE NUMBER: ' . strtoupper($receiver ? $receiver->receiverPhone : 'N/A'));
+        
 
-                $sheet->getStyle('D10')->getAlignment()->setWrapText(true);
+            
+        
                // Optionally auto-adjust the column width
                 
                 // Add table headers
@@ -301,19 +316,58 @@ class ExcelExport implements FromCollection, WithHeadings, WithEvents
                         $row++;
                     }
                 }
+                 $formatter = new NumberFormatter("en", NumberFormatter::SPELLOUT);
                  
                 // Add total row
                 $sheet->setCellValue("D{$row}", 'Total Quantity');
                 $sheet->setCellValue("E{$row}", $this->totalQuantity);
                 $sheet->setCellValue("F{$row}", 'Grand Total');
                 $sheet->setCellValue("G{$row}", $this->grandTotal); 
-
-
-                
-                $sheet->getStyle("A{$row}:G{$row}")->applyFromArray([
+                 $sheet->getStyle("A{$row}:G{$row}")->applyFromArray([
                     'font' => ['bold' => true],
                     'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_MEDIUM]],
                 ]);
+                
+
+                $row++;
+
+                $sheet->mergeCells("A{$row}:E{$row}"); // Merge the total row across all columns
+
+                // Apply styles to the total row
+                $sheet->setCellValue("A{$row}",  strtoupper($formatter->format($this->grandTotal)) . ' ONLY');
+          
+                $sheet->setCellValue("F{$row}", 'Total'); // Empty cell for AMOUNT  
+                $sheet->setCellValue("G{$row}", $this->grandTotal); // Empty cell for AMOUNT
+
+                 $sheet->getStyle("A{$row}:G{$row}")->applyFromArray([
+                    'font' => ['bold' => true],
+                    'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_MEDIUM]],
+                ]);
+
+$row++;
+
+                // Apply styles to the total row
+                $sheet->mergeCells("A{$row}:C{$row}");
+                $sheet->mergeCells("D{$row}:G{$row}");
+                $sheet->setCellValue("A{$row}", 'NOTE: ' );
+                $sheet->setCellValue("D{$row}", ' SIGNATURE/STAMP' );
+                
+                 $sheet->getStyle("A{$row}:G{$row}")->applyFromArray([
+                    'font' => ['bold' => true],
+                    'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_MEDIUM]],
+                ]);
+
+                $row++;
+                $sheet->mergeCells("A{$row}:C{$row }");
+                $sheet->mergeCells("D{$row}:G{$row}");
+                $sheet->setCellValue("A{$row}", 'This above mention goods are made in Nepalother description is true' );
+                $sheet->setCellValue("D{$row}", '' );
+                
+                 $sheet->getStyle("A{$row}:G{$row}")->applyFromArray([
+                    'font' => ['bold' => true],
+                    'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_MEDIUM]],
+                ]);
+               
             },
         ];
     }
