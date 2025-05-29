@@ -21,11 +21,6 @@ class DispatchManagementController extends Controller
         $senders = Sender::with('receiver', 'dispatch', )
         ->doesntHave('dispatch') // Filter senders who do not have any payments
         ->get();
- 
-
-  
-  
-
          // Fetch all tracking records
         return view('backend.dispatch.index', compact( 'senders'   )); // Return the index view with tracking data
     }
@@ -34,20 +29,12 @@ class DispatchManagementController extends Controller
 
     public function store(Request $request)
     {
-      
-
-
-        
         Dispatch::create([
 
             'sender_id' => $request->sender_id,
             'dispatch_by'  => $request->dispatch_by,
             'dispatched_at' => $request->dispatched_at,
-            'status' => 'dispatch'
-            
-
-           
-            
+            'status' => 'dispatch'   
         ]);
 
         // Redirect back with a success message
@@ -56,6 +43,23 @@ class DispatchManagementController extends Controller
 
    
 
+    public function airline()
+    {
+        // Fetch all airlines
+       $senders = Sender:: with('receiver', 'dispatch', );
+        
+        return view('backend.dispatch.airlines', compact('senders'));
+    }
+
+    public function agencies()
+    {
+        // Fetch all agencies
+        $senders = Sender::with('receiver', 'dispatch', )
+        ->doesntHave('dispatch') // Filter senders who do not have any payments
+        ->get();
+        
+        return view('backend.dispatch.agencies', compact('senders'));
+    }
   
 
 }

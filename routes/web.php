@@ -90,6 +90,8 @@ Route::middleware('auth')->group(function () {
     Route::controller(DispatchManagementController::class)->group(function () {
         Route::get('/dispatch', 'index')->name('dispatch.index'); // List all payments details
         Route::post('/dispatch/store', 'store')->name('dispatch.store');
+        Route::get('/dispatch/airlines', 'airline')->name('dispatch.airline'); // 
+        Route::get('/dispatch/agencies', 'agencies')->name('dispatch.agencies'); // 
     });
      
 

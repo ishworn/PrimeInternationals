@@ -21,6 +21,10 @@ class Sender extends Model
         'senderAddress',
         'trackingId',
         'status',
+        'address1',
+        'address2',
+        'address3',
+        'company_name',
 
     ];
 
