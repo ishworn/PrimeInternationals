@@ -23,7 +23,8 @@
     </div>
 
     <!-- Billing Form -->
-    <div class="flex flex-col lg:flex-row gap-6 items-start">
+    <!-- <div class="flex flex-col lg:flex-row gap-6 items-start"> -->
+        <div class="mb-4">
 
         <form id="billingForm" class="w-full lg:w-1.25/3.5">
             @csrf
@@ -31,7 +32,7 @@
 
 
             <input type="hidden" name="sender_id" value="{{ $sender->id }}">
-            <div class="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-md">
+            <div class="max-w-4xl mx-auto bg-gray-100 p-6 rounded-xl shadow-md">
                 <h2 class="text-2xl font-bold mb-4">Invoice / Billing</h2>
 
                 <div id="itemsContainer">
@@ -48,7 +49,7 @@
 
 
 
-                <button type="button" onclick="submitAndPrint()" class="bg-blue-600 text-white px-4 py-2 rounded-md">
+                <button type="button" onclick="submitAndPrint()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-md">
                     Print & Save Invoice
                 </button>
                 <div class="mb-4">
@@ -66,17 +67,18 @@
 
             <div id="invoiceDataInputs"></div>
         </form>
+        </div>
 
 
 
 
         <!-- Invoice Preview -->
         <div id="printSection" class="w-full lg:w-2.25/3.5">
-            <div class="max-w-4xl mx-auto bg-white border border-gray-200 p-6 sm:p-10 shadow-md ">
+            <div class="max-w-4xl mx-auto bg-white border border-gray-500 p-6 sm:p-10 shadow-md ">
                 <table id="invoice-table" class="w-full  text-black">
                     <thead>
                         <tr>
-                            <th colspan="8" class=" p-2 text-center bg-gray-50 font-bold text-lg">
+                            <th colspan="8" class=" p-2 text-center bg-gray-100 font-bold text-lg">
                                 PRIME GURKHA LOGISTICS PVT. LTD.
                             </th>
                         </tr>
@@ -140,13 +142,13 @@
                 </div>
             </div>
 
-            <div class="max-w-4xl mx-auto  p-6 sm:p-10 shadow-md mt-6" >
+            <div class="max-w-4xl mx-auto  p-6 sm:p-10 shadow-md mt-6 bg-gray-200" >
                 <h2>Prime Gorkha Services (PGCS): Terms and Conditions of Carriage</h2>
                 <p><em>This is a computer-generated agreement and does not require a signature.</em></p>
 
                 <ol>
                     <li>
-                        <strong>Shipper Responsibilities</strong>
+                        <strong style="text-decoration: underline;">Shipper Responsibilities</strong>
                         <ul>
                             <li>Provide a valid government-issued ID.</li>
                             <li>Declare item description, quantity, and total cost in the 'List of Commodities' sheet.</li>
@@ -154,7 +156,7 @@
                         </ul>
                     </li>
                     <li>
-                        <strong>Shipping Charges and Duties</strong>
+                        <strong style="text-decoration: underline;">Shipping Charges and Duties</strong>
                         <ul>
                             <li>Shipping charges exclude duties/taxes at the destination. The shipper agrees to pay applicable taxes for parcel clearance.</li>
                             <li>Chargeable weight is calculated as the greater of actual or volumetric weight (L×B×H ÷ 5000, in cm).</li>
@@ -163,7 +165,7 @@
                         </ul>
                     </li>
                     <li>
-                        <strong>Address and Delivery Issues</strong>
+                        <strong style="text-decoration: underline;">Address and Delivery Issues</strong>
                         <ul>
                             <li>Return or reshipping charges apply for incorrect addresses or parcel refusal.</li>
                             <li>Address correction fee: USD 25.</li>
@@ -171,7 +173,7 @@
                         </ul>
                     </li>
                     <li>
-                        <strong>Delivery Timelines</strong>
+                        <strong style="text-decoration: underline;">Delivery Timelines</strong>
                         <ul>
                             <li>Economy Service: 10-20 working days.</li>
                             <li>Express Service: 4-8 working days.</li>
@@ -180,14 +182,14 @@
                         </ul>
                     </li>
                     <li>
-                        <strong>Prohibited Items</strong>
+                        <strong style="text-decoration: underline;">Prohibited Items</strong>
                         <ul>
                             <li>No perishable, biological, contraband, or precious items are allowed.</li>
                             <li>PGCS reserves the right to inspect parcels for compliance.</li>
                         </ul>
                     </li>
                     <li>
-                        <strong>Customs and Duties</strong>
+                        <strong style="text-decoration: underline;">Customs and Duties</strong>
                         <ul>
                             <li>Duties and taxes are the receiver's responsibility.</li>
                             <li>The receiver must provide all required import documentation.</li>
@@ -195,7 +197,7 @@
                         </ul>
                     </li>
                     <li>
-                        <strong>Insurance and Value Declaration</strong>
+                        <strong style="text-decoration: underline;">Insurance and Value Declaration</strong>
                         <ul>
                             <li>PGCS accepts shipments with a declared value of up to USD 100 only.</li>
                             <li>If the shipment value exceeds USD 100, the shipper must arrange second-party (external) insurance independently.</li>
@@ -206,32 +208,32 @@
                         </ul>
                     </li>
                     <li>
-                        <strong>Parcel Return Policy</strong>
+                        <strong style="text-decoration: underline;">Parcel Return Policy</strong>
                         <ul>
                             <li>PGCS does not offer return service. If a parcel is undeliverable and cannot be reshipped, it will be disposed of. No refunds or returns apply.</li>
                         </ul>
                     </li>
                     <li>
-                        <strong>Issue Resolution Policy</strong>
+                        <strong style="text-decoration: underline;">Issue Resolution Policy</strong>
                         <ul>
                             <li>Any issues during shipment (e.g., delays, customs clearance, misrouting) will be addressed only with the sender or receiver. No third-party involvement is accepted.</li>
                         </ul>
                     </li>
                     <li>
-                        <strong>Confidentiality and Liability</strong>
+                        <strong style="text-decoration: underline;">Confidentiality and Liability</strong>
                         <ul>
                             <li>PGCS keeps all customer information confidential.</li>
                             <li>PGCS is not liable for delays, loss, or non-delivery due to customs issues or incorrect recipient details.</li>
                         </ul>
                     </li>
                     <li>
-                        <strong>Payment Terms</strong>
+                        <strong style="text-decoration: underline;">Payment Terms</strong>
                         <ul>
                             <li>Shipment processing begins only after full payment is received.</li>
                         </ul>
                     </li>
                     <li>
-                        <strong>Governing Law</strong>
+                        <strong style="text-decoration: underline;">Governing Law</strong>
                         <ul>
                             <li>This agreement is governed by Nepalese law.</li>
                         </ul>
@@ -246,7 +248,7 @@
         </div>
 
 
-    </div>
+    <!-- </div> -->
 
 
     <!-- TailwindCDN & Script -->

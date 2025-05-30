@@ -196,6 +196,12 @@
                                                 title="Print">
                                                 <i class="fas fa-print"></i>
                                             </a>
+                                            
+                                                <a href="{{ route('export.excel', $sender->id) }}"
+                                                class="btn btn-dark btn-sm "
+                                                title="Excel">
+                                                <i class="fas fa-download"></i></a>
+                                            
 
 
 
