@@ -92,6 +92,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/dispatch/store', 'store')->name('dispatch.store');
         Route::get('/dispatch/airlines', 'airline')->name('dispatch.airline'); // 
         Route::get('/dispatch/agencies', 'agencies')->name('dispatch.agencies'); // 
+        Route::post('/dispatch/agencies_bulk', 'agenciesBulkDispatch')->name('dispatch.bulk.store'); // Show specific airline
+        Route::post('/dispatch/airlines_bulk', 'airlineBulk')->name('dispatch.airlines.bulk'); // Show specific airline
+        Route::get('/dispatch/shipment', 'shipment')->name('dispatch.shipment'); // Show specific airline
     });
      
 
