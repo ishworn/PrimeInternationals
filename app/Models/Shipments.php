@@ -17,8 +17,16 @@ class Shipments extends Model
         'id',
         'shipment_number',
         'sender_id',
+        'created_at',
+        'updated_at',
 
     ];
+
+
+    protected $casts = [
+    'sender_id' => 'array',
+];
+
 
    
 }

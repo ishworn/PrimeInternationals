@@ -35,8 +35,8 @@
 
 
                         <table id="datatable" class="table table-bordered dt-responsive nowrap " style="width: 100%; ">
-                            <thead class="bg-primary text-white">
-                                <tr>
+                            <thead>
+                                <tr>    
                                     <th>Sl</th>
                                     <th>Shipment ID</th>
                                     <th>Sender Id</th>
@@ -44,25 +44,10 @@
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                @foreach ($shipment as $key => $item)
-                                <tr>
-                                    <td>{{ $key+1 }}</td>
-                                    <td>{{ $item->shipment_number }}</td>
-                                
-
-                                    <td>{{ implode(', ', $item->sender_id) }}</td>
-                                    <td>
-                                   
-                                        <a href="{{ route('shipment_show', $item->id) }}"
-                                            class="btn btn-info btn-sm">View</a>
-
-                                    </td>
-
-
-                                   
-                                   @endforeach
+                         =
                             
+                           
+
                         </table>
                     </div>
                 </div>
