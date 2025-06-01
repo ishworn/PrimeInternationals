@@ -5,24 +5,24 @@ namespace App\Http\Controllers\Pos;
 use Illuminate\Support\Facades\DB;
 use App\Models\Payment;
 use App\Models\Dispatch;
-use App\Models\Shipment;
+use App\Models\Shipments;
 use App\Models\Customer;
 use App\Models\Tracking;
 use App\Models\Weight;
 use App\Models\Sender;
 use App\Models\Agencies;
-use App\Models\Shipments;
+use App\Models\Airlines;
 use Illuminate\Support\Str;
+
+
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class AgenciesController extends Controller
+class AirlineController extends Controller
 {
     public function index()
     {
-
-
         $agencyPayments = DB::table('dispatch as d')
             ->leftJoin('shipments as s', 'd.sender_id', '=', 's.sender_id')
             ->select([
@@ -45,13 +45,12 @@ class AgenciesController extends Controller
 
 
 
-        return view(' backend.agencies.index', compact('agencyPayments', ));
+        return view(' backend.airlines.index', compact('agencyPayments', ));
     }
 
 
     public function create (Request $request){
-
-       Agencies::create([
+       Airlines::create([
             'name'   => $request->name,
            ' created_at' => now()
           
@@ -61,22 +60,27 @@ class AgenciesController extends Controller
 
     }
 
- public function agencies_dispatch()
+
+
+ public function airline_dispatch()
     {
-        // Fetch all agencies
-        $agencies = Agencies::all();
+        // Fetch all airlines
+        $airlines = Airlines::all();
             $senders = Sender::with('receiver', 'dispatch','boxes','shipments')
         ->withCount('boxes')
         ->withSum('boxes','box_weight')
             ->doesntHave('dispatch') // Filter senders who do not have any payments
             ->get();
 
-        return view('backend.agencies.agencies_dispatch', compact('senders' , 'agencies'));
+        return view('backend.airlines.airlines_dispatch', compact('senders' , 'airlines')); // Return the index view with tracking data
     }
 
-        public function agenciesBulkDispatch(Request $request)
+
+
+      public function airlineBulkDispatch(Request $request)
     {
-        $lastShipment = Shipments::orderByDesc('id')->first();
+
+         $lastShipment = Shipments::orderByDesc('id')->first();
         if ($lastShipment && Str::startsWith($lastShipment->shipment_number, 'PG')) {
             $lastNumber = (int) Str::replaceFirst('PG', '', $lastShipment->shipment_number);
             $newNumber = $lastNumber + 1;
@@ -111,23 +115,26 @@ class AgenciesController extends Controller
                 'status'        => 'dispatch',
             ]);
         }
-        return redirect()->back()->with('success', 'Bulk dispatch saved successfully!');
+        return redirect()->back()->with('success', 'Shipments dispatched successfully!');
     }
 
 
+
+
+
+
+    public function shipment()
+    {
+        $shipment = Shipments::all();
+        return view('backend.airlines.shipment', compact('shipment'));
+    }
     public function payment()
     {
         $payments = Payment::all();
-           
-
-        return view('backend.agencies.payment', compact('payments'));
+        return view('backend.airlines.payment', compact('payments'));
     }
-    public function shipment()
-    {
-        $shipments = Shipment::all();
 
-        return view('backend.agencies.shipment', compact('shipments'));
-    }
+
 
 
 

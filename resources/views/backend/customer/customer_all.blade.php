@@ -222,30 +222,24 @@
 
                                             @php
                                             $dispatch = $sender->dispatch ?? null; // Fetch the dispatch related to the sender
-                                            $dispatchBy = $dispatch ? $dispatch->dispatch_by : null;
+                                            $dispatchStatus = $dispatch ? $dispatch->status : null;
                                             @endphp
-                                            @if(!$dispatchBy)
-                                             <a href="#"
-                                                class="btn btn-sm d-flex align-items-center justify-content-center rounded-circle"
-                                                title="Plane"
-                                                style="width: 40px; height: 40px; padding: 0; background-color: #009E60; border: 1px solid #FFD43B;">
-                                                <i class="fa-light fa-plane fa-2xs" style="color: #FFD43B;"></i>
-                                                </a>
-
-                                            @elseif($dispatchBy)
+                                            @if($dispatchStatus === 'dispatch')
                                             <a href="#"
                                                 class="btn btn-sm d-flex align-items-center justify-content-center rounded-circle"
                                                 title="Plane"
-                                                style="width: 40px; height: 40px; padding: 0; background-color: #f8f9fa; border: 1px solid #FFD43B;">
+                                                style="width: 40px; height: 40px; padding: 0; background-color:#228B22 ; border: 1px solid #FFD43B;">
                                                 <i class="fas fa-plane" style="color: #FFD43B;"></i>
-                                                </a>
+                                            </a>
 
-                                                @else
-                                                <a href="#"
-                                                    class="btn btn-warning btn-sm "
-                                                    title="Self">
-                                                    <i class="fas fa-user-tie"></i></a>
-                                                @endif
+                                            @else
+                                            <a href="#"
+                                                class="btn btn-sm d-flex align-items-center justify-content-center rounded-circle"
+                                                title="Plane"
+                                                style="width: 40px; height: 40px; padding: 0; background-color: #880808; border: 1px solid #FFD43B;">
+                                                <i class="fas fa-plane" style="color: #FFD43B;"></i>
+                                            </a>
+                                            @endif
 
 
 

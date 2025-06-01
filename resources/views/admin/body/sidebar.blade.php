@@ -16,15 +16,11 @@
                 </li>
 
                 <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="ri-shield-user-fill"></i>
+                <li>
+                    <a href="{{ route('customer.all') }}" class="waves-effect">
+                        <i class="ri-shield-user-fill" aria-hidden="true"></i>
                         <span>Manage Customers</span>
                     </a>
-                    <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="{{ route('customer.all') }}">All Customers</a></li>
-                    </ul>
-                </li>
-
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="ri-map-pin-line text-xl"></i>
@@ -59,31 +55,42 @@
                         <span>Manage User</span>
                     </a>
                 </li>
+              
+                <li>
+                    <a href="{{ route('dispatch.shipment') }}" class="waves-effect">
+                        <i class="ri-shield-user-fill" aria-hidden="true"></i>
+                        <span>Shipment</span>
+                    </a>
+                <li>
+
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="fas fa-shipping-fast" aria-hidden="true"></i>
-                        <span>Dispatch</span>
+                        <i class="fa-solid fa-briefcase" aria-hidden="true"></i>
+                        <span>Agencies</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
-
-                        <li><a href="{{ route('dispatch.shipment') }}">Shipment </a></li>
-                        <li><a href="{{ route('dispatch.airline') }}">Airline Dispatch </a></li>
-                        <li><a href="{{ route('dispatch.agencies') }}">Agencies Dispatch </a></li>
-
-
+                        <li><a href="{{ route('agencies.index') }}"> Agencies Details</a></li>
+                        <li><a href="{{ route('agencies.dispatch') }}">Agencies Dispatch </a></li>
+                        <li><a href="{{ route('agencies.payment') }}"> Agencies Payment</a></li>
+                        <li><a href="{{ route('agencies.shipment') }}">Agencies Shipment</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="fa-solid fa-briefcase" aria-hidden="true"></i>
+                        <span>Airline </span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li><a href="{{ route('airline.index') }}"> Airline Details</a></li>
+                        <li><a href="{{ route('airline.dispatch') }}">Airline Dispatch </a></li>
+                        <li><a href="{{ route('airline.payment') }}"> Airline Payment</a></li>
+                        <li><a href="{{ route('airline.shipment') }}">Airline Shipment</a></li>
 
                     </ul>
                 </li>
 
-                <li>
-                    <a href="{{ route('agencies.index') }}" class="waves-effect">
-                        <i class="fa-solid fa-briefcase" aria-hidden="true"></i>
-                        <span>Agencies</span>
-                    </a>
-                </li>
-                <li>
 
-
+                <li>
                     <a href="{{ route('customer.recyclebin') }}" class="waves-effect">
 
                         <i class="fas fa-trash" aria-hidden="true"></i>
