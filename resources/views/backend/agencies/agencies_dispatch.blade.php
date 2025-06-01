@@ -40,6 +40,7 @@
                         <h4 class="card-title mb-4" style="font-size: 22px; font-weight: bold;"></h4>
 
 
+                     
                         <table id="datatable" class="table table-bordered dt-responsive nowrap " style="width: 100%; ">
                             <thead class="bg-primary text-white">
                                 <tr>
@@ -49,6 +50,8 @@
                                     <th>Sender Name</th>
                                     <th>Receiver Name</th>
                                     <th>Country</th>
+                                    <th>Total Boxes</th>
+                                    <th>Total Weight</th>
                 
                                  
                                 </tr>
@@ -65,6 +68,8 @@
                                     <td>{{ $sender->senderName }}</td>
                                     <td>{{ $sender->receiver->receiverName }}</td>
                                     <td>{{ $sender->receiver->receiverCountry ?? 'N/A' }}</td>
+                                    <td>{{$sender->boxes_count }}</td>
+                                    <td>{{$sender->boxes_sum_box_weight }}</td>
                                
 
                                     <!-- Dispatch Form -->
@@ -83,7 +88,7 @@
                         <!-- Modal -->
                         <div class="modal fade" id="dispatchModal" tabindex="-1" aria-labelledby="dispatchModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
-                                <form id="dispatchForm" action="{{ route('dispatch.bulk.store') }}" method="POST">
+                                <form id="dispatchForm" action="{{ route('agencies.bulk.store') }}" method="POST">
                                     @csrf
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -92,9 +97,7 @@
                                         </div>
 
                                         <div class="modal-body">
-                                             @php
-                                                    $agencies = ['Apex', 'Dpnex', 'Pacific', 'Nepal Express', 'DTDC', 'Aramax', 'Nepal Post', 'SF International'];
-                                                    @endphp
+                                           
 
                                             
                                             <!-- Dispatch To Dropdown -->
@@ -103,10 +106,10 @@
                                                 <select name="dispatch_to" id="dispatchTo" class="form-select" required>
                                                     <option value="" disabled selected>Select Dispatch To</option>
                                                     @foreach($agencies as $agency)
-                                                        <option value="{{ $agency }}">{{ $agency }}</option>
+                                                        <option value="{{ $agency->name }}">{{ $agency->name }}</option>
                                                     @endforeach
                                                   
-                                                </select>
+                                                </select> 
                                             </div>
 
                                             <!-- Dispatch Date -->
@@ -290,3 +293,11 @@
 
 
 @endsection
+
+
+
+
+
+
+
+

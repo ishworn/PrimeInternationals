@@ -11,6 +11,7 @@ use App\Http\Controllers\Pos\UsermgmtController;
 use App\Http\Controllers\Pos\DispatchManagementController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\Pos\AgenciesController;
+use App\Http\Controllers\Pos\AirlineController;
 
 
 
@@ -90,10 +91,7 @@ Route::middleware('auth')->group(function () {
     Route::controller(DispatchManagementController::class)->group(function () {
         Route::get('/dispatch', 'index')->name('dispatch.index'); // List all payments details
         Route::post('/dispatch/store', 'store')->name('dispatch.store');
-        Route::get('/dispatch/airlines', 'airline')->name('dispatch.airline'); // 
-        Route::get('/dispatch/agencies', 'agencies')->name('dispatch.agencies'); // 
-        Route::post('/dispatch/agencies_bulk', 'agenciesBulkDispatch')->name('dispatch.bulk.store'); // Show specific airline
-        Route::post('/dispatch/airlines_bulk', 'airlineBulk')->name('dispatch.airlines.bulk'); // Show specific airline
+      
         Route::get('/dispatch/shipment', 'shipment')->name('dispatch.shipment'); // Show specific airline
         Route::get('/dispatch/shipment/{id}', 'shipment_details')->name('shipment_show'); // Show specific airline
     });
@@ -101,15 +99,33 @@ Route::middleware('auth')->group(function () {
 
 Route::controller(AgenciesController::class)->group(function () {
     Route::get('/agencies', 'index')->name('agencies.index');           // Show all agencies
-    // Route::get('/agencies/create', 'create')->name('agencies.create');  // Show form to create
+    Route::post('/agencies/create', 'create')->name('agencies.create');  // Show form to create
+      Route::get('/agencies/dispatch', 'agencies_dispatch')->name('agencies.dispatch'); // Show form to create
+      Route::post('/agencies/agencies_bulk', 'agenciesBulkDispatch')->name('agencies.bulk.store'); // Show specific airline
+      ROute::get('/agencies/payment', 'payment')->name('agencies.payment'); // Show specific airline
+      Route::get('/agencies/shipment', 'shipment')->name('agencies.shipment'); // Show specific airline
+
     // Route::post('/agencies/store', 'store')->name('agencies.store');    // Store new agency
-    
     // Route::get('/agencies/{id}/edit', 'edit')->name('agencies.edit');   // Edit form
     // Route::put('/agencies/{id}', 'update')->name('agencies.update');    // Update agency
     // Route::delete('/agencies/{id}', 'destroy')->name('agencies.destroy'); // Delete agency
-
     //Route::get('/agencies/{agency_name}', 'show')->name('agencies.show');
+   Route::get('/agencies/{id}', 'show')->name('agencies.show');
 
+});
+Route::controller(AirlineController::class)->group(function () {
+    Route::get('/airlines', 'index')->name('airline.index');           // Show all agencies
+    Route::post('/airlines/create', 'create')->name('airlines.create');  // Show form to create
+    Route::get('/airlines/dispatch', 'airline_dispatch')->name('airline.dispatch');  // Show form to create
+     Route::post('/airlines/airlines_bulk', 'airlineBulkDispatch')->name('airline.bulk.store'); // Show specific airline
+     Route::get('/airlines/shipment', 'shipment')->name('airline.shipment'); // Show specific airline
+     Route::get('/airlines/payment', 'payment')->name('airline.payment'); // Show specific airline
+
+    // Route::post('/agencies/store', 'store')->name('agencies.store');    // Store new agency
+    // Route::get('/agencies/{id}/edit', 'edit')->name('agencies.edit');   // Edit form
+    // Route::put('/agencies/{id}', 'update')->name('agencies.update');    // Update agency
+    // Route::delete('/agencies/{id}', 'destroy')->name('agencies.destroy'); // Delete agency
+    //Route::get('/agencies/{agency_name}', 'show')->name('agencies.show');
    Route::get('/agencies/{id}', 'show')->name('agencies.show');
 
 });
