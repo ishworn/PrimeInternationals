@@ -49,6 +49,8 @@
                                     <th>Sender Name</th>
                                     <th>Receiver Name</th>
                                     <th>Country</th>
+                                    <th>Total Boxes</th>
+                                    <th>Total Weight</th>
                 
                                  
                                 </tr>
@@ -65,6 +67,8 @@
                                     <td>{{ $sender->senderName }}</td>
                                     <td>{{ $sender->receiver->receiverName }}</td>
                                     <td>{{ $sender->receiver->receiverCountry ?? 'N/A' }}</td>
+                                    <td>{{$sender->boxes_count }}</td>
+                                    <td>{{$sender->boxes_sum_box_weight }}</td>
                                
 
                                     <!-- Dispatch Form -->

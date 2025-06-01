@@ -61,10 +61,15 @@ class DispatchManagementController extends Controller
     public function agencies()
     {
         // Fetch all agencies
-        $senders = Sender::with('receiver', 'dispatch',)
+        $senders = Sender::with('receiver', 'dispatch','boxes','shipments')
+        ->withCount('boxes')
+        ->withSum('boxes','box_weight')
             ->doesntHave('dispatch') // Filter senders who do not have any payments
             ->get();
 
+        // $sender = Sender::with(['boxes.items'])->findOrFail($id);
+
+        
         return view('backend.dispatch.agencies', compact('senders'));
     }
 
