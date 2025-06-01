@@ -8,18 +8,24 @@
         {{ session('error') }}
     </div>
     @endif
-    <a href="javascript:history.back()" class="btn btn-warning btn-rounded no-print"
-        style="font-size: 15px; display: inline-flex; align-items: center; text-decoration: none; 
+
+    <div class="row">
+        <div class="col-12 mb-3">
+            <a href="javascript:history.back()" class="btn btn-warning btn-rounded no-print"
+                style="font-size: 15px; display: inline-flex; align-items: center; text-decoration: none; 
           background-color: #FFD700; color: black; padding: 10px 10px; border-radius: 5px; 
           margin-bottom: 15px; margin-top: 5px; margin-left: 20px;">
-        <i class="fas fa-arrow-left" style="margin-right: 5px;"></i> Back
-    </a>
+                <i class="fas fa-arrow-left" style="margin-right: 5px;"></i> Back
+            </a>
+
+        </div>
+    </div>
     <div class="container-fluid">
         <!-- Start page title -->
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between ">
-                    <h4 class="mb-sm-0" style="font-size: 24px; font-weight: bold;">Airline Dispatch List</h4>
+                    <h4 class="mb-sm-0" style="font-size: 24px; font-weight: bold;">Dispatch List</h4>
                 </div>
             </div>
         </div>
@@ -34,18 +40,20 @@
                         <h4 class="card-title mb-4" style="font-size: 22px; font-weight: bold;"></h4>
 
 
+                     
                         <table id="datatable" class="table table-bordered dt-responsive nowrap " style="width: 100%; ">
                             <thead class="bg-primary text-white">
                                 <tr>
                                     <th><input type="checkbox" id="selectAll"></th> <!-- Select All Checkbox -->
                                     <th>Sl</th>
                                     <th>Invoice ID</th>
-
+                                    <th>Sender Name</th>
                                     <th>Receiver Name</th>
                                     <th>Country</th>
-
-
-
+                                    <th>Total Boxes</th>
+                                    <th>Total Weight</th>
+                
+                                 
                                 </tr>
                             </thead>
                             <tbody>
@@ -57,14 +65,15 @@
                                     <td hidden>{{ $sender->id }}</td>
                                     <td>{{ $key + 1 }}</td>
                                     <td>{{ $sender->invoiceId }}</td>
-
+                                    <td>{{ $sender->senderName }}</td>
                                     <td>{{ $sender->receiver->receiverName }}</td>
                                     <td>{{ $sender->receiver->receiverCountry ?? 'N/A' }}</td>
-
-
+                                    <td>{{$sender->boxes_count }}</td>
+                                    <td>{{$sender->boxes_sum_box_weight }}</td>
+                               
 
                                     <!-- Dispatch Form -->
-
+                                   
                                 </tr>
                                 @endforeach
 
@@ -72,14 +81,14 @@
 
                         </table>
                         <!-- Dispatch Selected Button -->
-                        <button type="button" class="btn btn-primary" id="dispatchSelectedBtn">
+                        <button type="button" class="btn btn-primary"  id = "dispatchSelectedBtn" >
                             Dispatch Selected
                         </button>
 
                         <!-- Modal -->
                         <div class="modal fade" id="dispatchModal" tabindex="-1" aria-labelledby="dispatchModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
-                                <form id="dispatchForm" action="{{ route('dispatch.airlines.bulk') }}" method="POST">
+                                <form id="dispatchForm" action="{{ route('agencies.bulk.store') }}" method="POST">
                                     @csrf
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -88,31 +97,22 @@
                                         </div>
 
                                         <div class="modal-body">
-                                            @php
-                                            $airlines = ['Qatar', 'Emirates', 'Turkish'];
-                                            @endphp
+                                           
 
-
+                                            
                                             <!-- Dispatch To Dropdown -->
                                             <div class="mb-3">
-                                                <label for="dispatchTo" class="form-label"> Airline</label>
+                                                <label for="dispatchTo" class="form-label">Dispatch To</label>
                                                 <select name="dispatch_to" id="dispatchTo" class="form-select" required>
-                                                    <option value="" disabled selected>Select Airline</option>
-                                                    @foreach($airlines as $airline)
-                                                    <option value="{{ $airline }}">{{ $airline }}</option>
+                                                    <option value="" disabled selected>Select Dispatch To</option>
+                                                    @foreach($agencies as $agency)
+                                                        <option value="{{ $agency->name }}">{{ $agency->name }}</option>
                                                     @endforeach
-
-                                                </select>
+                                                  
+                                                </select> 
                                             </div>
 
                                             <!-- Dispatch Date -->
-                                            <!-- <div>
-                                                <label for="dispatch_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                                    Dispatch Date
-                                                </label>
-                                                <input type="date" id="dispatch_date" name="dispatch_date" required
-                                                    class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100  focus:ring-indigo-500">
-                                            </div> -->
                                             <div class="mb-3">
                                                 <label for="dispatchDate" class="form-label">Dispatch Date</label>
                                                 <input type="date" name="dispatch_date" id="dispatchDate" class="form-control" required>
@@ -137,81 +137,7 @@
             </div> <!-- End col -->
         </div> <!-- End row -->
     </div> <!-- container-fluid -->
-
-    <!-- <div class="container-fluid">
-
-
-        Page title 
-        
-
-        <form action="{{ route('dispatch.airlines.bulk') }}" method="POST" class="space-y-6 bg-white dark:bg-gray-800 shadow rounded-xl p-6">
-            @csrf
-
-            Airline 
-            <div>
-                <label for="airline_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Select Airline
-                </label>
-                <select id="airline_id" name="dispatch_to" required
-                    class="block w-full rounded-md border-black-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:border-indigo-500 focus:ring-indigo-500">
-                    <option value="">-- Select Airline --</option>
-                    <option value="qatar airways">Qatar Airways</option>
-                    <option value="emirates">Emirates</option>
-                    <option value="turkish airlines">Turkish Airlines</option>
-                </select>
-            </div>
-
-             Dispatch date 
-            <div>
-                <label for="dispatch_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Dispatch Date
-                </label>
-                <input type="date" id="dispatch_date" name="dispatch_date" required
-                    class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100  focus:ring-indigo-500">
-            </div>
-
-             Shipments 
-            <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Select Shipments to Dispatch <span class=" border border-black-300"><input type="text" name="search" id="search"> </span>
-                </label>
-
-                <div class="space-y-2 h-48 overflow-y-auto border border-black-200 dark:border-gray-600 rounded-md p-4 bg-gray-50 dark:bg-gray-700">
-
-
-                    @foreach ($senders as $sender)
-                    <label class="flex items-center space-x-3 cursor-pointer text-gray-700 dark:text-gray-200">
-                        <input type="checkbox" name="shipment_ids[]" value="{{ $sender['id'] }}"
-                            class="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-indigo-600 focus:ring-indigo-500">
-                        <span>{{ $sender->invoiceId }} – {{ $sender->receiver->receiverName }} – {{ $sender->receiver->receiverCountry }}</span>
-                    </label>
-                    @endforeach
-                </div>
-            </div>
-
-            Notes 
-            <div>
-                <label for="notes" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Notes (Optional)
-                </label>
-                <textarea id="notes" name="notes" rows="3"
-                    class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:border-indigo-500 focus:ring-indigo-500 resize-none"></textarea>
-            </div>
-
-            Submit 
-            <div class="pt-4">
-                <button type="submit"
-                    class="inline-flex items-center justify-center rounded-md bg-indigo-600 py-2 px-6 text-white font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                    Dispatch
-                </button>
-            </div>
-        </form>
-
-    </div> -->
-
 </div>
-
-
 
 <!-- Add some custom styles for modern design -->
 <style>
@@ -283,9 +209,6 @@
         overflow: visible;
     }
 </style>
-
-<script src="https://cdn.tailwindcss.com"></script>
-
 <script>
     // Select all checkboxes
     document.getElementById('selectAll').addEventListener('change', function() {
@@ -305,13 +228,15 @@
         const selectedValues = Array.from(selectedCheckboxes).map(cb => cb.value);
         document.getElementById('selectedSenders').value = selectedValues.join(',');
     });
+
+
 </script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const dispatchBtn = document.getElementById('dispatchSelectedBtn');
         const checkboxes = document.querySelectorAll('.sender-checkbox');
 
-        dispatchBtn.addEventListener('click', function() {
+        dispatchBtn.addEventListener('click', function () {
             const isAnyChecked = Array.from(checkboxes).some(cb => cb.checked);
 
             if (!isAnyChecked) {
@@ -327,7 +252,7 @@
 
 
 
-<!-- <script>
+<script>
     // Update Dispatch By
     function updateDispatchBy(element, key, senderId, ) {
         var button = document.getElementById('dispatchByDropdown' + key);
@@ -363,8 +288,16 @@
         }
 
     }
-</script> -->
+</script>
 
 
 
 @endsection
+
+
+
+
+
+
+
+

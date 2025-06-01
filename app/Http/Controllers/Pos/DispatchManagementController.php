@@ -4,12 +4,12 @@
 namespace App\Http\Controllers\Pos;
 
 use App\Http\Controllers\Controller;
-
-
+use App\Models\Agencies;
 use App\Models\Sender;
 use App\Models\Dispatch;
 use Illuminate\Http\Request;
 use App\Models\Shipments;
+use App\Models\Airlines;
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -61,15 +61,10 @@ class DispatchManagementController extends Controller
     public function agencies()
     {
         // Fetch all agencies
-        $senders = Sender::with('receiver', 'dispatch','boxes','shipments')
-        ->withCount('boxes')
-        ->withSum('boxes','box_weight')
+        $senders = Sender::with('receiver', 'dispatch',)
             ->doesntHave('dispatch') // Filter senders who do not have any payments
             ->get();
 
-        // $sender = Sender::with(['boxes.items'])->findOrFail($id);
-
-        
         return view('backend.dispatch.agencies', compact('senders'));
     }
 
