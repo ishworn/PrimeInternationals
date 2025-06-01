@@ -1,6 +1,8 @@
 @extends('admin.admin_master')
 @section('admin')
 
+<!-- Font Awesome 6 CDN -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
 
 <div class="page-content">
@@ -74,8 +76,8 @@
                                     <th> Sender Name </th>
                                     <th>Receiver Name</th>
                                     <th>Country</th>
-                                    <th>Dispatch To</th>
-                                    <th>Dispatch Status</th>
+                                    <!-- <th>Dispatch To</th>
+                                    <th>Dispatch Status</th> -->
                                     <th>Tracking Id</th>
                                     <th>Amount</th>
 
@@ -95,7 +97,7 @@
                                     <td> {{$sender->senderName}} </td>
                                     <td>{{ $sender->receiver->receiverName }}</td> <!-- Assuming receiverName field exists -->
                                     <td>{{ $sender->receiver->receiverCountry }}</td> <!-- Assuming country field exists -->
-                                    <td>
+                                    <!-- <td>
                                         @php
                                         $dispatch = $sender->dispatch ?? null; // Fetch the dispatch related to the sender
                                         $dispatchBy = $dispatch ? $dispatch->dispatch_by : null;
@@ -139,7 +141,7 @@
                                         @else
                                         <span class="badge bg-warning">Unknown Status</span>
                                         @endif
-                                    </td>
+                                    </td> -->
                                     <td>{{ $sender->trackingId ?? 'N/A' }}</td>
                                     <td>{{ $sender->payments->total_paid ?? 'N/A' }}</td> <!-- Assuming amount field exists -->
 
@@ -196,12 +198,56 @@
                                                 title="Print">
                                                 <i class="fas fa-print"></i>
                                             </a>
-                                            
-                                                <a href="{{ route('export.excel', $sender->id) }}"
+
+                                            <a href="{{ route('export.excel', $sender->id) }}"
                                                 class="btn btn-dark btn-sm "
                                                 title="Excel">
                                                 <i class="fas fa-download"></i></a>
-                                            
+
+                                            <!-- <a href="#"
+                                                class="btn btn-success btn-sm "
+                                                title="Plane">
+                                                <i class="fas fa-plane"></i></a>
+
+                                                <a href="#"
+                                                class="btn btn-dark btn-sm "
+                                                title="Truck">
+                                                <i class="fas fa-truck"></i></a>
+
+                                                <a href="#"
+                                                class="btn btn-warning btn-sm "
+                                                title="Plane">
+                                                <i class="fas fa-user-tie"></i></a> -->
+
+
+                                            @php
+                                            $dispatch = $sender->dispatch ?? null; // Fetch the dispatch related to the sender
+                                            $dispatchBy = $dispatch ? $dispatch->dispatch_by : null;
+                                            @endphp
+                                            @if(!$dispatchBy)
+                                             <a href="#"
+                                                class="btn btn-sm d-flex align-items-center justify-content-center rounded-circle"
+                                                title="Plane"
+                                                style="width: 40px; height: 40px; padding: 0; background-color: #009E60; border: 1px solid #FFD43B;">
+                                                <i class="fa-light fa-plane fa-2xs" style="color: #FFD43B;"></i>
+                                                </a>
+
+                                            @elseif($dispatchBy)
+                                            <a href="#"
+                                                class="btn btn-sm d-flex align-items-center justify-content-center rounded-circle"
+                                                title="Plane"
+                                                style="width: 40px; height: 40px; padding: 0; background-color: #f8f9fa; border: 1px solid #FFD43B;">
+                                                <i class="fas fa-plane" style="color: #FFD43B;"></i>
+                                                </a>
+
+                                                @else
+                                                <a href="#"
+                                                    class="btn btn-warning btn-sm "
+                                                    title="Self">
+                                                    <i class="fas fa-user-tie"></i></a>
+                                                @endif
+
+
 
 
 
@@ -231,6 +277,9 @@
 
     </div> <!-- container-fluid -->
 </div>
+
+
+
 
 <!-- Add some custom styles for modern design -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
