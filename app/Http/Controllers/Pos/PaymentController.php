@@ -212,45 +212,44 @@ class PaymentController extends Controller
 
 
 
-    // public function manage()
-    // {
-    //     $senders = Sender::with('receiver', 'dispatch', 'payments') // Include 'payments' relation
-    //         ->whereHas('dispatch') // Only fetch senders who have dispatch records
-    //         ->whereHas('payments', function ($query) {
-    //             $query->whereNull('debits'); // Only fetch payments where debits is null
-    //         })
-    //         ->get();
+    public function manage()
+    {
+        $senders = Sender::with('receiver', 'dispatch', 'payments') // Include 'payments' relation
+            ->whereHas('dispatch') // Only fetch senders who have dispatch records
+            ->whereHas('payments', function ($query) {
+                $query->whereNull('debits'); // Only fetch payments where debits is null
+            })
+            ->get();
 
 
-    //     $totalWeights = [];
+        $totalWeights = [];
 
-    //     foreach ($senders as $sender) {
-    //         $actualWeightString = $sender->shipments->actual_weight ?? '';
-    //         $totalWeights[$sender->id] = $this->extractTotalWeightValue($actualWeightString);
-    //     }
+        foreach ($senders as $sender) {
+            $actualWeightString = $sender->shipments->actual_weight ?? '';
+            $totalWeights[$sender->id] = $this->extractTotalWeightValue($actualWeightString);
+        }
 
 
 
-    //     return view('backend.payments.manage', compact('senders', 'totalWeights'));
-    // }
+        return view('backend.payments.manage', compact('senders', 'totalWeights'));
+    }
 
-    // public function debits(Request $request)
-    // {
-
-    //     // Find the payment record associated with the sender
-    //     $payment = Payment::where('sender_id', $request->sender_id)->first();
-    //     // dd($payment);
-    //     // 
-    //     if (!$payment) {
-    //         return redirect()->back()->with('error', 'Payment record not found for this sender.');
-    //     }
-    //     // Update the debits column
-    //     $payment->debits = $request->debits;
-    //     $payment->paymethod_debits = $request->paymethod_debits; // Update the payment method for debits
-    //     $payment->save();
-    //     // Redirect back with success message
-    //     return redirect()->back()->with('success', 'Debit amount updated successfully.');
-    // }
+    public function debits(Request $request)
+    {
+        // Find the payment record associated with the sender
+        $payment = Payment::where('sender_id', $request->sender_id)->first();
+        // dd($payment);
+        // 
+        if (!$payment) {
+            return redirect()->back()->with('error', 'Payment record not found for this sender.');
+        }
+        // Update the debits column
+        $payment->debits = $request->debits;
+        $payment->paymethod_debits = $request->paymethod_debits; // Update the payment method for debits
+        $payment->save();
+        // Redirect back with success message
+        return redirect()->back()->with('success', 'Debit amount updated successfully.');
+    }
 
     public function dashboard()
     {

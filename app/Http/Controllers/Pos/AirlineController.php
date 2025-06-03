@@ -13,6 +13,7 @@ use App\Models\Sender;
 use App\Models\Agencies;
 use App\Models\Airlines;
 use Illuminate\Support\Str;
+use App\Models\AirlinePayments;
 
 
 
@@ -45,42 +46,40 @@ class AirlineController extends Controller
 
 
 
-        return view(' backend.airlines.index', compact('agencyPayments', ));
+        return view(' backend.airlines.index', compact('agencyPayments',));
     }
 
 
-    public function create (Request $request){
-       Airlines::create([
+    public function create(Request $request)
+    {
+        Airlines::create([
             'name'   => $request->name,
-           ' created_at' => now()
-          
+            ' created_at' => now()
+
         ]);
 
         return redirect()->back()->with('Successfully Added ');
-
     }
 
 
 
- public function airline_dispatch()
+    public function airline_dispatch()
     {
         // Fetch all airlines
         $airlines = Airlines::all();
-            $senders = Sender::with('receiver', 'dispatch','boxes','shipments')
-        ->withCount('boxes')
-        ->withSum('boxes','box_weight')
+        $senders = Sender::with('receiver', 'dispatch', 'boxes', 'shipments')
+            ->withCount('boxes')
+            ->withSum('boxes', 'box_weight')
             ->doesntHave('dispatch') // Filter senders who do not have any payments
             ->get();
 
-        return view('backend.airlines.airlines_dispatch', compact('senders' , 'airlines')); // Return the index view with tracking data
+        return view('backend.airlines.airlines_dispatch', compact('senders', 'airlines')); // Return the index view with tracking data
     }
 
-
-
-      public function airlineBulkDispatch(Request $request)
+    public function airlineBulkDispatch(Request $request)
     {
 
-         $lastShipment = Shipments::orderByDesc('id')->first();
+        $lastShipment = Shipments::orderByDesc('id')->first();
         if ($lastShipment && Str::startsWith($lastShipment->shipment_number, 'PG')) {
             $lastNumber = (int) Str::replaceFirst('PG', '', $lastShipment->shipment_number);
             $newNumber = $lastNumber + 1;
@@ -118,22 +117,70 @@ class AirlineController extends Controller
         return redirect()->back()->with('success', 'Shipments dispatched successfully!');
     }
 
-
-
-
-
-
     public function shipment()
     {
-        $shipment = Shipments::all();
-        return view('backend.airlines.shipment', compact('shipment'));
+        $airlineNames = Airlines::pluck('name')->toArray();
+        $senderIds = DB::table('dispatch')
+            ->whereIn('dispatch_by', $airlineNames)
+            ->pluck('sender_id')
+            ->toArray();
+        $shipments = Shipments::where(function ($query) use ($senderIds) {
+            foreach ($senderIds as $id) {
+                $query->orWhereJsonContains('sender_id', (string) $id);
+            }
+        })->get();
+
+        return view('backend.airlines.shipment', compact('shipments'));
     }
     public function payment()
     {
-        $payments = Payment::all();
-        return view('backend.airlines.payment', compact('payments'));
+        // Step 1: Get all airline names
+        $airlineNames = Airlines::pluck('name')->toArray();
+
+        // Step 2: Get sender_ids from dispatch table where airlines_name matches
+        $senderIds = DB::table('dispatch')
+            ->whereIn('dispatch_by', $airlineNames)
+            ->pluck('sender_id')
+            ->toArray();
+        // Step 2: Find the actual sender records
+        $senders = Sender::whereIn('id', $senderIds)->get();
+        // Step 3: Get shipments where sender_id (JSON array) contains any of those sender IDs
+        $shipments = Shipments::where(function ($query) use ($senderIds) {
+            foreach ($senderIds as $id) {
+                $query->orWhereJsonContains('sender_id', (string) $id);
+            }
+        })->get();
+        return view('backend.airlines.payment', compact('shipments', 'senders'));
     }
 
+
+    public function paymentStore(Request $request)
+    {
+        $validated = $request->validate([
+            'flight_charge'      => 'nullable|numeric|max:255',
+            'custom_clearance'   => 'nullable|numeric|max:255',
+            'agencies_charge'    => 'nullable|numeric|max:255',
+            'payment_date'       => 'required|date',
+            'selected_shipment'  => 'required|string|max:255', // assuming you store shipment IDs as strings
+        ]);
+
+
+        $totalPaid = 0;
+
+
+
+        AirlinePayments::create([
+            'flight_charge'      => $validated['flight_charge'] ?? null,
+            'CustomClearence_payment'   => $validated['custom_clearance'] ?? null,
+            'foreign_agencies'    => $validated['agencies_charge'] ?? null,
+            'created_at'       => $validated['payment_date'],
+            'shipment_id'  => $validated['selected_shipment'],
+            'total_paid'  => $totalPaid,
+
+        ]);
+
+        return redirect()->back()->with('success', 'Payment added successfully!');
+    }
 
 
 

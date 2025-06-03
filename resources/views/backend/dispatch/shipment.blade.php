@@ -40,7 +40,7 @@
                                     <th>Sl</th>
                                     <th>Shipment ID</th>
                                     <th>Sender Id</th>
-                                    
+
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -49,20 +49,21 @@
                                 <tr>
                                     <td>{{ $key+1 }}</td>
                                     <td>{{ $item->shipment_number }}</td>
-                                
+
 
                                     <td>{{ implode(', ', $item->sender_id) }}</td>
                                     <td>
-                                   
+
                                         <a href="{{ route('shipment_show', $item->id) }}"
                                             class="btn btn-info btn-sm">View</a>
 
                                     </td>
 
 
-                                   
-                                   @endforeach
-                            
+
+                                    @endforeach
+                            </tbody>
+
                         </table>
                     </div>
                 </div>
@@ -85,18 +86,22 @@
     .card {
         border-radius: 8px;
     }
-    table{
-        margin-top:20px;
-    }
-    /* Ensure dropdown opens downwards */
-.dropdown-menu {
-    position: absolute !important;
 
-    z-index: 3000; /* Ensure it's above other elements */
- 
-    /* Adds a small gap below the button */
-    max-height: none; /* Remove any default max height */
-}
+    table {
+        margin-top: 20px;
+    }
+
+    /* Ensure dropdown opens downwards */
+    .dropdown-menu {
+        position: absolute !important;
+
+        z-index: 3000;
+        /* Ensure it's above other elements */
+
+        /* Adds a small gap below the button */
+        max-height: none;
+        /* Remove any default max height */
+    }
 
 
 
@@ -126,13 +131,14 @@
         vertical-align: middle;
     }
 
-   
+
 
     td {
         position: relative;
     }
 
-    .page-content, .container-fluid {
+    .page-content,
+    .container-fluid {
         overflow: visible;
     }
 </style>
