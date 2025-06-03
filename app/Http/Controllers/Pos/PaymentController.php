@@ -486,8 +486,6 @@ class PaymentController extends Controller
 
     public function InvoiceStore(Request $request)
     {
-
-
         try {
             $totalBillAmount = 0;
 
@@ -495,7 +493,7 @@ class PaymentController extends Controller
                 $itemTotal = $request->quantity[$index] * $request->rate[$index];
                 $totalBillAmount += $itemTotal;
 
-                $billing =   Billing::create([
+                $billing = Billing::create([
                     'sender_id' => $request->sender_id,
                     'description' => $desc,
                     'quantity' => $request->quantity[$index],
@@ -503,25 +501,28 @@ class PaymentController extends Controller
                     'total' => $itemTotal,
                 ]);
             }
+
             $billing->save();
-     
-            $sender = Sender::with('payments', 'receiver', 'boxes', 'shipments',)->findOrFail($request->sender_id);
+
+            $sender = Sender::with('payments', 'receiver', 'boxes', 'shipments')
+                ->findOrFail($request->sender_id);
+
             $billings = Billing::where('sender_id', $request->sender_id)->get();
-      
-  Payment::create([
+
+            Payment::create([
                 'sender_id' => $request->sender_id,
                 'bill_amount' => $totalBillAmount,
                 'status' => 'partial'
             ]);
-         
-
-     
 
             try {
                 $pdf = Pdf::loadView('invoices.pdf', compact('sender', 'billings'));
                 $fileName = 'invoice_' . $sender->invoiceId . '.pdf';
+
                 $pdfPath = storage_path('app/public/' . $fileName);
                 $pdf->save($pdfPath);
+                
+                $publicUrl = asset('storage/' . $fileName); // <--- Added for download
             } catch (\Exception $e) {
                 Log::error('PDF generation failed', [
                     'message' => $e->getMessage(),
@@ -531,25 +532,29 @@ class PaymentController extends Controller
             }
 
             try {
-                Mail::to($sender->senderEmail)->send(new InvoiceMail($sender,  $billings,  $pdfPath, [
+                Mail::to($sender->senderEmail)->send(new InvoiceMail($sender, $billings, $pdfPath, [
                     'as' => $fileName,
                     'mime' => 'application/pdf',
                 ]));
             } catch (\Exception $e) {
-                Log::error('PDF generation failed', [
+                Log::error('PDF email failed', [
                     'message' => $e->getMessage(),
                     'trace' => $e->getTraceAsString(),
                 ]);
-                return response()->json(['success' => false, 'message' => 'Failed to generate invoice PDF.']);
+                return response()->json(['success' => false, 'message' => 'Failed to send invoice email.']);
             }
-            return response()->json(['success' => true, 'message' => 'Invoice saved successfully!']);
-        } catch (\Exception $e) {
 
+            return response()->json([
+                'success' => true,
+                'message' => 'Invoice saved successfully!',
+                'pdf_url' => $publicUrl // <--- Return the downloadable link
+            ]);
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Something went wrong.',
                 'error' => $e->getMessage(),
-                'stack' => $e->getTraceAsString()  // You can include the stack trace for more details
+                'stack' => $e->getTraceAsString()
             ], 500);
         }
     }

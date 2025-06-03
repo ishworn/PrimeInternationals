@@ -68,6 +68,8 @@
                     <th>Agency Name</th>
 
                     <th>Total Weight </th>
+                    <th>Total Box </th>
+                    <th>Total Sender </th>
                     <th style="width: 130px;">Action</th>
 
 
@@ -78,6 +80,8 @@
                 <tr>
                     <td>{{ $agency->agency_name }}</td>
                     <td class="text-right">{{ number_format($agency->total_weight, 2) }} kg</td>
+                    <td>{{ $agency->total_boxes }}</td>
+                    <td>{{ $agency->total_senders}}</td>
                     <td>
                         <a href="{{ route('agencies.show', $agency->agency_name) }}">
 

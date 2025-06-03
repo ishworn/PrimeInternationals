@@ -21,32 +21,33 @@ class AgenciesController extends Controller
 {
     public function index()
     {
-
-
         $agencyPayments = DB::table('dispatch as d')
+            ->join('agencies as a', 'd.dispatch_by', '=', 'a.name') // only keep matches
             ->leftJoin('shipments as s', 'd.sender_id', '=', 's.sender_id')
+            ->leftJoin('boxes as b', 'd.sender_id', '=', 'b.sender_id') // Join boxes using sender_id
             ->select([
                 'd.dispatch_by as agency_name',
                 DB::raw("SUM(
-            CASE 
-                WHEN s.actual_weight LIKE '%Total Weight:%Kg%' 
-                THEN CAST(
-                    TRIM(REPLACE(SUBSTRING_INDEX(SUBSTRING_INDEX(s.actual_weight, 'Total Weight:', -1), 'Kg', 1), ' ', ''))
-                    AS DECIMAL(10,2)
-                ) 
-                ELSE 0 
-            END
-        ) as total_weight"),
+                CASE 
+                    WHEN s.actual_weight LIKE '%Total Weight:%Kg%' 
+                    THEN CAST(
+                        TRIM(REPLACE(SUBSTRING_INDEX(SUBSTRING_INDEX(s.actual_weight, 'Total Weight:', -1), 'Kg', 1), ' ', ''))
+                        AS DECIMAL(10,2)
+                    ) 
+                    ELSE 0 
+                END
+            ) as total_weight"),
                 DB::raw('COUNT(DISTINCT d.sender_id) as shipment_count'),
+                DB::raw('COUNT(DISTINCT d.sender_id) as total_senders'),
+                DB::raw('COUNT(b.box_number) as total_boxes'), // Count of boxes
             ])
             ->groupBy('d.dispatch_by')
             ->orderByDesc('total_weight')
             ->get();
 
-
-
-        return view(' backend.agencies.index', compact('agencyPayments',));
+        return view('backend.agencies.index', compact('agencyPayments'));
     }
+
 
 
     public function create(Request $request)
@@ -118,20 +119,20 @@ class AgenciesController extends Controller
     public function payment()
     {
         // $payments = Payment::all();
-        $senders = Sender::with('receiver', 'dispatch', 'payments','boxes') // Include 'payments' relation
+        $senders = Sender::with('receiver', 'dispatch', 'payments', 'boxes') // Include 'payments' relation
             ->whereHas('dispatch') // Only fetch senders who have dispatch records
-            ->withSum('boxes','box_weight')
+            ->withSum('boxes', 'box_weight')
             ->whereHas('payments', function ($query) {
                 $query->whereNull('debits'); // Only fetch payments where debits is null
             })
             ->get();
 
 
-        
 
 
 
-         return view('backend.agencies.payment', compact('senders'));
+
+        return view('backend.agencies.payment', compact('senders'));
 
 
         //return view('backend.agencies.payment', compact('payments'));
