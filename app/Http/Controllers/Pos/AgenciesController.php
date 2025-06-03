@@ -45,36 +45,36 @@ class AgenciesController extends Controller
 
 
 
-        return view(' backend.agencies.index', compact('agencyPayments', ));
+        return view(' backend.agencies.index', compact('agencyPayments',));
     }
 
 
-    public function create (Request $request){
+    public function create(Request $request)
+    {
 
-       Agencies::create([
+        Agencies::create([
             'name'   => $request->name,
-           ' created_at' => now()
-          
+            ' created_at' => now()
+
         ]);
 
         return redirect()->back()->with('Successfully Added ');
-
     }
 
- public function agencies_dispatch()
+    public function agencies_dispatch()
     {
         // Fetch all agencies
         $agencies = Agencies::all();
-            $senders = Sender::with('receiver', 'dispatch','boxes','shipments')
-        ->withCount('boxes')
-        ->withSum('boxes','box_weight')
+        $senders = Sender::with('receiver', 'dispatch', 'boxes', 'shipments')
+            ->withCount('boxes')
+            ->withSum('boxes', 'box_weight')
             ->doesntHave('dispatch') // Filter senders who do not have any payments
             ->get();
 
-        return view('backend.agencies.agencies_dispatch', compact('senders' , 'agencies'));
+        return view('backend.agencies.agencies_dispatch', compact('senders', 'agencies'));
     }
 
-        public function agenciesBulkDispatch(Request $request)
+    public function agenciesBulkDispatch(Request $request)
     {
         $lastShipment = Shipments::orderByDesc('id')->first();
         if ($lastShipment && Str::startsWith($lastShipment->shipment_number, 'PG')) {
@@ -117,10 +117,24 @@ class AgenciesController extends Controller
 
     public function payment()
     {
-        $payments = Payment::all();
-           
+        // $payments = Payment::all();
+        $senders = Sender::with('receiver', 'dispatch', 'payments','boxes') // Include 'payments' relation
+            ->whereHas('dispatch') // Only fetch senders who have dispatch records
+            ->withSum('boxes','box_weight')
+            ->whereHas('payments', function ($query) {
+                $query->whereNull('debits'); // Only fetch payments where debits is null
+            })
+            ->get();
 
-        return view('backend.agencies.payment', compact('payments'));
+
+        
+
+
+
+         return view('backend.agencies.payment', compact('senders'));
+
+
+        //return view('backend.agencies.payment', compact('payments'));
     }
     public function shipment()
     {
@@ -130,6 +144,23 @@ class AgenciesController extends Controller
     }
 
 
+    public function debits(Request $request)
+    {
+
+        // Find the payment record associated with the sender
+        $payment = Payment::where('sender_id', $request->sender_id)->first();
+        // dd($payment);
+        // 
+        if (!$payment) {
+            return redirect()->back()->with('error', 'Payment record not found for this sender.');
+        }
+        // Update the debits column
+        $payment->debits = $request->debits;
+        $payment->paymethod_debits = $request->paymethod_debits; // Update the payment method for debits
+        $payment->save();
+        // Redirect back with success message
+        return redirect()->back()->with('success', 'Debit amount updated successfully.');
+    }
 
 
 

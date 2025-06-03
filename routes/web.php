@@ -104,6 +104,10 @@ Route::controller(AgenciesController::class)->group(function () {
       Route::post('/agencies/agencies_bulk', 'agenciesBulkDispatch')->name('agencies.bulk.store'); // Show specific airline
       ROute::get('/agencies/payment', 'payment')->name('agencies.payment'); // Show specific airline
       Route::get('/agencies/shipment', 'shipment')->name('agencies.shipment'); // Show specific airline
+      Route::post('/agencies/debits', 'debits')->name('agencies.debits');
+
+    //   Route::get('/agencies/manage', 'manage')->name('agencies.manage')->middleware('role:super-admin');
+    //     Route::post('/agencies/debits', 'debits')->name('agencies.debits')->middleware('role:super-admin');
 
     // Route::post('/agencies/store', 'store')->name('agencies.store');    // Store new agency
     // Route::get('/agencies/{id}/edit', 'edit')->name('agencies.edit');   // Edit form
