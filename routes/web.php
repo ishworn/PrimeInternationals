@@ -120,6 +120,7 @@ Route::controller(AirlineController::class)->group(function () {
      Route::post('/airlines/airlines_bulk', 'airlineBulkDispatch')->name('airline.bulk.store'); // Show specific airline
      Route::get('/airlines/shipment', 'shipment')->name('airline.shipment'); // Show specific airline
      Route::get('/airlines/payment', 'payment')->name('airline.payment'); // Show specific airline
+     Route::post('/airlines/payment/store', 'paymentStore')->name('airline.payment.store');    // Store new agency
 
     // Route::post('/agencies/store', 'store')->name('agencies.store');    // Store new agency
     // Route::get('/agencies/{id}/edit', 'edit')->name('agencies.edit');   // Edit form

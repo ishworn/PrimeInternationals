@@ -236,7 +236,6 @@ class PaymentController extends Controller
 
     public function debits(Request $request)
     {
-
         // Find the payment record associated with the sender
         $payment = Payment::where('sender_id', $request->sender_id)->first();
         // dd($payment);
