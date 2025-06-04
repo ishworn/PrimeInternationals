@@ -21,7 +21,7 @@ class Shipment extends Model
 
     ];
 
-    public function sender()
+    public function senders()
     {
         return $this->belongsTo(Sender::class);
     }

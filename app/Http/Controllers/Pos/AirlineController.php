@@ -26,7 +26,9 @@ class AirlineController extends Controller
     public function index()
     {
         $agencyPayments = DB::table('dispatch as d')
+            ->join('airlines as a', 'd.dispatch_by', '=', 'a.name') // only keep matches
             ->leftJoin('shipments as s', 'd.sender_id', '=', 's.sender_id')
+            ->leftJoin('boxes as b', 'd.sender_id', '=', 'b.sender_id') // Join boxes using sender_id
             ->select([
                 'd.dispatch_by as agency_name',
                 DB::raw("SUM(
@@ -40,6 +42,8 @@ class AirlineController extends Controller
             END
         ) as total_weight"),
                 DB::raw('COUNT(DISTINCT d.sender_id) as shipment_count'),
+                DB::raw('COUNT(DISTINCT d.sender_id) as total_senders'),
+                DB::raw('COUNT(b.box_number) as total_boxes'), // Count of boxes
             ])
             ->groupBy('d.dispatch_by')
             ->orderByDesc('total_weight')
@@ -195,9 +199,23 @@ class AirlineController extends Controller
         $totalWeight = Box::whereIn('sender_id', $senderIds)->sum('box_weight');
         $totalBoxes = Box::whereIn('sender_id', $senderIds)->count();
 
-        return view('backend.airlines.shipment_details', compact('shipment', 'senders', 'totalWeight', 'totalBoxes'));
+        return view('backend.airlines.shipment_details', compact('shipment',  'totalWeight', 'totalBoxes'));
     }
 
+    public function show($agency_name)
+    {
+        $senders = Sender::with('receiver', 'dispatch', 'payments')
+            ->whereHas('dispatch', function ($query) use ($agency_name) {
+                $query->where('dispatch_by', $agency_name);
+            })
+            ->get();
+
+        if ($senders->isEmpty()) {
+            return redirect()->back()->with('error', 'No senders found for this agency.');
+        }
+
+        return view('backend.airlines.preview', compact('senders'));
+    }
 
 
 

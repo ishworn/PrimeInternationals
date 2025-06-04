@@ -13,6 +13,11 @@ use App\Models\Sender;
 use App\Models\Agencies;
 use App\Models\Shipments;
 use Illuminate\Support\Str;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Box;
+
+use Illuminate\Support\Facades\Log;
+
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -139,7 +144,19 @@ class AgenciesController extends Controller
     }
     public function shipment()
     {
-        $shipments = Shipment::all();
+        // $shipments = Shipment::all();
+
+        // return view('backend.agencies.shipment', compact('shipments'));
+        $agencyNames = Agencies::pluck('name')->toArray();
+        $senderIds = DB::table('dispatch')
+            ->whereIn('dispatch_by', $agencyNames)
+            ->pluck('sender_id')
+            ->toArray();
+        $shipments = Shipments::where(function ($query) use ($senderIds) {
+            foreach ($senderIds as $id) {
+                $query->orWhereJsonContains('sender_id', (string) $id);
+            }
+        })->get();
 
         return view('backend.agencies.shipment', compact('shipments'));
     }
@@ -180,6 +197,36 @@ class AgenciesController extends Controller
         }
 
         return view('backend.agencies.preview', compact('senders'));
+    }
+
+    public function downloadPDF($id)
+    {
+        try {
+            // Make sure 'senders' relationship exists on Shipment model
+      $shipment = Shipments::findOrFail($id);
+        $senderIds = is_array($shipment->sender_id)
+            ? $shipment->sender_id
+            : json_decode($shipment->sender_id, true);
+        // Fetch senders based on the IDs
+        $senders = Sender::with(['receiver', 'boxes'])->whereIn('id', $senderIds)->get();
+        $totalWeight = Box::whereIn('sender_id', $senderIds)->sum('box_weight');
+        $totalBoxes = Box::whereIn('sender_id', $senderIds)->count();
+
+            // Load Blade view and pass the shipment
+            $pdf = Pdf::loadView('backend.agencies.agenciespdf', compact('shipment','totalWeight','totalBoxes'));
+
+            $fileName = 'shipment_' . $shipment->shipment_number . '.pdf';
+
+            // Directly return download
+            return $pdf->download($fileName);
+        } catch (\Exception $e) {
+            Log::error('Shipment PDF generation failed', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return back()->with('error', 'PDF generation failed: ' . $e->getMessage());
+        }
     }
 
     //

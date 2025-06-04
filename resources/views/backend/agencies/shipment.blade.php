@@ -19,7 +19,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between ">
-                    <h4 class="mb-sm-0" style="font-size: 24px; font-weight: bold;">Shipment List</h4>
+                    <h4 class="mb-sm-0" style="font-size: 24px; font-weight: bold;">Agency Shipment List</h4>
                 </div>
             </div>
         </div>
@@ -30,31 +30,56 @@
             <div class="col-12">
                 <div class="card shadow-lg">
                     <div class="card-body">
-                        <h4 class="card-title mb-4" style="font-size: 22px; font-weight: bold;"></h4>
-                        <h4 class="card-title mb-4" style="font-size: 22px; font-weight: bold;"></h4>
 
-
-                        <table id="datatable" class="table table-bordered dt-responsive nowrap " style="width: 100%; ">
-                            <thead>
-                                <tr>    
+                     <table id="datatable" class="table table-bordered dt-responsive nowrap " style="width: 100%; ">
+                            <thead class="bg-primary text-white">
+                                <tr>
                                     <th>Sl</th>
                                     <th>Shipment ID</th>
                                     <th>Sender Id</th>
-                                    
+
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                        
-                            
-                           
+                            <tbody>
+                                @foreach ($shipments as $key => $item)
+                                <tr>
+                                    <td>{{ $key+1 }}</td>
+                                    <td>{{ $item->shipment_number }}</td>
+
+
+                                    <td>{{ implode(', ', $item->sender_id) }}</td>
+                                    <td>
+
+                                        <a href="{{ route('shipment_show', $item->id) }}"
+                                            class="btn btn-info btn-sm">View</a>
+
+                                            <a href="{{ route('agencies.downloadPDF', $item->id) }}"
+                                                class="btn btn-dark btn-sm ml-5 "
+                                                title="Download">
+                                                <i class="fas fa-download"></i></a>
+
+                                    </td>
+
+
+
+                                    @endforeach
+                            </tbody>
 
                         </table>
+                  
+
+
                     </div>
                 </div>
             </div> <!-- End col -->
         </div> <!-- End row -->
     </div> <!-- container-fluid -->
+
+
 </div>
+
+
 
 <!-- Add some custom styles for modern design -->
 <style>
@@ -70,18 +95,22 @@
     .card {
         border-radius: 8px;
     }
-    table{
-        margin-top:20px;
-    }
-    /* Ensure dropdown opens downwards */
-.dropdown-menu {
-    position: absolute !important;
 
-    z-index: 3000; /* Ensure it's above other elements */
- 
-    /* Adds a small gap below the button */
-    max-height: none; /* Remove any default max height */
-}
+    table {
+        margin-top: 20px;
+    }
+
+    /* Ensure dropdown opens downwards */
+    .dropdown-menu {
+        position: absolute !important;
+
+        z-index: 3000;
+        /* Ensure it's above other elements */
+
+        /* Adds a small gap below the button */
+        max-height: none;
+        /* Remove any default max height */
+    }
 
 
 
@@ -111,16 +140,61 @@
         vertical-align: middle;
     }
 
-   
+
 
     td {
         position: relative;
     }
 
-    .page-content, .container-fluid {
+    .page-content,
+    .container-fluid {
         overflow: visible;
     }
 </style>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+    // Select all checkboxes
+    document.getElementById('selectAll').addEventListener('change', function() {
+        const isChecked = this.checked;
+        document.querySelectorAll('.sender-checkbox').forEach(checkbox => {
+            checkbox.checked = isChecked;
+        });
+    });
+
+    // Handle agency selection
+    function selectAgency(agency) {
+        document.getElementById('bulkDispatchBy').value = agency;
+        document.getElementById('bulkDispatchDropdown').innerText = agency;
+    }
+    document.querySelector('#dispatchForm').addEventListener('submit', function(e) {
+        const selectedCheckboxes = document.querySelectorAll('.sender-checkbox:checked');
+        const selectedValues = Array.from(selectedCheckboxes).map(cb => cb.value);
+        document.getElementById('selectedSenders').value = selectedValues.join(',');
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const dispatchBtn = document.getElementById('dispatchSelectedBtn');
+        const checkboxes = document.querySelectorAll('.sender-checkbox');
+
+        dispatchBtn.addEventListener('click', function() {
+            const isAnyChecked = Array.from(checkboxes).some(cb => cb.checked);
+
+            if (!isAnyChecked) {
+                alert('Please select at least one sender before dispatching.');
+            } else {
+                // Manually show modal using Bootstrap's JS API
+                const dispatchModal = new bootstrap.Modal(document.getElementById('dispatchModal'));
+                dispatchModal.show();
+            }
+        });
+    });
+</script>
+
+
+
 
 
 
