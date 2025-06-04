@@ -66,28 +66,7 @@
 
             </tr>
         </thead>
-        <tbody>
-            @foreach($agencyPayments as $agency)
-            <tr>
-                <td>{{ $agency->agency_name }}</td>
-                <td class="text-right">{{ number_format($agency->total_weight, 2) }} kg</td>
-                <td>
-                    <a href="{{ route('agencies.show', $agency->agency_name) }}">
-
-                        <i class="fas fa-eye"></i> Preview
-                    </a>
-                </td>
-
-            </tr>
-            @endforeach
-
-            @if($agencyPayments->isNotEmpty())
-            <tr class="font-weight-bold bg-light">
-                <td>Totals</td>
-                <td class="text-right">{{ number_format($agencyPayments->sum('total_weight'), 2) }} kg</td>
-            </tr>
-            @endif
-        </tbody>
+       
 
     </table>
 

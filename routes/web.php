@@ -44,14 +44,12 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/customer/delete/{id}', 'CustomerDelete')->name('customer.delete');
         Route::get('/customer/recyclebin', 'recycle')->name('customer.recyclebin');
-        Route::get('/restore/{id}','restore')->name('customer.restore');
+        Route::get('/restore/{id}', 'restore')->name('customer.restore');
         //bulk restore
-                Route::post('/customers/restore-selected', [CustomerController::class, 'bulkRestore'])->name('customer.bulkRestore');
+        Route::post('/customers/restore-selected', [CustomerController::class, 'bulkRestore'])->name('customer.bulkRestore');
         //bulk delete
         Route::post('/customers/delete-selected', [CustomerController::class, 'bulkDelete'])->name('customer.bulkDelete');
         Route::post('/customers/forceDelete-selected', [CustomerController::class, 'bulkForceDelete'])->name('customer.bulkForceDelete');
-
-      
     });
 
     // Tracking Routes
@@ -64,7 +62,6 @@ Route::middleware('auth')->group(function () {
         Route::put('/trackings/{id}', 'update')->name('trackings.update'); // Update an existing tracking
         Route::get('/trackings/status', 'status')->name('trackings.parcel_status'); // Show tracking status
         Route::put('/senders/{id}', 'updateStatus')->name('senders.updateStatus');
-
     });
 
     Route::controller(PaymentController::class)->group(function () {
@@ -78,7 +75,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/payments/debits', 'debits')->name('payments.debits')->middleware('role:super-admin');
         Route::get('/payments/dashboard', 'dashboard')->name('payments.dashboard')->middleware('role:super-admin');
         Route::get('/payments/invoice/{id}', 'printInvoice')->name('payments.invoice');
-        Route::post('/payments/invoice/store', 'InvoiceStore')->name('invoices.store'); 
+        Route::post('/payments/invoice/store', 'InvoiceStore')->name('invoices.store');
     });
 
     Route::controller(UsermgmtController::class)->group(function () {
@@ -91,52 +88,51 @@ Route::middleware('auth')->group(function () {
     Route::controller(DispatchManagementController::class)->group(function () {
         Route::get('/dispatch', 'index')->name('dispatch.index'); // List all payments details
         Route::post('/dispatch/store', 'store')->name('dispatch.store');
-      
+
         Route::get('/dispatch/shipment', 'shipment')->name('dispatch.shipment'); // Show specific airline
         Route::get('/dispatch/shipment/{id}', 'shipment_details')->name('shipment_show'); // Show specific airline
     });
-     
-
-Route::controller(AgenciesController::class)->group(function () {
-    Route::get('/agencies', 'index')->name('agencies.index');           // Show all agencies
-    Route::post('/agencies/create', 'create')->name('agencies.create');  // Show form to create
-      Route::get('/agencies/dispatch', 'agencies_dispatch')->name('agencies.dispatch'); // Show form to create
-      Route::post('/agencies/agencies_bulk', 'agenciesBulkDispatch')->name('agencies.bulk.store'); // Show specific airline
-      ROute::get('/agencies/payment', 'payment')->name('agencies.payment'); // Show specific airline
-      Route::get('/agencies/shipment', 'shipment')->name('agencies.shipment'); // Show specific airline
-      Route::post('/agencies/debits', 'debits')->name('agencies.debits');
-
-    //   Route::get('/agencies/manage', 'manage')->name('agencies.manage')->middleware('role:super-admin');
-    //     Route::post('/agencies/debits', 'debits')->name('agencies.debits')->middleware('role:super-admin');
-
-    // Route::post('/agencies/store', 'store')->name('agencies.store');    // Store new agency
-    // Route::get('/agencies/{id}/edit', 'edit')->name('agencies.edit');   // Edit form
-    // Route::put('/agencies/{id}', 'update')->name('agencies.update');    // Update agency
-    // Route::delete('/agencies/{id}', 'destroy')->name('agencies.destroy'); // Delete agency
-    //Route::get('/agencies/{agency_name}', 'show')->name('agencies.show');
-   Route::get('/agencies/{id}', 'show')->name('agencies.show');
-
-});
-Route::controller(AirlineController::class)->group(function () {
-    Route::get('/airlines', 'index')->name('airline.index');           // Show all agencies
-    Route::post('/airlines/create', 'create')->name('airlines.create');  // Show form to create
-    Route::get('/airlines/dispatch', 'airline_dispatch')->name('airline.dispatch');  // Show form to create
-     Route::post('/airlines/airlines_bulk', 'airlineBulkDispatch')->name('airline.bulk.store'); // Show specific airline
-     Route::get('/airlines/shipment', 'shipment')->name('airline.shipment'); // Show specific airline
-     Route::get('/airlines/payment', 'payment')->name('airline.payment'); // Show specific airline
-     Route::post('/airlines/payment/store', 'paymentStore')->name('airline.payment.store');    // Store new agency
-     Route::get('/airlines/shipment/{id}', 'shipment_details')->name('shipment_show'); // Show specific airline
-
-    // Route::post('/agencies/store', 'store')->name('agencies.store');    // Store new agency
-    // Route::get('/agencies/{id}/edit', 'edit')->name('agencies.edit');   // Edit form
-    // Route::put('/agencies/{id}', 'update')->name('agencies.update');    // Update agency
-    // Route::delete('/agencies/{id}', 'destroy')->name('agencies.destroy'); // Delete agency
-    //Route::get('/agencies/{agency_name}', 'show')->name('agencies.show');
-   Route::get('/agencies/{id}', 'show')->name('agencies.show');
-
-});
 
 
+    Route::controller(AgenciesController::class)->group(function () {
+        Route::get('/agencies', 'index')->name('agencies.index');           // Show all agencies
+        Route::post('/agencies/create', 'create')->name('agencies.create');  // Show form to create
+        Route::get('/agencies/dispatch', 'agencies_dispatch')->name('agencies.dispatch'); // Show form to create
+        Route::post('/agencies/agencies_bulk', 'agenciesBulkDispatch')->name('agencies.bulk.store'); // Show specific airline
+        ROute::get('/agencies/payment', 'payment')->name('agencies.payment'); // Show specific airline
+        Route::get('/agencies/shipment', 'shipment')->name('agencies.shipment'); // Show specific airline
+        Route::post('/agencies/debits', 'debits')->name('agencies.debits');
+        // Route::get('/agencies/{id}', 'show')->name('agencies.show');
+        Route::get('/agencies/{agency_name}', 'show')->name('agencies.show');
+
+        //   Route::get('/agencies/manage', 'manage')->name('agencies.manage')->middleware('role:super-admin');
+        //     Route::post('/agencies/debits', 'debits')->name('agencies.debits')->middleware('role:super-admin');
+
+        // Route::post('/agencies/store', 'store')->name('agencies.store');    // Store new agency
+        // Route::get('/agencies/{id}/edit', 'edit')->name('agencies.edit');   // Edit form
+        // Route::put('/agencies/{id}', 'update')->name('agencies.update');    // Update agency
+        // Route::delete('/agencies/{id}', 'destroy')->name('agencies.destroy'); // Delete agency
+
+
+
+    });
+    Route::controller(AirlineController::class)->group(function () {
+        Route::get('/airlines', 'index')->name('airline.index');           // Show all agencies
+        Route::post('/airlines/create', 'create')->name('airlines.create');  // Show form to create
+        Route::get('/airlines/dispatch', 'airline_dispatch')->name('airline.dispatch');  // Show form to create
+        Route::post('/airlines/airlines_bulk', 'airlineBulkDispatch')->name('airline.bulk.store'); // Show specific airline
+        Route::get('/airlines/shipment', 'shipment')->name('airline.shipment'); // Show specific airline
+        Route::get('/airlines/payment', 'payment')->name('airline.payment'); // Show specific airline
+        Route::post('/airlines/payment/store', 'paymentStore')->name('airline.payment.store');    // Store new agency
+        Route::get('/airlines/shipment/{id}', 'shipment_details')->name('shipment_show'); // Show specific airline
+
+        // Route::post('/agencies/store', 'store')->name('agencies.store');    // Store new agency
+        // Route::get('/agencies/{id}/edit', 'edit')->name('agencies.edit');   // Edit form
+        // Route::put('/agencies/{id}', 'update')->name('agencies.update');    // Update agency
+        // Route::delete('/agencies/{id}', 'destroy')->name('agencies.destroy'); // Delete agency
+        //Route::get('/agencies/{agency_name}', 'show')->name('agencies.show');
+        Route::get('/agencies/{id}', 'show')->name('agencies.show');
+    });
 });
 
 require __DIR__ . '/auth.php';
@@ -144,5 +140,3 @@ require __DIR__ . '/auth.php';
 Route::get('/', function () {
     return redirect()->route('login');
 });
-
-
