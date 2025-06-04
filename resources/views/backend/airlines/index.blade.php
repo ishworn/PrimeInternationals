@@ -46,38 +46,63 @@
     </div>
 </div>
 <div class="container-fluid">
-    <!-- Start page title -->
-    <div class="row">
-        <div class="col-12">
-            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0" style="font-size: 24px; font-weight: bold;">Airlines List</h4>
+        <!-- Start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                    <h4 class="mb-sm-0" style="font-size: 24px; font-weight: bold;">Airline List</h4>
+                </div>
             </div>
         </div>
-    </div>
 
-    <table id="datatable" class="table table-bordered table-striped " style="width: 100%; margin-top: 50px;">
-        <thead class="thead-dark">
-            <tr>
-                <th>Airlines Name</th>
+        <table id="datatable" class="table table-bordered table-striped " style="width: 100%; margin-top: 50px;">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Airline Name</th>
 
-                <th>Total Weight </th>
-                <th style="width: 130px;">Action</th>
-
-
-            </tr>
-        </thead>
-       
-
-    </table>
+                    <th>Total Weight </th>
+                    <th>Total Box </th>
+                    <th>Total Sender </th>
+                    <th style="width: 130px;">Action</th>
 
 
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($agencyPayments as $agency)
+                <tr>
+                    <td>{{ $agency->agency_name }}</td>
+                    <td class="text-right">{{ number_format($agency->total_weight, 2) }} kg</td>
+                    <td>{{ $agency->total_boxes }}</td>
+                    <td>{{ $agency->total_senders}}</td>
+                    <td>
+                        <a href="{{ route('airlines.show', $agency->agency_name) }}">
+
+                            <i class="fas fa-eye"></i> Preview
+                        </a>
+                    </td>
+
+                </tr>
+                @endforeach
+
+                @if($agencyPayments->isNotEmpty())
+                <tr class="font-weight-bold bg-light">
+                    <td>Totals</td>
+                    <td class="text-right">{{ number_format($agencyPayments->sum('total_weight'), 2) }} kg</td>
+                </tr>
+                @endif
+            </tbody>
+
+        </table>
 
 
 
-    <!-- End page title -->
 
 
-</div> <!-- container-fluid -->
+        <!-- End page title -->
+
+
+    </div> <!-- container-fluid -->
 </div>
 
 

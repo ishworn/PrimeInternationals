@@ -105,6 +105,10 @@ Route::middleware('auth')->group(function () {
         // Route::get('/agencies/{id}', 'show')->name('agencies.show');
         Route::get('/agencies/{agency_name}', 'show')->name('agencies.show');
 
+       Route::get('agencies/pdf/{id}', 'downloadPDF')->name('agencies.downloadPDF');
+
+
+
         //   Route::get('/agencies/manage', 'manage')->name('agencies.manage')->middleware('role:super-admin');
         //     Route::post('/agencies/debits', 'debits')->name('agencies.debits')->middleware('role:super-admin');
 
@@ -131,7 +135,7 @@ Route::middleware('auth')->group(function () {
         // Route::put('/agencies/{id}', 'update')->name('agencies.update');    // Update agency
         // Route::delete('/agencies/{id}', 'destroy')->name('agencies.destroy'); // Delete agency
         //Route::get('/agencies/{agency_name}', 'show')->name('agencies.show');
-        Route::get('/agencies/{id}', 'show')->name('agencies.show');
+        Route::get('/airlines/{id}', 'show')->name('airlines.show');
     });
 });
 
