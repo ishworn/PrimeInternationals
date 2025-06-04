@@ -14,6 +14,7 @@ use App\Models\Agencies;
 use App\Models\Airlines;
 use Illuminate\Support\Str;
 use App\Models\AirlinePayments;
+use App\Models\Box;
 
 
 
@@ -183,26 +184,26 @@ class AirlineController extends Controller
     }
 
 
-
-
-
-
-
-
-    public function show($agency_name)
+    public function shipment_details($id)
     {
-        $senders = Sender::with('receiver', 'dispatch', 'payments')
-            ->whereHas('dispatch', function ($query) use ($agency_name) {
-                $query->where('dispatch_by', $agency_name);
-            })
-            ->get();
+        $shipment = Shipments::findOrFail($id);
+        $senderIds = is_array($shipment->sender_id)
+            ? $shipment->sender_id
+            : json_decode($shipment->sender_id, true);
+        // Fetch senders based on the IDs
+        $senders = Sender::with(['receiver', 'boxes'])->whereIn('id', $senderIds)->get();
+        $totalWeight = Box::whereIn('sender_id', $senderIds)->sum('box_weight');
+        $totalBoxes = Box::whereIn('sender_id', $senderIds)->count();
 
-        if ($senders->isEmpty()) {
-            return redirect()->back()->with('error', 'No senders found for this agency.');
-        }
-
-        return view('backend.agencies.preview', compact('senders'));
+        return view('backend.airlines.shipment_details', compact('shipment', 'senders', 'totalWeight', 'totalBoxes'));
     }
+
+
+
+
+
+
+
 
     //
 }
