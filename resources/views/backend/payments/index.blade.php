@@ -191,7 +191,7 @@
                                         @endif
                                         @if($sender->payments)
                                         <button class="btn btn-secondary btn-sm mx-1" disabled title="No payment record">
-                                        <i class="fas fa-file-invoice"></i>
+                                            <i class="fas fa-file-invoice"></i>
                                         </button>
                                         @else
                                         <a href="{{ route('payments.invoice', $sender->id) }}" class="btn btn-warning btn-sm mx-1" title="Billng">

@@ -63,6 +63,13 @@
                         <span>Dispatch</span>
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('staffs.index') }}" class="waves-effect">
+                        <i class="fas fa-address-card" aria-hidden="true"></i>
+                        
+                        <span>Manage Staff</span>
+                    </a>
+                </li>
             </ul>
         </div>
         <!-- Sidebar -->

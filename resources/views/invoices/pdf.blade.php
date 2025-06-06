@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8">
     <title>Invoice</title>
@@ -9,32 +8,27 @@
             font-family: sans-serif;
             font-size: 14px;
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
         }
-
-        th,
-        td {
+        th, td {
             border: 1px solid #ddd;
             padding: 8px;
         }
-
         th {
             background-color: #f2f2f2;
         }
     </style>
 </head>
-
 <body>
     <div id="printSection">
         <div class="max-w-4xl mx-auto bg-white border border-gray-200 p-6 sm:p-10 shadow-md mt-6">
-            <table id="invoice-table" class="w-full  text-black">
+            <table id="invoice-table" class="w-full text-black">
                 <thead>
                     <tr>
-                        <th colspan="8" class=" p-2 text-center bg-gray-50 font-bold text-lg">
+                        <th colspan="8" class="p-2 text-center bg-gray-50 font-bold text-lg">
                             PRIME GURKHA LOGISTICS PVT. LTD.
                         </th>
                     </tr>
@@ -42,36 +36,35 @@
                 <tbody>
                     <!-- Shipper Details -->
                     <tr>
-                        <td colspan="2" class="  p-2 text-black">
+                        <td colspan="2" class="p-2 text-black">
                             <div>Aloknagor-310 Kathmandu</div>
                             <div>Phone: +977 9708072372</div>
                             <div>Invoice No: {{ $sender->invoiceId ?? 'INV-001' }}</div>
                         </td>
-                        <td colspan="2" class=" p-2 align-top text-black">
-                            <div>Destination Country: {{$sender->receiver->receiverCountry }} </div>
+                        <td colspan="2" class="p-2 align-top text-black">
+                            <div>Destination Country: {{ $sender->receiver->receiverCountry ?? 'N/A' }}</div>
                             <div>Invoice Date: {{ $sender->created_at->format('Y-m-d') }}</div>
                             <div>Total Boxes: {{ $sender->boxes->count() }}</div>
                         </td>
                     </tr>
                     <!-- Consignee Details -->
                     <tr>
-                        <td colspan="2" class=" p-2 text-black">
-                            <div>Name : {{ $sender->senderName }}</div>
+                        <td colspan="2" class="p-2 text-black">
+                            <div>Name: {{ $sender->senderName }}</div>
                             <div>Email: {{ $sender->senderEmail }}</div>
-                            <div>Phone No : {{ $sender->senderPhone }}</div>
+                            <div>Phone No: {{ $sender->senderPhone }}</div>
                         </td>
                         <!-- Shipment Details -->
-                        <td colspan="2" class=" p-2 text-black">
-                            <div>Name: {{ $sender->receiver->receiverName }}</div>
-                            <div>Phone: {{ $sender->receiver->receiverPhone }}</div>
-                            <div>Email: {{ $sender->receiver->receiverEmail }}</div>
-                            <div>Postal Code: {{ $sender->receiver->receiverPostalcode }}</div>
-                            <div>Complete Address: {{ $sender->receiver->receiverAddress }}</div>
+                        <td colspan="2" class="p-2 text-black">
+                            <div>Name: {{ $sender->receiver->receiverName ?? 'N/A' }}</div>
+                            <div>Phone: {{ $sender->receiver->receiverPhone ?? 'N/A' }}</div>
+                            <div>Email: {{ $sender->receiver->receiverEmail ?? 'N/A' }}</div>
+                            <div>Postal Code: {{ $sender->receiver->receiverPostalcode ?? 'N/A' }}</div>
+                            <div>Complete Address: {{ $sender->receiver->receiverAddress ?? 'N/A' }}</div>
                         </td>
                     </tr>
                 </tbody>
             </table>
-
 
             <div class="mt-8 overflow-x-auto">
                 <table class="w-full text-left min-w-[600px]">
@@ -97,16 +90,14 @@
                         <tr class="font-semibold bg-gray-50">
                             <td colspan="3" class="py-3 px-2 text-right">Total:</td>
                             <td class="py-3 px-2 text-right">
-                                {{ number_format($billings->sum('total'), 2) }}
+                                {{ number_format($billings->sum('total') ?? 0, 2) }}
                             </td>
                         </tr>
                     </tfoot>
                 </table>
-
             </div>
 
             <div class="mt-6 text-sm text-gray-600">
-
                 <p class="font-semibold mt-3 text-black">Thank you for your business!</p>
             </div>
         </div>

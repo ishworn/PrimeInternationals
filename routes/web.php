@@ -10,6 +10,9 @@ use App\Http\Controllers\Pos\TrackingController;
 use App\Http\Controllers\Pos\UsermgmtController;
 use App\Http\Controllers\Pos\DispatchManagementController;
 use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\StaffController;
+
+
 
 
 
@@ -41,7 +44,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/customer/updateweight', 'CustomerUpdateWeight')->name('customer.updateweight');
 
         Route::get('/customer/delete/{id}', 'CustomerDelete')->name('customer.delete');
-      
     });
 
     // Tracking Routes
@@ -53,6 +55,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/trackings/edit/{id}', 'edit')->name('trackings.edit'); // Show form to edit an existing tracking
         Route::put('/trackings/{id}', 'update')->name('trackings.update'); // Update an existing tracking
     });
+
 
     Route::controller(PaymentController::class)->group(function () {
         Route::get('/payments', 'index')->name('payments.index'); // List all payments details
@@ -66,17 +69,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/payments/dashboard', 'dashboard')->name('payments.dashboard');
         Route::get('/payments/invoice/{id}', 'printInvoice')->name('payments.invoice');
         Route::post('/payments/invoice/store', 'InvoiceStore')->name('invoices.store');
-        
- 
-
-        
     });
 
     Route::controller(UsermgmtController::class)->group(function () {
-        Route::get('/usermgmt', 'index')->name('usermgmt.index');
-        Route::post('/usermgmt/store', [UsermgmtController::class, 'store'])->name('usermgmt.store')->middleware('role:super-admin');
-        Route::get("/usermgmt", [UsermgmtController::class, 'UserDetailsShow'])->name('usermgmt.index')->middleware('role:super-admin');
-        Route::delete('/usermgmt/{id}', action: [UsermgmtController::class, 'destroy'])->name('usermgmt.destroy')->middleware('role:super-admin');
+        // Route::get('/usermgmt', 'index')->name('usermgmt.index');
+        Route::post('/usermgmt/store', [UsermgmtController::class, 'store'])->name('usermgmt.store')->middleware('role:super_admin');
+        Route::get("/usermgmt", [UsermgmtController::class, 'UserDetailsShow'])->name('usermgmt.index')->middleware('role:super_admin');
+        Route::delete('/usermgmt/{id}', action: [UsermgmtController::class, 'destroy'])->name('usermgmt.destroy')->middleware('role:super_admin');
     });
 
     Route::controller(DispatchManagementController::class)->group(function () {
@@ -84,6 +83,16 @@ Route::middleware('auth')->group(function () {
         Route::post('/dispatch/store', 'store')->name('dispatch.store');
     });
 
+    Route::controller(StaffController::class)->group(function () {
+        Route::get('/staffs/create', 'create')->name('staffs.create');
+        Route::get('/staffs', 'index')->name('staffs.index');
+        Route::post('/staffs/store', 'store')->name('staffs.store');
+        Route::get('/staffs/edit/{id}', 'edit')->name('staffs.edit');
+        Route::put('/staffs/{id}', 'update')->name('staffs.update');
+        Route::delete('/staffs/delete/{id}', 'destroy')->name('staffs.delete');
+        Route::get('/staffs/export-csv',  'exportCsv');
+
+    });
 });
 
 require __DIR__ . '/auth.php';

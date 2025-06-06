@@ -16,7 +16,7 @@ class CustomerController extends Controller
     public function CustomerAll()
     {
 
-        $senders = Sender::with('receiver', 'payments' , 'dispatch' , )->get();
+        $senders = Sender::with('receiver', 'payments' , 'dispatch' , )->latest()->get();
 
 
 

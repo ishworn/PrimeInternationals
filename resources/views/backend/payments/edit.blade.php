@@ -1,4 +1,4 @@
-@extends('admin.admin_master')
+<!-- @extends('admin.admin_master')
 
 @section('admin')
 
@@ -14,29 +14,29 @@
           margin-bottom: 15px; margin-top: 5px; margin-left: 20px;">
         <i class="fas fa-arrow-left" style="margin-right: 5px;"></i> Back
     </a>
-    <div class="container-fluid">
+    <div class="container-fluid"> -->
         <!-- Start page title -->
-        <div class="row">
+        <!-- <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                     <h4 class="mb-sm-0" style="font-size: 24px; font-weight: bold;">Payment Details</h4>
                 </div>
             </div>
-        </div>
-        <!-- End page title -->
+        </div> -->
+        <!-- End page title 
 
-        <!-- Trackings Table -->
+         Trackings Table 
         <div class="row">
             <div class="col-12">
 
 
 
-            </div> <!-- End col -->
-        </div> <!-- End row -->
-    </div> <!-- container-fluid -->
+            </div> End col 
+        </div>  End row 
+    </div>  container-fluid 
 </div>
 
-<!-- Add some custom styles for modern design -->
+Add some custom styles for modern design
 <style>
     .btn {
         transition: all 0.3s ease;
@@ -78,4 +78,4 @@
     }
 </style>
 
-@endsection
+@endsection-->
