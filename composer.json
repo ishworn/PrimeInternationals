@@ -15,7 +15,7 @@
         "maatwebsite/excel": "^3.1",
         "nesbot/carbon": "^2.73",
         "phpoffice/phpspreadsheet": "*",
-        "spatie/laravel-permission": "^6.16",
+        "spatie/laravel-permission": "^6.19",
         "symfony/polyfill-php72": "*"
     },
     "require-dev": {

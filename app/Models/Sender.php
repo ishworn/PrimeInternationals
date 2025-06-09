@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Sender extends Model
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     // protected $guarded = []; 
     protected $table = 'senders';
@@ -25,16 +25,20 @@ class Sender extends Model
         'address2',
         'address3',
         'company_name',
+        'vendor_id',
 
     ];
 
-    public function boxes() {
+    public function boxes()
+    {
         return $this->hasMany(Box::class);
     }
-    public function receiver() {
+    public function receiver()
+    {
         return $this->hasOne(Receiver::class);
     }
-    public function shipments() {
+    public function shipments()
+    {
         return $this->hasOne(Shipment::class);
     }
 
@@ -60,5 +64,9 @@ class Sender extends Model
     public function billing()
     {
         return $this->hasMany(Billing::class,);
+    }
+    public function vendor()
+    {
+        return $this->belongsTo(User::class, 'vendor_id');
     }
 }
