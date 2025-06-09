@@ -31,7 +31,7 @@
                 <div class="card shadow-lg">
                     <div class="card-body">
 
-                     <table id="datatable" class="table table-bordered dt-responsive nowrap " style="width: 100%; ">
+                        <table id="datatable" class="table table-bordered dt-responsive nowrap " style="width: 100%; ">
                             <thead class="bg-primary text-white">
                                 <tr>
                                     <th>Sl</th>
@@ -53,6 +53,10 @@
 
                                         <a href="{{ route('shipment_show', $item->id) }}"
                                             class="btn btn-info btn-sm">View</a>
+                                        <a href="{{ route('airline.downloadPDF', $item->id) }}"
+                                            class="btn btn-dark btn-sm ml-5 "
+                                            title="Download">
+                                            <i class="fas fa-download"></i></a>
 
                                     </td>
 
@@ -62,7 +66,7 @@
                             </tbody>
 
                         </table>
-                  
+
 
 
                     </div>

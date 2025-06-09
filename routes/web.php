@@ -26,10 +26,12 @@ Route::middleware('auth')->group(function () {
         Route::post('/store/profile', 'StoreProfile')->name('store.profile');
         Route::get('/change/password', 'ChangePassword')->name('change.password');
         Route::post('/update/password', 'UpdatePassword')->name('update.password');
+    
+    
     });
 
     // Customer Routes
-    Route::controller(CustomerController::class)->group(function () {
+    Route::middleware(['auth', 'can:manage customers'])->controller(CustomerController::class)->group(function () {
         Route::get('/customer/all', 'CustomerAll')->name('customer.all');
         Route::get('/customer/add', 'CustomerAdd')->name('customer.add');
         Route::get('/customer/invoice/{id}', 'CustomerInvoice')->name('customer.invoice');
@@ -46,15 +48,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/customer/recyclebin', 'recycle')->name('customer.recyclebin');
         Route::get('/restore/{id}', 'restore')->name('customer.restore');
         //bulk restore
-        Route::post('/customers/restore-selected', [CustomerController::class, 'bulkRestore'])->name('customer.bulkRestore');
+        Route::post('/customers/restore-selected',  'bulkRestore')->name('customer.bulkRestore');
         //bulk delete
-        Route::post('/customers/delete-selected', [CustomerController::class, 'bulkDelete'])->name('customer.bulkDelete');
-        Route::post('/customers/forceDelete-selected', [CustomerController::class, 'bulkForceDelete'])->name('customer.bulkForceDelete');
+        Route::post('/customers/delete-selected',  'bulkDelete')->name('customer.bulkDelete');
+        Route::post('/customers/forceDelete-selected', 'bulkForceDelete')->name('customer.bulkForceDelete');
     });
 
     // Tracking Routes
 
-    Route::controller(TrackingController::class)->group(function () {
+    Route::middleware(['auth', 'can:manage customers'])-> controller(TrackingController::class)->group(function () {
         Route::get('/trackings', 'index')->name('trackings.index'); // List all trackings
         Route::get('/trackings/create', 'create')->name('trackings.create'); // Show the form to create a new tracking
         Route::post('/trackings', 'store')->name('trackings.store'); // Store a new tracking
@@ -64,7 +66,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/senders/{id}', 'updateStatus')->name('senders.updateStatus');
     });
 
-    Route::controller(PaymentController::class)->group(function () {
+    Route:: middleware(['auth', 'can:manage all payments'])->controller(PaymentController::class)->group(function () {
         Route::get('/payments', 'index')->name('payments.index');
         Route::get('/payments/details', 'details')->name('payments.details');
         Route::post('/payments/addexpenses', 'addexpenses')->name('expenses.store');
@@ -78,14 +80,14 @@ Route::middleware('auth')->group(function () {
         Route::post('/payments/invoice/store', 'InvoiceStore')->name('invoices.store');
     });
 
-    Route::controller(UsermgmtController::class)->group(function () {
+    Route:: middleware(['auth', 'can:manage users'])->controller(UsermgmtController::class)->group(function () {
         Route::get('/usermgmt', 'index')->name('usermgmt.index');
         Route::post('/usermgmt/store', [UsermgmtController::class, 'store'])->name('usermgmt.store')->middleware('role:super-admin');
         Route::get("/usermgmt", [UsermgmtController::class, 'UserDetailsShow'])->name('usermgmt.index')->middleware('role:super-admin');
         Route::delete('/usermgmt/{id}', action: [UsermgmtController::class, 'destroy'])->name('usermgmt.destroy')->middleware('role:super-admin');
     });
 
-    Route::controller(DispatchManagementController::class)->group(function () {
+    Route:: middleware(['auth', 'can:manage customers'])->controller(DispatchManagementController::class)->group(function () {
         Route::get('/dispatch', 'index')->name('dispatch.index'); // List all payments details
         Route::post('/dispatch/store', 'store')->name('dispatch.store');
 
@@ -94,7 +96,7 @@ Route::middleware('auth')->group(function () {
     });
 
 
-    Route::controller(AgenciesController::class)->group(function () {
+    Route:: middleware(['auth', 'can:manage all payments'])->controller(AgenciesController::class)->group(function () {
         Route::get('/agencies', 'index')->name('agencies.index');           // Show all agencies
         Route::post('/agencies/create', 'create')->name('agencies.create');  // Show form to create
         Route::get('/agencies/dispatch', 'agencies_dispatch')->name('agencies.dispatch'); // Show form to create
@@ -120,7 +122,7 @@ Route::middleware('auth')->group(function () {
 
 
     });
-    Route::controller(AirlineController::class)->group(function () {
+    Route:: middleware(['auth', 'can:manage all payments'])->controller(AirlineController::class)->group(function () {
         Route::get('/airlines', 'index')->name('airline.index');           // Show all agencies
         Route::post('/airlines/create', 'create')->name('airlines.create');  // Show form to create
         Route::get('/airlines/dispatch', 'airline_dispatch')->name('airline.dispatch');  // Show form to create
@@ -129,6 +131,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/airlines/payment', 'payment')->name('airline.payment'); // Show specific airline
         Route::post('/airlines/payment/store', 'paymentStore')->name('airline.payment.store');    // Store new agency
         Route::get('/airlines/shipment/{id}', 'shipment_details')->name('shipment_show'); // Show specific airline
+        Route::get('/airlines/pdf/{id}', 'downloadPDFAirline')->name('airline.downloadPDF');
 
         // Route::post('/agencies/store', 'store')->name('agencies.store');    // Store new agency
         // Route::get('/agencies/{id}/edit', 'edit')->name('agencies.edit');   // Edit form

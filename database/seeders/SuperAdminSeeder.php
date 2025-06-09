@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class SuperAdminSeeder extends Seeder
 {
@@ -28,5 +29,23 @@ class SuperAdminSeeder extends Seeder
 
         // Assign super-admin role to the user
         $user->assignRole('super-admin');
+
+        $vendorRole = Role::firstOrCreate(['name' => 'vendor']);
+        $vendor = User::create([
+            'name' => 'Vendor',
+            'email' => 'vendor@gmail.com',
+            'username' => 'vendor',
+            'password' => bcrypt('vendor'),
+        ]);
+        $vendor->assignRole($vendorRole);
+
+        // Create permission
+$manageCustomersPermission = Permission::firstOrCreate(['name' => 'manage customers']);
+
+
+
+// Assign permission to vendor role
+$vendorRole->givePermissionTo($manageCustomersPermission);
     }
+    
 }

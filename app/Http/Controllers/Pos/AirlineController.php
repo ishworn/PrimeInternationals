@@ -15,6 +15,8 @@ use App\Models\Airlines;
 use Illuminate\Support\Str;
 use App\Models\AirlinePayments;
 use App\Models\Box;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Log;
 
 
 
@@ -216,6 +218,36 @@ class AirlineController extends Controller
 
         return view('backend.airlines.preview', compact('senders'));
     }
+      public function downloadPDFAirline($id)
+    {
+        try {
+            // Make sure 'senders' relationship exists on Shipment model
+      $shipment = Shipments::findOrFail($id);
+        $senderIds = is_array($shipment->sender_id)
+            ? $shipment->sender_id
+            : json_decode($shipment->sender_id, true);
+        // Fetch senders based on the IDs
+        $senders = Sender::with(['receiver', 'boxes'])->whereIn('id', $senderIds)->get();
+        $totalWeight = Box::whereIn('sender_id', $senderIds)->sum('box_weight');
+        $totalBoxes = Box::whereIn('sender_id', $senderIds)->count();
+
+            // Load Blade view and pass the shipment
+            $pdf = Pdf::loadView('backend.airlines.airlinepdf', compact('shipment','totalWeight','totalBoxes'));
+
+            $fileName = 'shipment_' . $shipment->shipment_number . '.pdf';
+
+            // Directly return download
+            return $pdf->download($fileName);
+        } catch (\Exception $e) {
+            Log::error('Shipment PDF generation failed', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return back()->with('error', 'PDF generation failed: ' . $e->getMessage());
+        }
+    }
+
 
 
 
