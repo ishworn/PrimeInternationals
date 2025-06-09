@@ -17,6 +17,7 @@ class PermissionSeeder extends Seeder
             'access recycle bin',
             'manage users',
             'manage all payments', // Includes all payment-related sections
+            'track shipments',
         ];
 
         foreach ($permissions as $permission) {
