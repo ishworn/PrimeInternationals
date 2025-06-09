@@ -18,8 +18,6 @@ class CustomerController extends Controller
 
         $senders = Sender::with('receiver', 'payments', 'dispatch',)->get();
 
-
-
         return view('backend.customer.customer_all', compact('senders'));
     }
 
@@ -209,6 +207,7 @@ class CustomerController extends Controller
 
 
 
+
     public function CustomerDelete($id)
     {
         Sender::findOrFail($id)->delete();
@@ -222,6 +221,20 @@ class CustomerController extends Controller
     }
 
 
+
+public function calculateTotalWeight($boxes, $weight)
+{
+    // Sum weights passed as an array of strings
+    $totalWeight = 0;
+
+    foreach ($weight as $w) {
+        $totalWeight += (float) $w;  // convert to float just in case
+    }
+
+   
+
+    return $totalWeight;
+}
    public function CustomerStore(Request $request)
 {
     // Validate required structure
@@ -281,6 +294,8 @@ $nextInvoiceId = $lastInvoice ? $lastInvoice + 1 : 100;
     }
 }
 
+
+
 private function createBoxesAndItems($sender, $boxes, $weight)
 {
     foreach ($boxes as $index => $boxData) {
@@ -305,6 +320,19 @@ private function createBoxesAndItems($sender, $boxes, $weight)
             ]);
         }
     }
+
+    $shipment = Shipment::where('sender_id', $sender->id)->first();
+    if ($shipment) {
+        $shipment->update([
+
+           
+         
+            'actual_weight' => $this->calculateTotalWeight($boxes, $weight),
+            
+        ]);
+    }
+
+    return redirect()->route('customer.all')->with('success', 'Data saved successfully.');
 }
 
 

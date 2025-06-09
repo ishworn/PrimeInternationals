@@ -10,6 +10,9 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Log;
+
 
 
 class UsermgmtController extends Controller
@@ -25,35 +28,53 @@ class UsermgmtController extends Controller
     }
 
 
-    public function store(Request $request)
-    {
+   public function store(Request $request)
+{
+   
+    try {
+        // Validate input
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255', 'unique:users'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+
+
+            
         ]);
 
-        // Create the user if validation passes
+        // Create the user
         $user = User::create([
-            'name' => $request->name,
-            'username' => $request->username,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'name' => $validated['name'],
+            'username' => $validated['username'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
         ]);
 
-        // Redirect to a page (such as dashboard) after successful registration
-        return redirect('/usermgmt');
+        // Assign the role
+        $user->assignRole($request->input('role'));
+
+        // Redirect on success
+        return redirect('/usermgmt')->with('success', 'User created successfully.');
+    } catch (\Exception $e) {
+        // Log the error (optional)
+        Log::error('User creation failed: ' . $e->getMessage());
+
+        // Redirect back with error
+        return redirect()->back()->withInput()->withErrors(['error' => 'Failed to create user. ' . $e->getMessage()]);
     }
+}
+
 
     public function UserDetailsShow()
     {
 
         // Fetch each user data
         $users = User::all();
+        $roles = \Spatie\Permission\Models\Role::all(); // Fetch all roles
 
          // Fetch and redirect all user data
-        return view('backend.usermgmt.index', compact( 'users' ,  )); // Return the index view with tracking data
+        return view('backend.usermgmt.index', compact( 'users' , 'roles'  )); // Return the index view with tracking data
     }
 
 

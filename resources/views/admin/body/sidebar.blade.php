@@ -8,19 +8,26 @@
             <ul class="metismenu list-unstyled" id="side-menu">
                 <li class="menu-title">Prime Gurkha</li>
 
+                @can('access dashboard')
                 <li>
                     <a href="{{ url('/dashboard') }}" class="waves-effect">
                         <i class="ri-home-fill"></i>
                         <span>Dashboard</span>
                     </a>
                 </li>
+                @endcan
 
-                <li>
+                @can('manage customers')
+
                 <li>
                     <a href="{{ route('customer.all') }}" class="waves-effect">
                         <i class="ri-shield-user-fill" aria-hidden="true"></i>
                         <span>Manage Customers</span>
                     </a>
+                </li>
+                @endcan
+
+                @can('manage trackings')
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="ri-map-pin-line text-xl"></i>
@@ -34,7 +41,9 @@
                                 onclick="window.open(this.href, '_blank'); return false;">Track</a></li>
                     </ul>
                 </li>
+                @endcan
 
+                @can('manage all payments')
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="ri-wallet-line text-xl"></i>
@@ -45,23 +54,29 @@
                         <li><a href="{{ route('payments.index') }}">Manage Payment</a></li>
                         <li><a href="{{ route('payments.details') }}">Expenses Management</a></li>
                         <li><a href="{{ route('payments.manage') }}">Agencies Expenses</a></li>
-
-
                     </ul>
                 </li>
+
+
+                @endcan
+                @can('manage users')
+
                 <li>
                     <a href="{{ route('usermgmt.index') }}" class="waves-effect">
                         <i class="fa fa-user-plus" aria-hidden="true"></i>
                         <span>Manage User</span>
                     </a>
                 </li>
-              
+                @endcan
+                @can('manage shipments')
                 <li>
                     <a href="{{ route('dispatch.shipment') }}" class="waves-effect">
                         <i class="ri-shield-user-fill" aria-hidden="true"></i>
                         <span>Shipment</span>
                     </a>
                 <li>
+                    @endcan
+                    @can('manage all payments')
 
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
@@ -75,6 +90,8 @@
                         <li><a href="{{ route('agencies.shipment') }}">Agencies Shipment</a></li>
                     </ul>
                 </li>
+                @endcan
+                @can('manage all payments')
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="fa-solid fa-briefcase" aria-hidden="true"></i>
@@ -88,8 +105,10 @@
 
                     </ul>
                 </li>
+                @endcan
 
 
+                @can('access recycle bin')
                 <li>
                     <a href="{{ route('customer.recyclebin') }}" class="waves-effect">
 
@@ -97,6 +116,7 @@
                         <span>Recycle User</span>
                     </a>
                 </li>
+                @endcan
             </ul>
         </div>
         <!-- Sidebar -->
