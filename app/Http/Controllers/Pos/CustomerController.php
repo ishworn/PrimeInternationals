@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Pos;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
-use App\Models\{Sender, Receiver, Box, Shipment, Item, Payment, Dispatch, Billing};
+use App\Models\{Sender, Receiver, Box, Shipment, Item, Payment, Dispatch, Billing,User};
 
 use App\Exports\ExcelExport;
 
@@ -17,19 +17,24 @@ class CustomerController extends Controller
     {
         $user = auth()->user(); // Get the logged-in user
 
+        // Get all vendors for the dropdown
+        $vendors = User::role('vendor')->get();
+
+        // Start with base query
+        $query = Sender::with(['receiver', 'payments', 'dispatch']);
+
         if ($user->hasRole('vendor')) {
             // Show only the senders added by this vendor
-            $senders = Sender::with(['receiver', 'payments', 'dispatch'])
-                ->where('vendor_id', $user->id)
-                ->get();
-        } else {
-            // If user is admin or other role, show all senders
-            $senders = Sender::with(['receiver', 'payments', 'dispatch'])->get();
+            $query->where('vendor_id', $user->id);
+        } elseif (request('vendor_id')) {
+            // Filter by selected vendor if one is selected
+            $query->where('vendor_id', request('vendor_id'));
         }
 
-        return view('backend.customer.customer_all', compact('senders'));
-    }
+        $senders = $query->get();
 
+        return view('backend.customer.customer_all', compact('senders', 'vendors'));
+    }
 
 
     public function CustomerShow($id)

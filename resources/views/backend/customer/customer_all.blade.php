@@ -4,10 +4,7 @@
 <!-- Font Awesome 6 CDN -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
-
 <div class="page-content">
-
-
     @if (session('error'))
     <div class="alert alert-danger">
         {{ session('error') }}
@@ -29,12 +26,15 @@
             </a>
         </div>
     </div>
+
     <div class="container-fluid">
         <!-- Start page title -->
         <div class="row">
             <div class="col-12">
-                <div class=" d-sm-flex align-items-center justify-content-between">
+                <div class="d-flex justify-content-between align-items-center mb-3">
                     <h4 class="mb-sm-0" style="font-size: 24px; font-weight: bold;">Customers List</h4>
+
+
                 </div>
 
                 <!-- Delete form -->
@@ -47,26 +47,35 @@
                         <i class="fas fa-trash"></i> Delete Sender
                     </a>
                 </form>
-
             </div>
         </div>
-        <!-- <div class="row">
-            <div class="col-12">
-                <a href="{{ route('customer.add') }}" class="btn btn-warning btn-rounded waves-effect waves-orange"
-                    style="float:right;  background-color: #FFA500; color: #555; border: 2px solid #FFA500; 
-                          transition: all 0.3s ease-in-out; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);margin-right:15px;margin-bottom:10px;">
-                    <i class="fas fa-plus-circle"></i> Add Sender
-                </a>
-            </div>
-        </div> -->
-
-        <!-- End page title -->
 
         <div class="row">
             <div class="col-12">
                 <div class="card shadow-lg">
                     <div class="card-body">
-                        <h4 class="card-title mb-4" style="font-size: 22px; font-weight: bold;"></h4>
+                        <h4 class="card-title m-0 " style="font-size: 22px; font-weight: bold;"></h4>
+                        <!-- Vendor Filter Dropdown  -->
+                        <div class="mb-2"  style="text-align: right;">
+                            <div class="dropdown d-inline-block  ">
+                                <button class="btn  dropdown-toggle" type="button" id="vendorDropdown"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color:#088F8F; color:white">
+                                    @if(request('vendor_id'))
+                                    {{ \App\Models\User::find(request('vendor_id'))->name ?? 'All Vendors' }}
+                                    @else
+                                    All Vendors
+                                    @endif
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="vendorDropdown">
+                                    <a class="dropdown-item" href="{{ route('customer.all') }}">All Senders</a>
+                                    @foreach($vendors as $vendor)
+                                    <a class="dropdown-item" href="{{ route('customer.all', ['vendor_id' => $vendor->id]) }}">
+                                        {{ $vendor->name }}
+                                    </a>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
 
                         <table id="datatable" class="table table-bordered dt-responsive nowrap" style="width: 100%;">
                             <thead class="bg-primary text-white">
@@ -76,17 +85,12 @@
                                     <th> Sender Name </th>
                                     <th>Receiver Name</th>
                                     <th>Country</th>
-                                    <!-- <th>Dispatch To</th>
-                                    <th>Dispatch Status</th> -->
                                     <th>Tracking Id</th>
                                     <th>Amount</th>
-
                                     <th class='payment-status'>Payment Status</th>
                                     <th style="width: 70px;">Actions</th>
                                 </tr>
                             </thead>
-
-
 
                             <tbody>
                                 @foreach($senders as $key => $sender)
@@ -95,55 +99,10 @@
                                             name="sender_ids[]" value="{{ $sender->id }}"></td>
                                     <td>{{ $key + 1 }}</td>
                                     <td> {{$sender->senderName}} </td>
-                                    <td>{{ $sender->receiver->receiverName }}</td> <!-- Assuming receiverName field exists -->
-                                    <td>{{ $sender->receiver->receiverCountry }}</td> <!-- Assuming country field exists -->
-                                    <!-- <td>
-                                        @php
-                                        $dispatch = $sender->dispatch ?? null; // Fetch the dispatch related to the sender
-                                        $dispatchBy = $dispatch ? $dispatch->dispatch_by : null;
-                                        @endphp
-
-                                        @if(!$dispatchBy)
-                                        <span class="badge bg-secondary">N/A</span>
-                                        @elseif($dispatchBy === 'Apex')
-                                        <span class="badge bg-success" title="Apex">Apex</span>
-                                        @elseif($dispatchBy === 'Dpnex')
-                                        <span class="badge bg-warning" title="Dpnex">Dpnex</span>
-                                        @elseif($dispatchBy === 'Pacific')
-                                        <span class="badge bg-primary" title="Pacific">Pacific</span>
-                                        @elseif($dispatchBy === 'Nepal Express')
-                                        <span class="badge bg-info" title="Nepal Express">Nepal Express</span>
-                                        @elseif($dispatchBy === 'DTDC')
-                                        <span class="badge bg-danger" title="DTDC">DTDC</span>
-                                        @elseif($dispatchBy === 'Aramax')
-                                        <span class="badge bg-dark" title="Aramax">Aramax</span>
-                                        @elseif($dispatchBy === 'Nepal Post')
-                                        <span class="badge bg-light" title="Nepal Post">Nepal Post</span>
-                                        @elseif($dispatchBy === 'SF International')
-                                        <span class="badge bg-info" title="SF International">SF International</span>
-                                        @else
-                                        <span class="badge bg-warning" title="Unknown">Unknown</span>
-                                        @endif
-                                    </td>
-
-                                    <td>
-                                        @php
-                                        $dispatch = $sender->dispatch ?? null; // Fetch the dispatch related to the sender
-                                        $dispatchStatus = $dispatch ? $dispatch->status : null;
-                                        @endphp
-
-                                        @if(!$dispatchStatus)
-                                        <span class="badge bg-danger">Pending</span>
-                                        @elseif($dispatchStatus === 'pending')
-                                        <span class="badge bg-danger" title="Not Sent">Pending</span>
-                                        @elseif($dispatchStatus === 'dispatch')
-                                        <span class="badge bg-success" title="Sent">Dispatch</span>
-                                        @else
-                                        <span class="badge bg-warning">Unknown Status</span>
-                                        @endif
-                                    </td> -->
+                                    <td>{{ $sender->receiver->receiverName }}</td>
+                                    <td>{{ $sender->receiver->receiverCountry }}</td>
                                     <td>{{ $sender->trackingId ?? 'N/A' }}</td>
-                                    <td>{{ $sender->payments->total_paid ?? 'N/A' }}</td> <!-- Assuming amount field exists -->
+                                    <td>{{ $sender->payments->total_paid ?? 'N/A' }}</td>
 
                                     <td class='payment-status'>
                                         @php
@@ -161,9 +120,6 @@
                                         @endif
                                     </td>
 
-
-
-                                    <!-- Actions (unchanged) -->
                                     <td class="text-center">
                                         <div style="display: flex; align-items: center;gap:10px;">
                                             <div class="dropdown">
@@ -188,9 +144,6 @@
                                                     </a>
                                                 </div>
                                             </div>
-                                            <!-- <a href="{{ route('invoice.print', $sender->id) }}?autoPrint=1"  class="btn btn-info btn-sm mx-1" title="Print">
-                                                <i class="fas fa-print"></i>
-                                            </a> -->
                                             <iframe id="printFrame" style="display:none;"></iframe>
                                             <a href="#"
                                                 onclick="printInvoice('{{ $sender->id }}'); return false;"
@@ -204,24 +157,8 @@
                                                 title="Excel">
                                                 <i class="fas fa-download"></i></a>
 
-                                            <!-- <a href="#"
-                                                class="btn btn-success btn-sm "
-                                                title="Plane">
-                                                <i class="fas fa-plane"></i></a>
-
-                                                <a href="#"
-                                                class="btn btn-dark btn-sm "
-                                                title="Truck">
-                                                <i class="fas fa-truck"></i></a>
-
-                                                <a href="#"
-                                                class="btn btn-warning btn-sm "
-                                                title="Plane">
-                                                <i class="fas fa-user-tie"></i></a> -->
-
-
                                             @php
-                                            $dispatch = $sender->dispatch ?? null; // Fetch the dispatch related to the sender
+                                            $dispatch = $sender->dispatch ?? null;
                                             $dispatchStatus = $dispatch ? $dispatch->status : null;
                                             @endphp
                                             @if($dispatchStatus === 'dispatch')
@@ -231,7 +168,6 @@
                                                 style="width: 40px; height: 40px; padding: 0; background-color:#228B22 ; border: 1px solid #FFD43B;">
                                                 <i class="fas fa-plane" style="color: #FFD43B;"></i>
                                             </a>
-
                                             @else
                                             <a href="#"
                                                 class="btn btn-sm d-flex align-items-center justify-content-center rounded-circle"
@@ -240,51 +176,26 @@
                                                 <i class="fas fa-plane" style="color: #FFD43B;"></i>
                                             </a>
                                             @endif
-
-
-
-
-
-
-
                                         </div>
                                     </td>
-
                                 </tr>
                                 @endforeach
                             </tbody>
-
-                            <!-- JavaScript -->
-
-
-
-                            <!-- JavaScript -->
-
-
-
                         </table>
-
                     </div>
                 </div>
             </div> <!-- End col -->
         </div> <!-- End row -->
-
     </div> <!-- container-fluid -->
 </div>
 
-
-
-
-<!-- Add some custom styles for modern design -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- Use this -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-<!-- for select all -->
 <script>
     $('#selectAllCheckbox').change(function() {
         $('.checkboxes').prop('checked', $(this).prop('checked'));
@@ -298,18 +209,15 @@
         }
     }
 
-    // Handle individual checkboxes
     $(document).on('change', '.checkboxes', function() {
         updateDeleteButtonVisibility();
     });
 
-    // Handle Select All
     $('#selectAllCheckbox').change(function() {
         $('.checkboxes').prop('checked', $(this).prop('checked'));
         updateDeleteButtonVisibility();
     });
 
-    //delete script
     document.getElementById('deleteButton').addEventListener('click', function() {
         let checked = document.querySelectorAll('input[name="sender_ids[]"]:checked');
         if (checked.length === 0) {
@@ -338,13 +246,9 @@
         }
     });
 
-    //Print
-    // function printInvoice() {
-    //     window.print();
-    // }
     function printInvoice(id) {
         const iframe = document.getElementById('printFrame');
-        iframe.src = `/customer/print/${id}`; // URL of your print view
+        iframe.src = `/customer/print/${id}`;
 
         iframe.onload = function() {
             iframe.contentWindow.focus();
@@ -365,13 +269,11 @@
 
     .card {
         border-radius: 8px;
-
     }
 
     table th,
     table td {
         text-align: center;
-
         font-size: 14px;
     }
 
@@ -389,17 +291,39 @@
         vertical-align: middle;
     }
 
-    .payment-method,
     .payment-status {
-
-
         width: 100px;
-        /* Set a specific width for the columns */
+    }
 
+    /* Style for vendor dropdown */
+    #vendorDropdown {
+        background-color: #3e8e41;
+        border-color: #3e8e41;
+        margin-right: 15px;
+    }
+
+    #vendorDropdown:hover {
+        background-color: #367c39;
+        border-color: #367c39;
+    }
+
+    /* Ensure dropdown menu aligns to the right */
+    .dropdown-menu-right {
+        right: 0;
+        left: auto;
+    }
+
+    /* Flex container for header */
+    .d-flex.justify-content-between {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+
+    .ml-auto {
+        margin-left: auto;
     }
 </style>
-
-
-
 
 @endsection
