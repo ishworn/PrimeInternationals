@@ -1,4 +1,4 @@
-@extends('admin.admin_master')
+@extends('admin.admin_master' )
 @section('admin')
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
@@ -214,9 +214,9 @@
                                                     <label class="block text-sm font-medium mb-1">Sender Email</label>
                                                     <input placeholder="primegurkha@gmail.com" type="email" name="senderEmail" id="senderEmail" class="w-full border rounded px-3 py-2">
                                                 </div>
-                                                  <div>
+                                                <div>
                                                     <label class="block text-sm font-medium mb-1">Address 1</label>
-                                                   <input placeholder="Kathmandu" type="text" name="address1" id="senderAddress" class="w-full border rounded px-3 py-2">
+                                                    <input placeholder="Kathmandu" type="text" name="address1" id="senderAddress" class="w-full border rounded px-3 py-2">
                                                 </div>
                                                 <div>
                                                     <label class="block text-sm font-medium mb-1"> Address 2</label>
@@ -226,7 +226,7 @@
                                                     <label class="block text-sm font-medium mb-1"> Address 3</label>
                                                     <input placeholder="Country" type="text" name="address3" class="w-full border rounded px-3 py-2">
                                                 </div>
-                                             
+
                                                 <div>
                                                     <label class="block text-sm font-medium mb-1">Invoice Date</label>
                                                     <input type="date" name="invoice_date" class="w-full border rounded px-3 py-2">
@@ -238,7 +238,7 @@
                                         <div class="bg-white shadow-md rounded-xl p-6">
                                             <h3 class="text-xl font-semibold mb-4 text-center">Receiver Details</h3>
                                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                 <div>
+                                                <div>
                                                     <label class="block text-sm font-medium mb-1">Company Name</label>
                                                     <input placeholder="Prime Gurkha" type="text" name="receiver_company_name" id="company_name" required class="w-full border rounded px-3 py-2">
                                                 </div>
@@ -266,8 +266,22 @@
                                                     <label class="block text-sm font-medium mb-1"> Address 3</label>
                                                     <input placeholder="Country" type="text" name="receiverCountry" class="w-full border rounded px-3 py-2">
                                                 </div>
+                                                @unless(auth()->user()->hasRole('vendor'))
+                                                <div>
+                                                    <label class="block text-sm font-medium mb-1">Vendor Id</label>
+                                                    <select name="receiver_user_id" class="w-full border rounded px-3 py-2">
+                                                        <option value="">Select Vendor</option>
+                                                        @foreach($vendors as $vendor)
+                                                        <option value="{{ $vendor->id }}">
+                                                            {{ $vendor->name }}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                @endunless
 
                                             </div>
+
                                         </div>
 
                                     </div>
@@ -287,6 +301,10 @@
                                         </div>
                                     </div>
                                 </div>
+
+
+
+
                             </div>
 
                         </form>
@@ -341,7 +359,7 @@
     function addBox() {
         const boxId = Date.now().toString(); // Unique ID for each box
         boxes.push(boxId);
-       
+
         const boxDiv = document.createElement('div');
         boxDiv.className = 'box-section';
         boxDiv.dataset.boxId = boxId;

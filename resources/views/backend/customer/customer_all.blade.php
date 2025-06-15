@@ -19,11 +19,32 @@
           margin-bottom: 15px; margin-top: 5px; margin-left: 20px;">
                 <i class="fas fa-arrow-left" style="margin-right: 5px;"></i> Back
             </a>
-            <a href="{{ route('customer.add') }}" class="btn btn-warning btn-rounded waves-effect waves-orange"
+            <a class="btn btn-warning btn-rounded waves-effect waves-orange"
                 style="float:right;  background-color: #FFA500; color: #555; border: 2px solid #FFA500; 
-                          transition: all 0.3s ease-in-out; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);margin-right:15px;">
-                <i class="fas fa-plus-circle"></i> Add Sender
+                          transition: all 0.3s ease-in-out; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);margin-right:15px;"
+                 data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    <i class="fas fa-plus-circle"></i> Add Sender
             </a>
+        </div>
+    </div>
+
+
+    <!-- Modal Popup -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Options</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    
+                        <a href="{{ route('customer.add') }}"class="btn btn-primary">Details</a>
+                       
+                        
+                   
+                </div>
+            </div>
         </div>
     </div>
 
