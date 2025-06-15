@@ -5,13 +5,25 @@ namespace App\Http\Controllers\Pos;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
-use App\Models\{Sender, Receiver, Box, Shipment, Item, Payment, Dispatch, Billing};
+use App\Models\{Sender, Receiver, User, Box, Shipment, Item, Payment, Dispatch, Billing};
 
 use App\Exports\ExcelExport;
 
 
 class CustomerController extends Controller
-{
+{ 
+   
+    public function store(Request $req)
+    {
+        $req->validate([
+            'receiver_vendor_id' => 'required|exists:users,id',
+            // ... other validations
+        ]);
+
+        // Later, retrieve the vendor by:
+        $vendor = User::find($req->receiver_vendor_id);
+        // and use their name / details as needed
+    }
 
     public function CustomerAll()
     {
@@ -54,8 +66,10 @@ class CustomerController extends Controller
     {
         $senders = Sender::all();
         $receivers = Receiver::all();
+        $vendors = User::role('vendor')->get();
+        // dd($vendors);
 
-        return view('backend.customer.customer_add', compact('senders', 'receivers',));
+        return view('backend.customer.customer_add', compact('senders', 'receivers','vendors'));
     }
 
     public function CustomerEdit($id)
@@ -222,118 +236,118 @@ class CustomerController extends Controller
 
 
 
-public function calculateTotalWeight($boxes, $weight)
-{
-    // Sum weights passed as an array of strings
-    $totalWeight = 0;
+    public function calculateTotalWeight($boxes, $weight)
+    {
+        // Sum weights passed as an array of strings
+        $totalWeight = 0;
 
-    foreach ($weight as $w) {
-        $totalWeight += (float) $w;  // convert to float just in case
+        foreach ($weight as $w) {
+            $totalWeight += (float) $w;  // convert to float just in case
+        }
+
+
+
+        return $totalWeight;
+    }
+    public function CustomerStore(Request $request)
+    {
+        // Validate required structure
+        $weight = $request->input('box_weight', []);
+        $validated = $request->validate([
+            'boxes' => 'required|array',
+            'senderEmail' => 'nullable|email',
+            'receiverEmail' => 'nullable|email',
+        ]);
+
+        $lastInvoice = Sender::max('invoiceId');
+        $nextInvoiceId = $lastInvoice ? $lastInvoice + 1 : 100;
+
+        try {
+            // Create Sender
+            $sender = Sender::create([
+                'senderName'     => $request->senderName,
+                'senderPhone'    => $request->senderPhone ?? null,
+                'senderEmail'    => $request->senderEmail ?? null,
+                'senderAddress'  => $request->address1 ?? null, // Optional
+                'company_name'   => $request->company_name ?? null,
+                'address1'       => $request->address1 ?? null,
+                'address2'       => $request->address2 ?? null,
+                'address3'       => $request->address3 ?? null,
+                'status'         => 'pending',
+                'invoiceId'      => $nextInvoiceId,
+            ]);
+
+
+
+            // Create Receiver
+            Receiver::create([
+                'sender_id'            => $sender->id,
+                'receiverName'         => $request->receiverName,
+                'receiverPhone'        => $request->receiverPhone ?? null,
+                'receiverEmail'        => $request->receiverEmail ?? null,
+                'receiverAddress'      => $request->receiverAddress ?? null,
+                'receiverPostalcode'   => $request->receiverPostalcode ?? null,
+                'receiverCountry'      => $request->receiverCountry ?? null,
+                'receiver_company_name'  => $request->receiver_company_name ?? null,
+            ]);
+
+            // Create Shipment
+            Shipment::create([
+                'sender_id'     => $sender->id,
+                'shipment_via'  => $request->shipment_via ?? null,
+                'invoice_date'  => $request->invoice_date,
+                'dimension'     => $request->dimension ?? null,
+            ]);
+
+            // Create Boxes and Items
+            $this->createBoxesAndItems($sender, $validated['boxes'], $weight);
+
+            return redirect()->route('customer.all')->with('success', 'Data saved successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('customer.all')->with('error', 'An error occurred: ' . $e->getMessage());
+        }
     }
 
-   
 
-    return $totalWeight;
-}
-   public function CustomerStore(Request $request)
-{
-    // Validate required structure
-    $weight = $request->input('box_weight', []);
-    $validated = $request->validate([
-        'boxes' => 'required|array',
-        'senderEmail' => 'nullable|email',
-        'receiverEmail' => 'nullable|email',
-    ]);
 
-    $lastInvoice = Sender::max('invoiceId');
-$nextInvoiceId = $lastInvoice ? $lastInvoice + 1 : 100;
+    private function createBoxesAndItems($sender, $boxes, $weight)
+    {
+        foreach ($boxes as $index => $boxData) {
+            try {
+                $box = Box::create([
+                    'sender_id'   => $sender->id,
+                    'box_number'  => 'Box' . ($index + 1),
+                    'box_weight'      => $weight[$index] ?? null, // Save weight if needed
+                ]);
+            } catch (\Exception $e) {
+                return redirect()->route('customer.all')->with('error', $e->getMessage());
+            }
 
-    try {
-        // Create Sender
-        $sender = Sender::create([
-            'senderName'     => $request->senderName,
-            'senderPhone'    => $request->senderPhone ?? null,
-            'senderEmail'    => $request->senderEmail ?? null,
-            'senderAddress'  => $request->address1 ?? null, // Optional
-            'company_name'   => $request->company_name ?? null,
-            'address1'       => $request->address1 ?? null,
-            'address2'       => $request->address2 ?? null,
-            'address3'       => $request->address3 ?? null,
-            'status'         => 'pending',
-             'invoiceId'      => $nextInvoiceId,
-        ]);
+            foreach ($boxData['items'] as $itemData) {
+                Item::create([
+                    'box_id'     => $box->id,
+                    'item'       => $itemData['item'],
+                    'hs_code'    => $itemData['hs_code'] ?? null,
+                    'quantity'   => $itemData['quantity'],
+                    'unit_rate'  => $itemData['unit_rate'] ?? null,
+                    'amount'     => $itemData['amount'],
+                ]);
+            }
+        }
 
-      
+        $shipment = Shipment::where('sender_id', $sender->id)->first();
+        if ($shipment) {
+            $shipment->update([
 
-        // Create Receiver
-        Receiver::create([
-            'sender_id'            => $sender->id,
-            'receiverName'         => $request->receiverName,
-            'receiverPhone'        => $request->receiverPhone ?? null,
-            'receiverEmail'        => $request->receiverEmail ?? null,
-            'receiverAddress'      => $request->receiverAddress ?? null,
-            'receiverPostalcode'   => $request->receiverPostalcode ?? null,
-            'receiverCountry'      => $request->receiverCountry ?? null,
-            'receiver_company_name'  => $request->receiver_company_name ?? null,
-        ]);
 
-        // Create Shipment
-        Shipment::create([
-            'sender_id'     => $sender->id,
-            'shipment_via'  => $request->shipment_via ?? null,
-            'invoice_date'  => $request->invoice_date,
-            'dimension'     => $request->dimension ?? null,
-        ]);
 
-        // Create Boxes and Items
-        $this->createBoxesAndItems($sender, $validated['boxes'], $weight);
+                'actual_weight' => $this->calculateTotalWeight($boxes, $weight),
+
+            ]);
+        }
 
         return redirect()->route('customer.all')->with('success', 'Data saved successfully.');
-    } catch (\Exception $e) {
-        return redirect()->route('customer.all')->with('error', 'An error occurred: ' . $e->getMessage());
     }
-}
-
-
-
-private function createBoxesAndItems($sender, $boxes, $weight)
-{
-    foreach ($boxes as $index => $boxData) {
-        try {
-            $box = Box::create([
-                'sender_id'   => $sender->id,
-                'box_number'  => 'Box' . ($index + 1),
-                'box_weight'      => $weight[$index] ?? null, // Save weight if needed
-            ]);
-        } catch (\Exception $e) {
-            return redirect()->route('customer.all')->with('error', $e->getMessage());
-        }
-
-        foreach ($boxData['items'] as $itemData) {
-            Item::create([
-                'box_id'     => $box->id,
-                'item'       => $itemData['item'],
-                'hs_code'    => $itemData['hs_code'] ?? null,
-                'quantity'   => $itemData['quantity'],
-                'unit_rate'  => $itemData['unit_rate'] ?? null,
-                'amount'     => $itemData['amount'],
-            ]);
-        }
-    }
-
-    $shipment = Shipment::where('sender_id', $sender->id)->first();
-    if ($shipment) {
-        $shipment->update([
-
-           
-         
-            'actual_weight' => $this->calculateTotalWeight($boxes, $weight),
-            
-        ]);
-    }
-
-    return redirect()->route('customer.all')->with('success', 'Data saved successfully.');
-}
 
 
 

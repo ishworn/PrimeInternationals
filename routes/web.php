@@ -52,6 +52,9 @@ Route::middleware('auth')->group(function () {
         //bulk delete
         Route::post('/customers/delete-selected',  'bulkDelete')->name('customer.bulkDelete');
         Route::post('/customers/forceDelete-selected', 'bulkForceDelete')->name('customer.bulkForceDelete');
+
+        //Route::get('/customer/options', 'CustomerAdd')->name('customer.options');
+        //Route::post('/customer/options', 'CustomerOptions')->name('customer.options');
     });
 
     // Tracking Routes
@@ -147,3 +150,5 @@ require __DIR__ . '/auth.php';
 Route::get('/', function () {
     return redirect()->route('login');
 });
+
+
