@@ -13,6 +13,7 @@ use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\Pos\AgenciesController;
 use App\Http\Controllers\Pos\AirlineController;
 
+use App\Http\Controllers\VendorController;
 
 
 Route::middleware('auth')->group(function () {
@@ -52,6 +53,9 @@ Route::middleware('auth')->group(function () {
         //bulk delete
         Route::post('/customers/delete-selected',  'bulkDelete')->name('customer.bulkDelete');
         Route::post('/customers/forceDelete-selected', 'bulkForceDelete')->name('customer.bulkForceDelete');
+
+        //Route::get('/customer/options', 'CustomerAdd')->name('customer.options');
+        //Route::post('/customer/options', 'CustomerOptions')->name('customer.options');
     });
 
     // Tracking Routes
@@ -106,6 +110,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/agencies/debits', 'debits')->name('agencies.debits');
         // Route::get('/agencies/{id}', 'show')->name('agencies.show');
         Route::get('/agencies/{agency_name}', 'show')->name('agencies.show');
+        Route::get('/agencies/shipment/{id}', 'shipment_details')->name('agencies.shipment_show');
 
        Route::get('agencies/pdf/{id}', 'downloadPDF')->name('agencies.downloadPDF');
 
@@ -140,6 +145,14 @@ Route::middleware('auth')->group(function () {
         //Route::get('/agencies/{agency_name}', 'show')->name('agencies.show');
         Route::get('/airlines/{id}', 'show')->name('airlines.show');
     });
+
+    Route::controller(VendorController::class)->group(function () {
+        Route::get('vendor/index/{id?}','index')->name('vendor.index');
+        Route::get('vendor','show')->name('vendor.show');
+
+    });
+
+
 });
 
 require __DIR__ . '/auth.php';
@@ -147,3 +160,5 @@ require __DIR__ . '/auth.php';
 Route::get('/', function () {
     return redirect()->route('login');
 });
+
+
