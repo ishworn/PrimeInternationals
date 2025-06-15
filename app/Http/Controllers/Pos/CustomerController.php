@@ -16,6 +16,7 @@ class CustomerController extends Controller
     public function CustomerAll()
     {
         $user = auth()->user(); // Get the logged-in user
+    
 
         if ($user->hasRole('vendor')) {
             // Show only the senders added by this vendor
