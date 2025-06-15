@@ -29,6 +29,7 @@ class CustomerController extends Controller
     public function CustomerAll()
     {
         $user = auth()->user(); // Get the logged-in user
+    
 
         // Get all vendors for the dropdown
         $vendors = User::role('vendor')->get();

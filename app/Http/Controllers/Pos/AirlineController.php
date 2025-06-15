@@ -201,7 +201,9 @@ class AirlineController extends Controller
         $totalWeight = Box::whereIn('sender_id', $senderIds)->sum('box_weight');
         $totalBoxes = Box::whereIn('sender_id', $senderIds)->count();
 
+
         return view('backend.airlines.shipment_details', compact('senders','shipment',  'totalWeight', 'totalBoxes'));
+
     }
 
     public function show($agency_name)
