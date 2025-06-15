@@ -117,6 +117,13 @@
                     </a>
                 </li>
                 @endcan
+
+                <li>
+                    <a href="{{ route('vendor.show') }}" class="waves-effect">
+                        <i class="ri-shield-user-fill" aria-hidden="true"></i>
+                        <span>Vendors</span>
+                    </a>
+                </li>
             </ul>
         </div>
         <!-- Sidebar -->
