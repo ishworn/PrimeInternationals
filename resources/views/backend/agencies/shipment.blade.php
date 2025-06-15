@@ -51,7 +51,7 @@
                                     <td>{{ implode(', ', $item->sender_id) }}</td>
                                     <td>
 
-                                        <a href="{{ route('shipment_show', $item->id) }}"
+                                        <a href="{{ route('agencies.shipment_show', $item->id) }}"
                                             class="btn btn-info btn-sm">View</a>
 
                                         <a href="{{ route('agencies.downloadPDF', $item->id) }}"
